@@ -1,4 +1,5 @@
-import { z, defineCollection } from "astro:content";
+import { defineCollection } from "astro:content";
+import { z } from "astro/zod";
 import { glob, file } from "astro/loaders";
 
 export const bodyTypes = ["SUV", "Sedan", "Hatchback", "Coupe", "Convertible", "Pickup"] as const;
@@ -14,7 +15,7 @@ export const blogCategories = {
 
 const categoryKeys = Object.keys(blogCategories) as [
 	keyof typeof blogCategories,
-	...Array<keyof typeof blogCategories>
+	...Array<keyof typeof blogCategories>,
 ];
 
 const cars = defineCollection({
@@ -25,7 +26,7 @@ const cars = defineCollection({
 			image: image().optional(),
 			imageAlt: z.string().optional().default(""),
 			gallery: z.array(z.object({ image: image(), alt: z.string() })).optional(),
-			videoTourUrl: z.string().url().optional(),
+			videoTourUrl: z.url().optional(),
 			excerpt: z.string().optional(),
 			publishDate: z.coerce.date().default(new Date(2025, 0, 1)),
 			general: z.object({
@@ -92,7 +93,9 @@ const cars = defineCollection({
 			misc: z
 				.object({
 					vin: z.string().optional(),
-					registrationStatus: z.enum(["Registered", "Unregistered", "Registration Pending"]).optional(),
+					registrationStatus: z
+						.enum(["Registered", "Unregistered", "Registration Pending"])
+						.optional(),
 					warranty: z.string().optional(),
 					dealerNotes: z.string().optional(),
 					hidden: z.boolean().optional().default(false),
@@ -123,7 +126,7 @@ const team = defineCollection({
 		z.object({
 			name: z.string(),
 			role: z.string(),
-			email: z.string().email(),
+			email: z.email(),
 			phone: z.string(),
 			image: image(),
 		}),
