@@ -1,0 +1,191 @@
+---
+import Layout from '~/layouts/Layout.astro';
+import { todasCategorias } from '~/lib/categorias';
+
+export function getStaticPaths() {
+  return todasCategorias.map(cat => ({
+    params: { categoria: cat.slug },
+    props:  { label: cat.label },
+  }));
+}
+
+const { categoria } = Astro.params;
+const { label } = Astro.props as { label: string };
+---
+
+<Layout
+  pageTitle={`${label} - Grupos WhatsApp | WhatsDir`}
+  title={`Grupos de ${label}`}
+  description={`Encontre grupos e canais de WhatsApp sobre ${label}. Entre agora!`}
+>
+
+  <section class="bg-yellow-200">
+    <div class="container py-10 lg:py-16">
+      <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+        <div>
+          <a href="/grupos" class="text-base text-gray-500 hover:text-gray-800 transition">&larr; Todos os grupos</a>
+          <h1 class="h2 mt-2">{label}</h1>
+          <p class="text-lg text-gray-700 mt-2">Grupos e canais de WhatsApp sobre {label}.</p>
+        </div>
+        <a href="/grupos/enviar" class="button button-black shrink-0">+ Enviar grupo</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-white">
+    <div class="container py-8 lg:py-12">
+      <div class="lg:flex gap-x-8 items-start">
+
+        <!-- Sidebar -->
+        <aside class="shrink-0 w-full lg:w-64 mb-8 lg:mb-0">
+          <div class="flex flex-col gap-0.5 lg:sticky lg:top-8 bg-white lg:shadow-md px-4 py-4">
+            <p class="text-sm font-semibold text-gray-500 uppercase tracking-wide px-3 mb-2">Categorias</p>
+            <a href="/grupos" class="px-3 py-2 text-base transition rounded hover:bg-yellow-100">Todos</a>
+            {todasCategorias.map(cat => (
+              <a
+                href={`/grupos/categoria/${cat.slug}`}
+                class={`px-3 py-2 text-base transition rounded hover:bg-yellow-100 ${cat.slug === categoria ? 'bg-yellow-200 font-bold' : ''}`}
+              >
+                {cat.label}
+              </a>
+            ))}
+          </div>
+        </aside>
+
+        <!-- Conteudo -->
+        <div class="flex-1 min-w-0">
+          <div class="flex flex-wrap gap-3 items-center mb-6">
+            <div class="flex-1 min-w-48">
+              <input id="input-busca" type="search" placeholder={`Buscar em ${label}...`} class="mt-0!" />
+            </div>
+            <select id="select-tipo" class="mt-0! w-auto">
+              <option value="">Todos os tipos</option>
+              <option value="grupo">Grupos</option>
+              <option value="canal">Canais</option>
+            </select>
+          </div>
+
+          <div id="loading" class="flex items-center gap-3 py-16 text-gray-400">
+            <svg class="animate-spin size-5" viewBox="0 0 24 24" fill="none">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+            </svg>
+            Carregando...
+          </div>
+
+          <div id="lista-vazia" class="hidden text-center py-16 text-gray-400">
+            <p class="text-5xl mb-4">📭</p>
+            <p class="text-lg font-semibold">Nenhum grupo nesta categoria</p>
+            <p class="text-base mt-1"><a href="/grupos/enviar" class="underline hover:text-gray-800">Seja o primeiro a enviar!</a></p>
+          </div>
+
+          <ul id="lista-grupos" class="hidden grid grid-cols-1 gap-4"></ul>
+          <p id="contador" class="hidden text-base text-gray-400 mt-4"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</Layout>
+
+<template id="tpl-card">
+  <li class="bg-white shadow overflow-hidden transition border-transparent border-l-4 hover:border-yellow-300">
+    <div class="flex items-start gap-4 p-4 xxl:p-6">
+      <img class="c-foto size-12 shrink-0 rounded-full object-cover border border-gray-100" src="" alt="" width="48" height="48" />
+      <div class="flex-1 min-w-0">
+        <div class="flex flex-wrap items-center gap-2 mb-1">
+          <h3 class="c-nome h6 truncate"></h3>
+          <span class="c-tipo text-sm font-semibold px-2 py-0.5 rounded"></span>
+          <span class="c-destaque hidden bg-yellow-200 text-gray-800 text-sm font-semibold px-2 py-0.5 rounded">Destaque</span>
+        </div>
+        <p class="c-membros text-base text-gray-400 mb-1 hidden"></p>
+        <p class="c-desc text-base line-clamp-2 text-gray-600"></p>
+      </div>
+    </div>
+    <div class="flex items-center justify-between px-4 pb-4 gap-4">
+      <span class="c-cat text-base text-gray-400 truncate"></span>
+      <a class="c-link button button-black shrink-0" href="#" target="_blank" rel="noopener noreferrer">
+        Entrar
+        <svg xmlns="http://www.w3.org/2000/svg" class="ml-2 size-4 inline-block" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
+        </svg>
+      </a>
+    </div>
+  </li>
+</template>
+
+<script define:vars={{ categoria }}>
+  const listaEl    = document.getElementById('lista-grupos');
+  const loadingEl  = document.getElementById('loading');
+  const vazioEl    = document.getElementById('lista-vazia');
+  const contadorEl = document.getElementById('contador');
+  const buscaEl    = document.getElementById('input-busca');
+  const tipoEl     = document.getElementById('select-tipo');
+  const tpl        = document.getElementById('tpl-card');
+
+  let todosGrupos = [];
+
+  buscaEl.addEventListener('input', filtrar);
+  tipoEl.addEventListener('change', filtrar);
+
+  async function carregar() {
+    try {
+      const url = `/api/getGrupos.json?status=aprovado&categoria=${encodeURIComponent(categoria)}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('Erro na API');
+      todosGrupos = await res.json();
+      filtrar();
+    } catch (e) {
+      console.error(e);
+      loadingEl.textContent = 'Erro ao carregar. Tente novamente.';
+    }
+  }
+
+  function filtrar() {
+    const busca = buscaEl.value.toLowerCase().trim();
+    const tipo  = tipoEl.value;
+    const result = todosGrupos.filter(g => {
+      if (tipo && g.tipo !== tipo) return false;
+      if (busca && !g.nome.toLowerCase().includes(busca) && !g.descricao.toLowerCase().includes(busca)) return false;
+      return true;
+    });
+    renderizar(result);
+  }
+
+  function renderizar(grupos) {
+    loadingEl.classList.add('hidden');
+    listaEl.innerHTML = '';
+    if (grupos.length === 0) {
+      vazioEl.classList.remove('hidden');
+      listaEl.classList.add('hidden');
+      contadorEl.classList.add('hidden');
+      return;
+    }
+    vazioEl.classList.add('hidden');
+    listaEl.classList.remove('hidden');
+    contadorEl.classList.remove('hidden');
+    contadorEl.textContent = `${grupos.length} grupo${grupos.length !== 1 ? 's' : ''}`;
+    grupos.forEach(g => {
+      const clone = tpl.content.cloneNode(true);
+      const avatarUrl = g.foto ?? `https://ui-avatars.com/api/?name=${encodeURIComponent(g.nome.slice(0,2))}&background=${g.tipo==='canal'?'25D366':'128C7E'}&color=fff&size=128&bold=true&rounded=true`;
+      clone.querySelector('.c-foto').src = avatarUrl;
+      clone.querySelector('.c-foto').alt = g.nome;
+      clone.querySelector('.c-nome').textContent = g.nome;
+      clone.querySelector('.c-desc').textContent = g.descricao;
+      clone.querySelector('.c-cat').textContent = g.categoria;
+      clone.querySelector('.c-link').href = g.link;
+      const tipoBadge = clone.querySelector('.c-tipo');
+      if (g.tipo === 'canal') { tipoBadge.textContent = 'Canal'; tipoBadge.classList.add('bg-green-100','text-green-700'); }
+      else { tipoBadge.textContent = 'Grupo'; tipoBadge.classList.add('bg-teal-100','text-teal-700'); }
+      if (g.destaque) clone.querySelector('.c-destaque').classList.remove('hidden');
+      if (g.membros != null) {
+        const el = clone.querySelector('.c-membros');
+        el.textContent = `${g.membros.toLocaleString('pt-BR')} membros`;
+        el.classList.remove('hidden');
+      }
+      listaEl.appendChild(clone);
+    });
+  }
+
+  carregar();
+</script>

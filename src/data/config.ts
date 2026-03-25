@@ -1,8 +1,8 @@
 // Global variables
 export const siteLang = "en-US";
 export const siteCurrency = "USD";
-export const siteDomain = "hyperdrive.com";
-export const siteName = "HyperDrive";
+export const siteDomain = "gruposwhatsapp.online";
+export const siteName = "Grupos WhatsApp.online";
 export const siteSlogan = "The best car dealership in the galaxy!";
 export const themeColor = "#fef08a";
 export const unitSystem = "imperial";

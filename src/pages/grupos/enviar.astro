@@ -1,0 +1,25 @@
+---
+import Layout from '~/layouts/Layout.astro';
+import EnviarGrupo from '~/components/forms/EnviarGrupo.astro';
+---
+
+<Layout
+  pageTitle="Enviar Grupo  WhatsDir"
+  title="Enviar seu grupo"
+  description="Cadastre seu grupo ou canal de WhatsApp no WhatsDir para aparecer no diretório."
+>
+  <section class="bg-yellow-200">
+    <div class="container py-10 lg:py-16">
+      <a href="/grupos" class="text-base text-gray-500 hover:text-gray-800 transition">&larr; Voltar para grupos</a>
+      <h1 class="h2 mt-2">Enviar seu grupo</h1>
+      <p class="text-lg text-gray-700 mt-2 max-w-xl">Preencha as informações do seu grupo ou canal de WhatsApp. Após análise, ele aparecerá no diretório.</p>
+    </div>
+  </section>
+
+  <section class="bg-white">
+    <div class="container py-10 lg:py-16 max-w-2xl">
+      <EnviarGrupo />
+    </div>
+  </section>
+</Layout>
+

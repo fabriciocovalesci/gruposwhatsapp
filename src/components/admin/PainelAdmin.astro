@@ -1,0 +1,272 @@
+---
+// Componente puramente de apresentação — toda a lógica fica no <script>
+// Sem import.meta.env aqui: Firebase é inicializado em ~/lib/firebase.ts
+---
+
+<!-- Tela de login -->
+<div id="tela-login" class="min-h-[70vh] flex items-center justify-center px-4">
+  <div class="bg-white shadow-md p-8 w-full max-w-sm">
+    <h1 class="h4 mb-1">Acesso restrito</h1>
+    <p class="text-base text-gray-500 mb-6">Painel de moderação WhatsDir</p>
+
+    <div id="erro-login" class="hidden mb-4 text-base text-red-700 bg-red-50 border border-red-200 rounded px-3 py-2"></div>
+
+    <label for="input-email">E-mail</label>
+    <input id="input-email" type="email" placeholder="admin@exemplo.com" />
+
+    <label for="input-senha" class="mt-4">Senha</label>
+    <input id="input-senha" type="password" placeholder="" />
+
+    <button id="btn-login" class="button button-yellow w-full mt-6">Entrar</button>
+  </div>
+</div>
+
+<!-- Painel -->
+<div id="painel" class="hidden">
+
+  <!-- Cabeçalho -->
+  <section class="bg-yellow-200">
+    <div class="container py-6">
+      <div class="flex items-center justify-between gap-4">
+        <div>
+          <h1 class="h4">Painel de moderação</h1>
+          <p id="label-usuario" class="text-base text-gray-600 mt-0.5"></p>
+        </div>
+        <button id="btn-sair" class="button button-black">Sair</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Abas -->
+  <section class="bg-white border-b border-gray-200">
+    <div class="container">
+      <div class="flex gap-0">
+        <button class="aba-btn px-6 py-4 text-base font-semibold border-b-2 border-yellow-300 text-gray-800" data-aba="pendente">
+          Pendentes <span id="badge-pendente" class="ml-2 bg-yellow-200 text-gray-800 text-sm px-2 py-0.5 rounded"></span>
+        </button>
+        <button class="aba-btn px-6 py-4 text-base font-semibold border-b-2 border-transparent text-gray-400 hover:text-gray-800 transition" data-aba="aprovado">
+          Aprovados
+        </button>
+        <button class="aba-btn px-6 py-4 text-base font-semibold border-b-2 border-transparent text-gray-400 hover:text-gray-800 transition" data-aba="rejeitado">
+          Rejeitados
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Lista -->
+  <section class="bg-white">
+    <div class="container py-8">
+      <div id="loading-grupos" class="flex items-center gap-3 py-16 text-gray-400">
+        <svg class="animate-spin size-5" viewBox="0 0 24 24" fill="none">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+        </svg>
+        Carregando grupos...
+      </div>
+      <div id="lista-vazia" class="hidden text-center py-16 text-gray-400">
+        <p class="text-5xl mb-4">📭</p>
+        <p class="text-lg font-semibold">Nenhum grupo aqui</p>
+      </div>
+      <div id="lista-grupos" class="hidden space-y-4"></div>
+    </div>
+  </section>
+</div>
+
+<!-- Template do card -->
+<template id="tpl-card">
+  <div class="card-grupo bg-white shadow overflow-hidden transition border-transparent border-l-4">
+    <div class="flex items-start gap-4 p-4 xxl:p-6">
+      <img class="c-foto size-12 shrink-0 rounded-full object-cover border border-gray-100" src="" alt="" />
+      <div class="flex-1 min-w-0">
+        <div class="flex flex-wrap items-center gap-2 mb-1">
+          <h3 class="c-nome h6 truncate"></h3>
+          <span class="c-tipo text-sm font-semibold px-2 py-0.5 rounded"></span>
+          <span class="c-cat text-sm text-gray-500 bg-gray-100 px-2 py-0.5 rounded"></span>
+        </div>
+        <p class="c-desc text-base text-gray-600 line-clamp-2"></p>
+        <p class="c-email text-sm text-gray-400 mt-1"></p>
+        <p class="c-data text-sm text-gray-400"></p>
+      </div>
+    </div>
+    <div class="flex items-center justify-end gap-3 px-4 xxl:px-6 pb-4">
+      <a class="c-link text-base text-gray-500 underline hover:text-gray-800 transition" href="#" target="_blank" rel="noopener noreferrer">Ver link</a>
+      <button class="c-rejeitar hidden button button-black">Rejeitar</button>
+      <button class="c-aprovar hidden button button-yellow">Aprovar</button>
+    </div>
+  </div>
+</template>
+
+<script>
+  // Auth permanece client-side (Firebase Auth exige estado no browser)
+  // Dados do Firestore são acessados via API routes — sem Firebase SDK aqui
+  import { auth } from '~/lib/firebase';
+  import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
+
+  interface GrupoAdmin {
+    id: string;
+    nome: string;
+    descricao: string;
+    categoria: string;
+    tipo: 'grupo' | 'canal';
+    link: string;
+    email?: string;
+    foto?: string;
+    membros?: number;
+    destaque?: boolean;
+    criadoEm?: string | null;
+  }
+
+  // Elementos
+  const telaLogin    = document.getElementById('tela-login')!;
+  const painel       = document.getElementById('painel')!;
+  const inputEmail   = document.getElementById('input-email') as HTMLInputElement;
+  const inputSenha   = document.getElementById('input-senha') as HTMLInputElement;
+  const btnLogin     = document.getElementById('btn-login') as HTMLButtonElement;
+  const erroLogin    = document.getElementById('erro-login')!;
+  const btnSair      = document.getElementById('btn-sair')!;
+  const labelUsuario = document.getElementById('label-usuario')!;
+  const loadingEl    = document.getElementById('loading-grupos')!;
+  const listaEl      = document.getElementById('lista-grupos')!;
+  const vazioEl      = document.getElementById('lista-vazia')!;
+  const badgeEl      = document.getElementById('badge-pendente')!;
+  const abaBtns      = document.querySelectorAll<HTMLElement>('.aba-btn');
+  const tpl          = document.getElementById('tpl-card') as HTMLTemplateElement;
+
+  let abaAtual = 'pendente';
+
+  // Auth — monitora estado de login
+  onAuthStateChanged(auth, user => {
+    if (user) {
+      telaLogin.classList.add('hidden');
+      painel.classList.remove('hidden');
+      labelUsuario.textContent = user.email;
+      carregarGrupos(abaAtual);
+      atualizarBadge();
+    } else {
+      telaLogin.classList.remove('hidden');
+      painel.classList.add('hidden');
+    }
+  });
+
+  btnLogin.addEventListener('click', async () => {
+    erroLogin.classList.add('hidden');
+    btnLogin.disabled = true;
+    btnLogin.textContent = 'Entrando...';
+    try {
+      await signInWithEmailAndPassword(auth, inputEmail.value.trim(), inputSenha.value);
+    } catch {
+      erroLogin.textContent = 'E-mail ou senha incorretos.';
+      erroLogin.classList.remove('hidden');
+    } finally {
+      btnLogin.disabled = false;
+      btnLogin.textContent = 'Entrar';
+    }
+  });
+
+  [inputEmail, inputSenha].forEach(el =>
+    el.addEventListener('keydown', (e: KeyboardEvent) => e.key === 'Enter' && btnLogin.click())
+  );
+
+  btnSair.addEventListener('click', () => signOut(auth));
+
+  // Abas
+  abaBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      abaAtual = btn.dataset.aba ?? 'pendente';
+      abaBtns.forEach(b => {
+        b.classList.remove('border-yellow-300', 'text-gray-800');
+        b.classList.add('border-transparent', 'text-gray-400');
+      });
+      btn.classList.add('border-yellow-300', 'text-gray-800');
+      btn.classList.remove('border-transparent', 'text-gray-400');
+      carregarGrupos(abaAtual);
+    });
+  });
+
+  async function atualizarBadge() {
+    const res = await fetch('/api/getGrupos.json?status=pendente');
+    const grupos: GrupoAdmin[] = await res.json();
+    badgeEl.textContent = grupos.length > 0 ? String(grupos.length) : '';
+  }
+
+  async function carregarGrupos(status: string) {
+    loadingEl.classList.remove('hidden');
+    listaEl.classList.add('hidden');
+    vazioEl.classList.add('hidden');
+    listaEl.innerHTML = '';
+
+    try {
+      const res = await fetch(`/api/getGrupos.json?status=${status}`);
+      if (!res.ok) throw new Error('Erro na API');
+      const grupos: GrupoAdmin[] = await res.json();
+      if (grupos.length === 0) {
+        vazioEl.classList.remove('hidden');
+      } else {
+        grupos.forEach(g => renderCard(g, status));
+        listaEl.classList.remove('hidden');
+      }
+    } catch (e) {
+      console.error(e);
+      vazioEl.querySelector('p:last-child')!.textContent = 'Erro ao carregar.';
+      vazioEl.classList.remove('hidden');
+    } finally {
+      loadingEl.classList.add('hidden');
+    }
+  }
+
+  function renderCard(grupo: GrupoAdmin, status: string) {
+    const clone = tpl.content.cloneNode(true) as DocumentFragment;
+    const avatarUrl = grupo.foto
+      ?? `https://ui-avatars.com/api/?name=${encodeURIComponent(grupo.nome?.slice(0, 2) ?? 'G')}&background=${grupo.tipo === 'canal' ? '25D366' : '128C7E'}&color=fff&size=128&bold=true&rounded=true`;
+
+    (clone.querySelector('.c-foto') as HTMLImageElement).src = avatarUrl;
+    (clone.querySelector('.c-foto') as HTMLImageElement).alt = grupo.nome;
+    clone.querySelector('.c-nome')!.textContent = grupo.nome;
+    clone.querySelector('.c-desc')!.textContent = grupo.descricao;
+    clone.querySelector('.c-cat')!.textContent  = grupo.categoria;
+    clone.querySelector('.c-email')!.textContent = grupo.email ? `✉ ${grupo.email}` : '';
+    (clone.querySelector('.c-link') as HTMLAnchorElement).href = grupo.link;
+
+    const tipoBadge = clone.querySelector('.c-tipo')!;
+    if (grupo.tipo === 'canal') {
+      tipoBadge.textContent = 'Canal';
+      tipoBadge.classList.add('bg-green-100', 'text-green-700');
+    } else {
+      tipoBadge.textContent = 'Grupo';
+      tipoBadge.classList.add('bg-teal-100', 'text-teal-700');
+    }
+
+    // Borda por status
+    const card = clone.querySelector('.card-grupo')!;
+    if (status === 'aprovado')       card.classList.add('border-green-400');
+    else if (status === 'rejeitado') card.classList.add('border-red-300');
+    else                             card.classList.add('border-yellow-300');
+
+    const btnAprovar  = clone.querySelector('.c-aprovar') as HTMLButtonElement;
+    const btnRejeitar = clone.querySelector('.c-rejeitar') as HTMLButtonElement;
+    if (status === 'pendente')       { btnAprovar.classList.remove('hidden'); btnRejeitar.classList.remove('hidden'); }
+    else if (status === 'aprovado')  { btnRejeitar.classList.remove('hidden'); }
+    else if (status === 'rejeitado') { btnAprovar.classList.remove('hidden'); }
+
+    btnAprovar.addEventListener('click',  () => mudarStatus(grupo.id!, 'aprovado'));
+    btnRejeitar.addEventListener('click', () => mudarStatus(grupo.id!, 'rejeitado'));
+
+    listaEl.appendChild(clone);
+  }
+
+  async function mudarStatus(id: string, novoStatus: 'aprovado' | 'rejeitado') {
+    try {
+      const res = await fetch('/api/updateGrupoStatus.json', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id, status: novoStatus }),
+      });
+      if (!res.ok) throw new Error('Erro na API');
+      carregarGrupos(abaAtual);
+      atualizarBadge();
+    } catch (e) {
+      alert('Erro: ' + (e instanceof Error ? e.message : String(e)));
+    }
+  }
+</script>

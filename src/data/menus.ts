@@ -26,12 +26,17 @@ export const menuMain: MainMenuItem[] = [
 			{ id: "maintenance", label: "Maintenance", url: "/services/maintenance" },
 			{ id: "car-sales", label: "Car Sales", url: "/services/car-sales" },
 		],
-	},
-	{
-		id: "blog",
-		label: "Blog",
-		url: "/blog",
-	},
+	},        {
+                id: "grupos",
+                label: "Grupos",
+                url: "/grupos",
+                submenu: [{ id: "enviar", label: "Enviar grupo", url: "/grupos/enviar" }],
+        },
+        {
+                id: "blog",
+                label: "Blog",
+                url: "/blog",
+        },
 ];
 
 export const menuNavigation: MenuNavigation = {
@@ -137,3 +142,4 @@ export const menuLegal: MenuNavigation = {
 		},
 	],
 };
+

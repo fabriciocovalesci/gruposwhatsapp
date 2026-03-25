@@ -1,0 +1,131 @@
+---
+import { categoriasPorGrupo } from '~/lib/categorias';
+---
+
+<!-- Etapa 1: formulario -->
+<div id="etapa-1">
+  <form id="form-enviar" novalidate>
+    <div class="grid grid-cols-1 gap-6">
+
+      <div>
+        <label for="nome">Nome do grupo *</label>
+        <input id="nome" name="nome" type="text" placeholder="Ex: Programadores Brasil" required />
+      </div>
+
+      <div>
+        <label for="descricao">Descrição *</label>
+        <textarea id="descricao" name="descricao" rows="3" placeholder="Descreva o objetivo do grupo..." required></textarea>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div>
+          <label for="categoria">Categoria *</label>
+          <select id="categoria" name="categoria" required>
+            <option value="">Selecione...</option>
+            {categoriasPorGrupo.map(g => (
+              <optgroup label={g.grupo}>
+                {g.items.map(cat => <option value={cat.slug}>{cat.label}</option>)}
+              </optgroup>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label for="tipo">Tipo *</label>
+          <select id="tipo" name="tipo" required>
+            <option value="">Selecione...</option>
+            <option value="grupo">Grupo</option>
+            <option value="canal">Canal</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label for="link">Link de convite *</label>
+        <input id="link" name="link" type="url" placeholder="https://chat.whatsapp.com/..." required />
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div>
+          <label for="membros">Nº de membros (opcional)</label>
+          <input id="membros" name="membros" type="number" min="1" placeholder="Ex: 500" />
+        </div>
+        <div>
+          <label for="foto">URL da foto (opcional)</label>
+          <input id="foto" name="foto" type="url" placeholder="https://..." />
+        </div>
+      </div>
+
+      <div>
+        <label for="email">Seu e-mail *</label>
+        <input id="email" name="email" type="email" placeholder="seu@email.com" required />
+        <p class="text-sm text-gray-400 mt-1">Usado apenas para contato se necessário. Não será publicado.</p>
+      </div>
+
+      <!-- Erro -->
+      <div id="erro-form" class="hidden bg-red-50 border border-red-200 rounded px-4 py-3 text-base text-red-700"></div>
+
+      <div>
+        <button type="submit" id="btn-enviar" class="button button-yellow w-full">
+          Enviar para análise
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<!-- Etapa 2: sucesso -->
+<div id="etapa-2" class="hidden text-center py-12">
+  <p class="text-6xl mb-6">🎉</p>
+  <h2 class="h4 mb-3">Grupo enviado com sucesso!</h2>
+  <p class="text-lg text-gray-600 mb-8">Seu grupo foi enviado e será analisado em breve. Obrigado por contribuir!</p>
+  <div class="flex gap-4 justify-center">
+    <a href="/grupos" class="button button-yellow">Ver grupos</a>
+    <button id="btn-novo" class="button button-black">Enviar outro</button>
+  </div>
+</div>
+
+<script>
+  import { actions } from 'astro:actions';
+
+  document.addEventListener('astro:page-load', () => {
+    const form      = document.getElementById('form-enviar') as HTMLFormElement;
+    const etapa1    = document.getElementById('etapa-1')!;
+    const etapa2    = document.getElementById('etapa-2')!;
+    const btnEnviar = document.getElementById('btn-enviar') as HTMLButtonElement;
+    const erroEl    = document.getElementById('erro-form')!;
+    const btnNovo   = document.getElementById('btn-novo')!;
+
+    btnNovo.addEventListener('click', () => {
+      form.reset();
+      etapa2.classList.add('hidden');
+      etapa1.classList.remove('hidden');
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      erroEl.classList.add('hidden');
+      btnEnviar.disabled = true;
+      btnEnviar.textContent = 'Enviando...';
+
+      const { error } = await actions.grupos.enviar(new FormData(form));
+
+      if (error) {
+        // Exibe a mensagem de validação do servidor (Zod) ou erro genérico
+        const msg = error.fields
+          ? Object.values(error.fields).flat().join(' ') 
+          : 'Erro ao enviar. Tente novamente.';
+        erroEl.textContent = msg;
+        erroEl.classList.remove('hidden');
+        btnEnviar.disabled = false;
+        btnEnviar.textContent = 'Enviar para análise';
+        return;
+      }
+
+      etapa1.classList.add('hidden');
+      etapa2.classList.remove('hidden');
+      btnEnviar.disabled = false;
+      btnEnviar.textContent = 'Enviar para análise';
+    });
+  });
+</script>
