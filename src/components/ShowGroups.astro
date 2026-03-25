@@ -1,0 +1,30 @@
+---
+import type { Grupo } from "~/lib/grupos";
+import GroupCard from "./GroupCard.astro";
+
+interface Props {
+    grupos: Grupo[];
+}
+
+const { grupos } = Astro.props;
+---
+
+{
+    grupos.length === 0 ? (
+        <div class="text-center py-16 bg-white rounded-2xl shadow-sm border border-gray-100 mt-8">
+            <p class="text-5xl mb-4">📭</p>
+            <h3 class="text-xl font-bold text-gray-900">
+                Nenhum grupo encontrado
+            </h3>
+            <p class="text-gray-500 mt-2">
+                Seja o primeiro a enviar um grupo para esta categoria!
+            </p>
+        </div>
+    ) : (
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+            {grupos.map((grupo) => (
+                <GroupCard grupo={grupo} />
+            ))}
+        </div>
+    )
+}

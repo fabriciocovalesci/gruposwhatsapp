@@ -1,0 +1,104 @@
+---
+import type { Grupo } from "~/lib/grupos";
+import { getLabelCategoria } from "~/lib/categorias";
+
+interface Props {
+    grupo: Grupo;
+}
+
+const { grupo } = Astro.props;
+
+const avatarUrl =
+    grupo.foto ??
+    `https://ui-avatars.com/api/?name=${encodeURIComponent(
+        grupo.nome?.slice(0, 2) ?? "G"
+    )}&background=${
+        grupo.tipo === "canal" ? "25D366" : "128C7E"
+    }&color=fff&size=128&bold=true&rounded=true`;
+
+const categoriaLabel = getLabelCategoria(grupo.categoria) || grupo.categoria;
+---
+
+<div
+    class="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden hover:shadow-2xl hover:-translate-y-1 transition-all group flex flex-col h-full"
+>
+    <div class="p-6 flex-1">
+        <div class="flex items-center gap-4 mb-5">
+            <div class="relative">
+                <img
+                    src={avatarUrl}
+                    alt={grupo.nome}
+                    class="w-16 h-16 rounded-3xl object-cover border-2 border-gray-50 flex-shrink-0 group-hover:scale-110 transition-transform duration-500 shadow-sm"
+                />
+                <div
+                    class={`absolute -bottom-1 -right-1 size-5 rounded-full border-2 border-white ${
+                        grupo.tipo === "canal" ? "bg-[#25D366]" : "bg-teal-500"
+                    } shadow-sm`}
+                >
+                </div>
+            </div>
+            <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-1">
+                    <span
+                        class={`text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-lg ${
+                            grupo.tipo === "canal"
+                                ? "bg-green-100 text-[#075E54]"
+                                : "bg-teal-100 text-teal-900"
+                        }`}
+                    >
+                        {grupo.tipo}
+                    </span>
+                    <span
+                        class="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-lg bg-gray-100 text-gray-500"
+                    >
+                        {categoriaLabel}
+                    </span>
+                </div>
+                <h3
+                    class="font-black text-gray-950 text-xl truncate group-hover:text-[#25D366] transition-colors leading-tight"
+                >
+                    {grupo.nome}
+                </h3>
+            </div>
+        </div>
+
+        <p
+            class="text-gray-500 font-medium line-clamp-3 text-sm leading-relaxed mb-2"
+        >
+            {grupo.descricao}
+        </p>
+    </div>
+
+    <div class="px-6 pb-6 mt-auto">
+        <a
+            href={grupo.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="w-full inline-flex items-center justify-center gap-2 px-6 py-4 text-base font-black text-white bg-[#25D366] rounded-2xl hover:bg-[#075E54] transition-all shadow-lg hover:shadow-[#25D366]/30 active:scale-95 group-hover:bg-[#075E54]"
+        >
+            <span>Participar</span>
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5 group-hover:translate-x-1 transition-transform"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="3"
+                    d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+            </svg>
+        </a>
+
+        <div class="mt-4 flex justify-center">
+            <a
+                href={`/categorias/${grupo.categoria}`}
+                class="text-[11px] font-black text-gray-400 uppercase tracking-widest hover:text-[#25D366] transition-colors"
+            >
+                Ver mais {categoriaLabel}
+            </a>
+        </div>
+    </div>
+</div>

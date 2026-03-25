@@ -16,7 +16,7 @@ interface Props {
 }
 ---
 
-<!doctype html>
+<!DOCTYPE html>
 <html lang={siteLang}>
 	<head>
 		<meta charset="utf-8" />
@@ -26,10 +26,19 @@ interface Props {
 		{noindex && <meta name="robots" content="noindex,nofollow" />}
 		<link rel="author" href="humans.txt" />
 
-		<link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+		<link
+			rel="icon"
+			type="image/png"
+			href="/favicon-96x96.png"
+			sizes="96x96"
+		/>
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="shortcut icon" href="/favicon.ico" />
-		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+		<link
+			rel="apple-touch-icon"
+			sizes="180x180"
+			href="/apple-touch-icon.png"
+		/>
 		<meta name="apple-mobile-web-app-title" content={siteName} />
 		<!-- <link rel="manifest" href="/site.webmanifest" /> -->
 
@@ -48,6 +57,7 @@ interface Props {
 		<!-- <meta name="twitter:image" content={`${baseUrl}/images/og-image.jpg`} /> -->
 
 		<title>{pageTitle}</title>
+
 		<ClientRouter />
 	</head>
 	<body>
@@ -56,11 +66,10 @@ interface Props {
 			<slot />
 		</main>
 		<Footer />
+		<script>
+			document.addEventListener("astro:after-swap", () => {
+				scrollTo({ top: history.state.scrollY, behavior: "instant" });
+			});
+		</script>
 	</body>
 </html>
-
-<script>
-	document.addEventListener("astro:after-swap", () => {
-		scrollTo({ top: history.state.scrollY, behavior: "instant" });
-	});
-</script>

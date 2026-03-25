@@ -3,116 +3,63 @@ import type { MainMenuItem, MenuNavigation } from "~/types";
 export const menuMain: MainMenuItem[] = [
 	{
 		id: "home",
-		label: "Home",
+		label: "Início",
 		url: "/",
 	},
 	{
-		id: "cars",
-		label: "Cars",
-		url: "/cars",
+		id: "categorias",
+		label: "Categorias",
+		url: "/categorias",
 	},
 	{
-		id: "about",
-		label: "About",
-		url: "/about-us",
-		submenu: [{ id: "testimonials", label: "Testimonials", url: "/about-us/testimonials" }],
+		id: "enviar-grupo",
+		label: "Enviar Grupo",
+		url: "/enviar-grupo",
 	},
-	{
-		id: "services",
-		label: "Services",
-		url: "/services",
-		submenu: [
-			{ id: "repairs", label: "Repairs", url: "/services/repairs" },
-			{ id: "maintenance", label: "Maintenance", url: "/services/maintenance" },
-			{ id: "car-sales", label: "Car Sales", url: "/services/car-sales" },
-		],
-	},        {
-                id: "grupos",
-                label: "Grupos",
-                url: "/grupos",
-                submenu: [{ id: "enviar", label: "Enviar grupo", url: "/grupos/enviar" }],
-        },
-        {
-                id: "blog",
-                label: "Blog",
-                url: "/blog",
-        },
 ];
 
 export const menuNavigation: MenuNavigation = {
-	prettyName: "Navigation",
+	prettyName: "Navegação",
 	items: [
 		{
-			name: "Home",
+			name: "Início",
 			url: "/",
 		},
 		{
-			name: "Cars",
-			url: "/cars",
+			name: "Categorias",
+			url: "/categorias",
 		},
 		{
-			name: "About Us",
-			url: "/about-us",
-		},
-		{
-			name: "Services",
-			url: "/services",
-		},
-		{
-			name: "Blog",
-			url: "/blog",
+			name: "Enviar Grupo",
+			url: "/enviar-grupo",
 		},
 	],
 };
 
 export const menuService: MenuNavigation = {
-	prettyName: "Service",
+	prettyName: "Utilidades",
 	items: [
 		{
-			name: "Home",
-			url: "/",
+			name: "Como criar grupo",
+			url: "/#como-criar",
 		},
 		{
-			name: "Cars",
-			url: "/cars",
+			name: "Como entrar",
+			url: "/#como-entrar",
 		},
 		{
-			name: "About Us",
-			url: "/about-us",
-		},
-		{
-			name: "Services",
-			url: "/services",
-		},
-		{
-			name: "Blog",
-			url: "/blog",
+			name: "Como sair",
+			url: "/#como-sair",
 		},
 	],
 };
 
 export const menuMisc: MenuNavigation = {
-	prettyName: "Miscellaneous",
+	prettyName: "Mais",
 	items: [
 		{
-			name: "Home",
-			url: "/",
-		},
-		{
-			name: "Cars",
-			url: "/cars",
-		},
-		{
-			name: "About Us",
-			url: "/about-us",
-		},
-		{
-			name: "Services",
-			url: "/services",
-		},
-		{
-			name: "Blog",
-			url: "/blog",
+			name: "Contato",
+			url: "/contact",
 		},
 	],
 };
@@ -121,25 +68,12 @@ export const menuLegal: MenuNavigation = {
 	prettyName: "Legal",
 	items: [
 		{
-			name: "Home",
-			url: "/",
+			name: "Termos de Uso",
+			url: "/termos",
 		},
 		{
-			name: "Cars",
-			url: "/cars",
-		},
-		{
-			name: "About Us",
-			url: "/about-us",
-		},
-		{
-			name: "Services",
-			url: "/services",
-		},
-		{
-			name: "Blog",
-			url: "/blog",
+			name: "Política de Privacidade",
+			url: "/privacidade",
 		},
 	],
 };
-

@@ -1,271 +1,271 @@
 ---
-import { Image } from "astro:assets";
 import Layout from "~/layouts/Layout.astro";
 import Section from "~/components/Section.astro";
 import Container from "~/components/Container.astro";
-import Button from "~/components/Button.astro";
-import Hero from "~/components/Hero.astro";
-import Faq from "~/components/Faq.astro";
 import Heading from "~/components/Heading.astro";
-import WidgetSearch from "~/components/WidgetSearch.astro";
-import Grid from "~/components/Grid.astro";
-import GridItem from "~/components/GridItem.astro";
-import ShowPosts from "~/components/ShowPosts.astro";
-import Team from "~/components/Team.astro";
-import Stats from "~/components/Stats.astro";
+import { getGruposAprovados, todasCategorias } from "~/lib/grupos";
+import ShowGroups from "~/components/ShowGroups.astro";
 
-// Images
-import ImageCarDealer from "~/assets/images/pexels-shkrabaanthony-7144179.jpg";
-import ImageHeadingBackground from "~/assets/images/pexels-jeshoots-com-147458-451590.jpg";
-import ShowCars from "~/components/ShowCars.astro";
-import ImageOne from "~/assets/images/pexels-leif-bergerson-99376750-9764731.webp";
-import ImageTwo from "~/assets/images/pexels-zenzazione-2922140.webp";
+// Obter grupos aprovados
+const grupos = await getGruposAprovados();
+
+// Mostrar os últimos 12 grupos na home
+const latestGrupos = grupos.slice(0, 12);
 ---
 
-<Layout pageTitle="Home">
-	{/* Main Heading */}
-	<Section class:list={"relative"}>
-		<Image
-			src={ImageHeadingBackground}
-			alt="Heading background"
-			class:list={"absolute inset-0 w-full h-full object-cover"}
-		/>
-		<div class="absolute inset-0 w-full h-full object-cover bg-gray-800/80"></div>
-		<Container class:list={"relative z-10"}>
-			<Heading class:list={"prose-invert max-w-4xl"}>
-				<h1 slot="heading-title" class="mb-0 lg:text-7xl text-balance">
-					Find your next car in our exclusive collection
+<Layout
+	pageTitle="GruposWhats.app - Links de Grupos de WhatsApp"
+	description="Encontre os melhores links de grupos de WhatsApp, canais, namoro, amizade e muito mais. Mande seu grupo e consiga mais membros gratis!"
+>
+	{/* Hero Section - Matching Hyperdrive Soul */}
+	<Section
+		class:list={"bg-[#25D366] pt-16 pb-28 lg:pt-24 lg:pb-40 relative overflow-hidden"}
+	>
+		{/* Subtle overlays for dept (similar to original) */}
+		<div class="absolute inset-0 bg-black/5 mix-blend-overlay"></div>
+
+		<Container class="relative z-10">
+			<div class="max-w-4xl mx-auto text-center">
+				<h1
+					class="text-4xl lg:text-7xl font-bold text-white tracking-tight mb-8 leading-[1.1]"
+				>
+					Encontre agora os melhores <br class="hidden lg:block" />
+					<span class="text-gray-900/40">Grupos de WhatsApp</span>
 				</h1>
-				<p slot="heading-content">
-					Search for your next car here. We have a wide range of cars for sale. Browse through our collection
-					and find the perfect car that suits your needs and budget.
+				<p
+					class="text-lg lg:text-2xl text-white/90 mb-14 max-w-2xl mx-auto font-medium leading-relaxed"
+				>
+					Milhares de links ativos verificados para você entrar e
+					conversar. Navegue pelas categorias e ache sua nova
+					comunidade.
 				</p>
-			</Heading>
-			<WidgetSearch />
-		</Container>
-	</Section>
 
-	{/* Hero */}
-	<Section>
-		<Container>
-			<Hero>
-				<div slot="hero-left" class="prose lg:max-w-2xl">
-					<h2>Welcome to our car dealer!</h2>
-					<p>
-						Find your next car here. We have a wide range of cars for sale. Browse through our collection
-						and find the perfect car that suits your needs and budget.
-					</p>
-
-					<Button href="/cars" class:list={"mt-4"}>View all cars</Button>
-				</div>
-				<div slot="hero-right">
-					<Image src={ImageCarDealer} alt="Car dealer" />
-				</div>
-			</Hero>
-		</Container>
-	</Section>
-
-	{/* Grid */}
-	<Section>
-		<Container>
-			<Grid>
-				<GridItem image={ImageOne} imageAlt="Car dealer" span={2} link="/cars" As="a" xl>
-					<h2>Featured cars</h2>
-					<p>
-						Discover the ultimate driving experience with our exclusive collection of featured cars. Whether
-						you're looking for a sleek sports car, a reliable family vehicle, or an eco-friendly hybrid, we
-						have something for everyone. Our extensive inventory is carefully curated to ensure that you
-						find the perfect match for your lifestyle and budget.
-					</p>
-					<Button As="button" type="button" color="white-outline" class:list={"mt-4 group-hover:bg-white/10"}
-						>View all cars</Button
+				{/* Search Bar - Replicating Original Search Proportions */}
+				<div class="max-w-3xl mx-auto">
+					<form
+						action="/categorias"
+						method="get"
+						class="relative group"
 					>
-				</GridItem>
+						<div
+							class="flex flex-col md:flex-row gap-3 p-3 bg-white/10 backdrop-blur-md rounded-3xl lg:rounded-[2.5rem] border border-white/20 shadow-2xl"
+						>
+							<input
+								type="text"
+								name="search"
+								placeholder="Pesquise por nome, assunto ou categoria..."
+								class="flex-1 px-8 py-5 bg-white rounded-2xl lg:rounded-[2rem] text-lg shadow-sm border-none text-gray-800 font-semibold focus:ring-0"
+							/>
+							<button
+								type="submit"
+								class="bg-[#075E54] text-white px-10 py-5 rounded-2xl lg:rounded-[2rem] font-bold text-lg hover:bg-gray-900 transition-all flex items-center justify-center gap-2 shadow-lg active:scale-95"
+							>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									class="h-6 w-6"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke="currentColor"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="3"
+										d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+									></path>
+								</svg>
+								<span>Buscar Grupos</span>
+							</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</Container>
+	</Section>
 
-				<GridItem image={ImageTwo} imageAlt="Car dealer" link="/cars" As="a">
-					<h3>Featured cars</h3>
-					<p>
-						Discover the ultimate driving experience with our exclusive collection of featured cars. Whether
-						you're looking for a sleek sports car, a reliable family vehicle, or an eco-friendly hybrid, we
-						have something for everyone.
-					</p>
-					<Button As="button" type="button" color="white-outline" class:list={"mt-4 group-hover:bg-white/10"}
-						>View all cars</Button
+	{/* Quick Categories Slider */}
+	<div class="-mt-10 lg:-mt-12 relative z-20">
+		<Container>
+			<div
+				class="bg-white rounded-3xl shadow-xl border border-gray-100 p-3 lg:p-5 overflow-x-auto no-scrollbar"
+			>
+				<div class="flex items-center gap-3">
+					<div
+						class="hidden lg:flex items-center gap-2 px-4 border-r border-gray-100 flex-shrink-0"
 					>
-				</GridItem>
-
-				<GridItem>
-					<h3>Featured cars</h3>
-					<p>
-						Discover the ultimate driving experience with our exclusive collection of featured cars. Whether
-						you're looking for a sleek sports car, a reliable family vehicle, or an eco-friendly hybrid, we
-						have something for everyone.
-					</p>
-				</GridItem>
-			</Grid>
-		</Container>
-	</Section>
-
-	{/* Hero */}
-	<Section class:list={"bg-gray-50"}>
-		<Container>
-			<Hero invert>
-				<div slot="hero-left" class="prose lg:max-w-2xl">
-					<h2>Welcome to our car dealer!</h2>
-					<p>
-						Find your next car here. We have a wide range of cars for sale. Browse through our collection
-						and find the perfect car that suits your needs and budget.
-					</p>
+						<span
+							class="text-red-500 font-black text-lg animate-pulse"
+							>🔥</span
+						>
+						<span
+							class="text-xs font-bold text-gray-500 uppercase tracking-widest"
+							>Bombando:</span
+						>
+					</div>
+					{
+						todasCategorias.slice(0, 15).map((cat) => (
+							<a
+								href={`/categorias/${cat.slug}`}
+								class="px-6 py-3 bg-gray-50 hover:bg-[#E8F8F5] text-gray-700 hover:text-[#25D366] rounded-2xl text-sm font-bold border border-transparent transition-all flex-shrink-0"
+							>
+								{cat.label}
+							</a>
+						))
+					}
+					<a
+						href="/categorias"
+						class="px-6 py-3 text-[#25D366] font-bold text-sm whitespace-nowrap hover:underline"
+						>Ver todas as {todasCategorias.length} →</a
+					>
 				</div>
-				<div slot="hero-right">
-					<Image src={ImageCarDealer} alt="Car dealer" />
+			</div>
+		</Container>
+	</div>
+
+	{/* Últimos Grupos - Restored Clean Style */}
+	<Section class:list={"py-24 lg:py-36"}>
+		<Container>
+			<div
+				class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6"
+			>
+				<div class="max-w-2xl">
+					<span
+						class="text-[#25D366] font-bold uppercase tracking-[0.2em] text-xs mb-3 block"
+						>Atualização em tempo real</span
+					>
+					<h2
+						class="text-4xl lg:text-5xl font-bold text-gray-950 tracking-tight"
+					>
+						Melhores Links <span class="text-gray-400"
+							>Recentes</span
+						>
+					</h2>
 				</div>
-			</Hero>
+				<div>
+					<a
+						href="/categorias"
+						class="inline-flex items-center gap-2 px-10 py-4 bg-gray-50 text-gray-700 rounded-2xl font-bold hover:bg-gray-100 transition-all border border-gray-100 shadow-sm active:scale-95"
+					>
+						Ver Tudo
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="h-5 w-5"
+							viewBox="0 0 20 20"
+							fill="currentColor"
+						>
+							<path
+								fill-rule="evenodd"
+								d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+								clip-rule="evenodd"></path>
+						</svg>
+					</a>
+				</div>
+			</div>
+
+			<ShowGroups grupos={latestGrupos} />
 		</Container>
 	</Section>
 
-	{/* Cars */}
-	<Section class:list={"bg-blue-50"}>
-		<Container>
-			<Heading>
-				<h2 slot="heading-title" class="mb-0">Featured cars</h2>
-				<p slot="heading-content">
-					Search for your next car here. We have a wide range of cars for sale. Browse through our collection
-					and find the perfect car that suits your needs and budget.
+	{/* Call to Action - Clean & Premium */}
+	<Section class:list={"bg-gray-900 py-24 lg:py-48 relative overflow-hidden"}>
+		<div
+			class="absolute inset-0 bg-[#25D366] opacity-5 pointer-events-none"
+		>
+		</div>
+		<Container class="relative z-10">
+			<div class="text-center max-w-4xl mx-auto">
+				<span
+					class="inline-flex items-center px-4 py-1.5 rounded-full bg-[#25D366] text-white text-[10px] font-black uppercase tracking-widest mb-10 shadow-lg"
+					>Ganhe novos membros hoje</span
+				>
+				<h2
+					class="text-5xl lg:text-8xl font-bold text-white leading-[1.05] mb-10 tracking-tighter"
+				>
+					Turbine o seu <span class="text-[#25D366]">Link</span> Gratuitamente.
+				</h2>
+				<p
+					class="text-gray-400 text-xl lg:text-2xl mb-16 font-medium leading-relaxed max-w-2xl mx-auto"
+				>
+					Divulgue para milhares de pessoas que buscam novos grupos
+					diariamente. É 100% grátis e seguro.
 				</p>
-			</Heading>
-
-			<ShowCars slugs={["audi-tt-coupe", "porsche-911", "volkswagen-polo-gti"]} />
+				<a
+					href="/enviar-grupo"
+					class="inline-flex items-center justify-center px-12 py-6 text-xl lg:text-2xl font-bold text-gray-900 bg-[#25D366] rounded-3xl hover:bg-white transition-all shadow-2xl shadow-[#25D366]/20 active:scale-95"
+				>
+					Quero Cadastrar Meu Grupo
+				</a>
+			</div>
 		</Container>
 	</Section>
 
-	{/* Stats */}
-	<Section>
+	{/* FAQ with cleaner fonts */}
+	<Section class:list={"py-24 lg:py-40 bg-white"}>
 		<Container>
-			<Heading class:list={"text-center mx-auto"}>
-				<h2 slot="heading-title" class="text-balance">Why choose us?</h2>
-				<p slot="heading-content">
-					We are the leading car dealer in the country. With over 20 years of experience, we have helped
-					thousands of customers find their dream car.
-				</p>
-			</Heading>
-
-			<Stats
-				items={[
+			<div class="max-w-4xl mx-auto">
+				<div class="text-center mb-20">
+					<h2
+						class="text-4xl lg:text-6xl font-bold text-gray-950 tracking-tight"
+					>
+						Perguntas <span class="text-gray-400">Frequentes</span>
+					</h2>
+				</div>
+				<div class="grid gap-6">
 					{
-						title: "Cars in stock",
-						value: "259",
-						animateNumber: true,
-						animateFrom: 100,
-					},
-					{
-						title: "Satified customers",
-						value: "1088",
-						animateNumber: true,
-						animateFrom: 800,
-					},
-					{
-						title: "Experience",
-						value: "20+ years",
-					},
-				]}
-			/>
-		</Container>
-	</Section>
-
-	{/* CTA */}
-	<Section class:list={"bg-gradient-to-br from-gray-900 to-gray-700"}>
-		<Container>
-			<Heading class:list={"mb-0 lg:mb-0 prose-invert text-center mx-auto"}>
-				<h2 slot="heading-title">Can't find the ideal car?</h2>
-
-				<p slot="heading-content">
-					Our team is here to help you find the perfect car that suits your needs and budget. Whether you're
-					looking for a sleek sports car, a reliable family vehicle, or an eco-friendly hybrid, we have
-					something for everyone.
-				</p>
-
-				<Button href="/contact" color="white" class:list={"mt-8"}>Contact us</Button>
-			</Heading>
-		</Container>
-	</Section>
-
-	{/* Cars */}
-	<Section class:list={"bg-gray-50"}>
-		<Container>
-			<Heading>
-				<h2 slot="heading-title" class="mb-0">Recent cars</h2>
-				<p slot="heading-content">
-					Search for your next car here. We have a wide range of cars for sale. Browse through our collection
-					and find the perfect car that suits your needs and budget.
-				</p>
-			</Heading>
-
-			<ShowCars ui="grid" slugs={["audi-tt-coupe", "porsche-911", "volkswagen-polo-gti"]} />
-		</Container>
-	</Section>
-
-	{/* News */}
-	<Section>
-		<Container>
-			<Heading class:list={"max-w-3xl"}>
-				<h2 slot="heading-title">Latest news</h2>
-
-				<p slot="heading-content">
-					Stay up to date with the latest news and updates from our car dealer. Read our blog posts to learn
-					more about our featured cars, special offers, and industry news.
-				</p>
-			</Heading>
-
-			<ShowPosts />
-		</Container>
-	</Section>
-
-	{/* FAQ */}
-	<Section class:list={"bg-gray-50"}>
-		<Container>
-			<Heading class:list={"max-w-3xl mx-auto lg:text-center"}>
-				<h2 slot="heading-title">Welcome to our car dealer!</h2>
-
-				<p slot="heading-content">
-					Find your next car here. We have a wide range of cars for sale. Browse through our collection and
-					find the perfect car that suits your needs and budget.
-				</p>
-			</Heading>
-
-			<Faq
-				items={[
-					{
-						question: "What's the best thing about Switzerland?",
-						answer: "I don't know, but the flag is a big plus. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas cupiditate laboriosam fugiat.",
-					},
-					{
-						question: "What do you call a fake noodle?",
-						answer: "An impasta. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas cupiditate laboriosam fugiat.",
-					},
-					{
-						question: "What do you call a belt made out of watches?",
-						answer: "A waist of time. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas cupiditate laboriosam fugiat.",
-					},
-				]}
-			/>
-		</Container>
-	</Section>
-
-	{/* Team */}
-	<Section>
-		<Container>
-			<Heading class:list={"max-w-3xl mx-auto lg:text-center"}>
-				<h2 slot="heading-title">Our team</h2>
-
-				<p slot="heading-content">
-					Meet the team behind our car dealer. Our dedicated staff is here to help you find the perfect car
-					that suits your needs and budget. Whether you're looking for a sleek sports car, a reliable family
-					vehicle, or an eco-friendly hybrid, we have something for everyone.
-				</p>
-			</Heading>
-
-			<Team />
+						[
+							{
+								question: "O que é o GruposWhats.app?",
+								answer: "Nós somos o maior e mais seguro diretório de links de WhatsApp. Conectamos administradores de grupos com novos membros de forma gratuita e rápida.",
+							},
+							{
+								question: "Como entrar em um grupo?",
+								answer: "Basta escolher uma categoria, navegar pelos grupos e clicar no botão 'Participar'. O WhatsApp abrirá automaticamente para você confirmar a entrada.",
+							},
+							{
+								question: "É seguro usar o site?",
+								answer: "Sim! Todos os links enviados passam por uma triagem manual para garantir que não haja conteúdo proibido ou fraude, oferecendo uma experiência limpa para os usuários.",
+							},
+						].map((item) => (
+							<details class="group bg-gray-50 rounded-3xl p-8 cursor-pointer border border-transparent hover:border-gray-200 transition-all">
+								<summary class="flex justify-between items-center list-none">
+									<h3 class="text-xl lg:text-2xl font-bold text-gray-900 group-open:text-[#25D366] transition-colors">
+										{item.question}
+									</h3>
+									<div class="bg-white rounded-full p-2 shadow-sm group-open:rotate-180 transition-transform">
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											class="h-6 w-6 text-gray-400"
+											fill="none"
+											viewBox="0 0 24 24"
+											stroke="currentColor"
+										>
+											<path
+												stroke-linecap="round"
+												stroke-linejoin="round"
+												stroke-width="2"
+												d="M19 9l-7 7-7-7"
+											/>
+										</svg>
+									</div>
+								</summary>
+								<div class="mt-8 text-gray-500 text-lg leading-relaxed font-medium">
+									{item.answer}
+								</div>
+							</details>
+						))
+					}
+				</div>
+			</div>
 		</Container>
 	</Section>
 </Layout>
+
+<style>
+	.no-scrollbar::-webkit-scrollbar {
+		display: none;
+	}
+	.no-scrollbar {
+		-ms-overflow-style: none;
+		scrollbar-width: none;
+	}
+</style>

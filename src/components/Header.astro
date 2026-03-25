@@ -2,68 +2,222 @@
 import { menuMain } from "~/data/menus";
 import IconLogo from "~/assets/images/icons/logo.svg";
 import { siteName } from "~/data/config";
+import { categoriasPorGrupo } from "~/lib/categorias";
+
 const rmTrailingSlash = (path: string): string => {
-	return path.endsWith("/") && path.length > 1 ? path.slice(0, path.length - 1) : path;
+	return path.endsWith("/") && path.length > 1
+		? path.slice(0, path.length - 1)
+		: path;
 };
 
 const pathname = rmTrailingSlash(Astro.url.pathname);
 ---
 
-<header>
-	<section class="bg-yellow-200">
-		<div class="container py-4 lg:py-8">
+<header class="sticky top-0 z-50">
+	<section class="bg-[#25D366] text-white">
+		<div class="container py-3 lg:py-6">
 			<div class="flex justify-between items-center gap-x-4">
-				<a href="/">
-					<div class="flex items-center gap-x-2">
-						<IconLogo class="h-5 lg:h-8 inline-block" />
-						<span class="font-bold text-2xl lg:text-4xl">{siteName}</span>
+				<a
+					href="/"
+					class="transition-transform hover:scale-105 active:scale-95 flex-shrink-0"
+				>
+					<div class="flex items-center gap-x-3">
+						<div class="bg-white p-1.5 rounded-xl shadow-sm">
+							<IconLogo class="h-8 lg:h-9" />
+						</div>
+						<span
+							class="font-bold text-xl lg:text-3xl tracking-tight hidden lg:block"
+							>{siteName}
+						</span>
 					</div>
 				</a>
 
-				<nav class="max-lg:hidden" role="navigation" aria-label="Main Navigation">
-					<div class="flex lg:gap-x-12 items-center">
+				{/* Mobile Buttons - Center (New) */}
+				<div
+					class="lg:hidden flex items-center gap-2 flex-1 justify-center"
+				>
+					<a
+						href="/enviar-grupo"
+						class="bg-white text-[#075E54] px-3 py-1.5 rounded-lg font-bold text-[10px] uppercase border border-white shadow-sm"
+					>
+						Enviar Grupo
+					</a>
+					<a
+						href="/categorias"
+						class="bg-[#075E54]/20 text-white px-3 py-1.5 rounded-lg border border-white/30 font-bold text-[10px] uppercase"
+					>
+						Categorias
+					</a>
+				</div>
+
+				{/* Desktop Nav */}
+				<nav
+					class="max-lg:hidden"
+					role="navigation"
+					aria-label="Main Navigation"
+				>
+					<div class="flex lg:gap-x-10 items-center">
 						{
 							menuMain.map((item) => (
 								<div class="relative group">
 									<a
 										href={item.url}
-										class={`border-b-2 transition border-transparent ${pathname === item.url ? "font-bold" : "hover:border-gray-800 font-medium"}`}
-										aria-haspopup={item.submenu ? "true" : "false"}
-										aria-expanded={item.submenu ? "false" : undefined}
+										class={`pb-1 transition-all border-b-2 ${
+											pathname === item.url
+												? "border-white font-bold"
+												: "border-transparent hover:border-white/50 font-semibold"
+										}`}
 									>
 										{item.label}
 									</a>
-									{item.submenu && (
-										<div
-											class="absolute top-full -mt-4 pt-4 -left-4 z-50 translate-y-4 w-screen max-w-52 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-300"
-											role="menu"
-										>
-											<div
-												class="bg-white rounded-lg ring-1 shadow-md ring-gray-900/5 overflow-hidden"
-												role="menu"
-												aria-label={`Submenu for ${item.label}`}
-											>
-												{item.submenu.map((subItem) => (
-													<a
-														href={subItem.url}
-														class={`block px-4 py-3 text-base hover:bg-gray-100 ${
-															pathname === subItem.url ? "font-bold" : "font-medium"
-														}`}
-														role="menuitem"
-													>
-														{subItem.label}
-													</a>
-												))}
-											</div>
-										</div>
-									)}
 								</div>
 							))
 						}
-						<a href="/contact" class="button button-black ml-8">Contact</a>
+						<a
+							href="/enviar-grupo"
+							class="bg-white text-[#075E54] px-6 py-2.5 rounded-full font-bold text-sm shadow-md hover:bg-gray-50 transition-colors"
+							>Enviar Grupo</a
+						>
 					</div>
 				</nav>
+
+				{/* Mobile Toggle */}
+				<button
+					id="mobile-menu-toggle"
+					class="lg:hidden p-2 text-white bg-black/10 rounded-lg"
+					aria-label="Menu"
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="h-6 w-6"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2.5"
+							d="M4 6h16M4 12h16m-7 6h7"></path>
+					</svg>
+				</button>
 			</div>
 		</div>
 	</section>
+
+	{/* Mobile Overlay Menu */}
+	<div
+		id="mobile-menu"
+		class="fixed inset-0 z-50 bg-white translate-x-full transition-transform duration-300 lg:hidden overflow-y-auto"
+	>
+		<div class="p-6">
+			<div class="flex justify-between items-center mb-10">
+				<span class="font-black text-2xl text-[#25D366]"
+					>{siteName}
+				</span>
+				<button
+					id="mobile-menu-close"
+					class="p-2 text-gray-500 hover:bg-gray-100 rounded-full transition-colors"
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="h-7 w-7"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2.5"
+							d="M6 18L18 6M6 6l12 12"></path>
+					</svg>
+				</button>
+			</div>
+
+			<nav class="space-y-8">
+				<div>
+					<h3
+						class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4"
+					>
+						Navegação
+					</h3>
+					<div class="space-y-4">
+						{
+							menuMain.map((item) => (
+								<a
+									href={item.url}
+									class="block text-xl font-bold text-gray-800 hover:text-[#25D366]"
+								>
+									{item.label}
+								</a>
+							))
+						}
+						<a
+							href="/enviar-grupo"
+							class="block w-full text-center bg-[#25D366] text-white py-4 rounded-2xl font-bold text-lg shadow-lg"
+						>
+							Enviar Meu Grupo
+						</a>
+					</div>
+				</div>
+
+				<div>
+					<h3
+						class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4"
+					>
+						Categorias
+					</h3>
+					<div class="grid grid-cols-1 gap-1">
+						{
+							categoriasPorGrupo.map((grupo) => (
+								<div class="mb-4">
+									<h4 class="text-sm font-bold text-gray-800 mb-2 py-1 border-b border-gray-100">
+										{grupo.grupo}
+									</h4>
+									<div class="flex flex-wrap gap-2 pt-1">
+										{grupo.items.map((cat) => (
+											<a
+												href={`/categorias/${cat.slug}`}
+												class="px-3 py-1.5 bg-gray-50 text-gray-600 rounded-lg text-sm font-medium hover:bg-[#E8F8F5] hover:text-[#25D366]"
+											>
+												{cat.label}
+											</a>
+										))}
+									</div>
+								</div>
+							))
+						}
+					</div>
+				</div>
+			</nav>
+		</div>
+	</div>
 </header>
+
+<script>
+	const toggle = document.getElementById("mobile-menu-toggle");
+	const close = document.getElementById("mobile-menu-close");
+	const menu = document.getElementById("mobile-menu");
+
+	if (toggle && close && menu) {
+		toggle.addEventListener("click", () => {
+			menu.classList.remove("translate-x-full");
+			document.body.style.overflow = "hidden";
+		});
+
+		close.addEventListener("click", () => {
+			menu.classList.add("translate-x-full");
+			document.body.style.overflow = "";
+		});
+
+		// Close menu on link clicks
+		const links = menu.querySelectorAll("a");
+		links.forEach((link) => {
+			link.addEventListener("click", () => {
+				menu.classList.add("translate-x-full");
+				document.body.style.overflow = "";
+			});
+		});
+	}
+</script>

@@ -27,20 +27,30 @@ export async function getGruposAprovados(): Promise<Grupo[]> {
   const q = query(
     collection(db, 'grupos'),
     where('status', '==', 'aprovado'),
-    orderBy('criadoEm', 'desc'),
   );
   const snap = await getDocs(q);
-  return snap.docs.map(d => ({ id: d.id, ...d.data() } as Grupo));
+  return snap.docs
+    .map(d => ({ id: d.id, ...d.data() } as Grupo))
+    .sort((a: any, b: any) => {
+      const timeA = a.criadoEm?.seconds || 0;
+      const timeB = b.criadoEm?.seconds || 0;
+      return timeB - timeA;
+    });
 }
 
 export async function getGruposPorStatus(status: string): Promise<Grupo[]> {
   const q = query(
     collection(db, 'grupos'),
     where('status', '==', status),
-    orderBy('criadoEm', 'desc'),
   );
   const snap = await getDocs(q);
-  return snap.docs.map(d => ({ id: d.id, ...d.data() } as Grupo));
+  return snap.docs
+    .map(d => ({ id: d.id, ...d.data() } as Grupo))
+    .sort((a: any, b: any) => {
+      const timeA = a.criadoEm?.seconds || 0;
+      const timeB = b.criadoEm?.seconds || 0;
+      return timeB - timeA;
+    });
 }
 
 export async function atualizarStatus(id: string, status: 'aprovado' | 'rejeitado') {

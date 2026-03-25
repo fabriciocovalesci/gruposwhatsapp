@@ -21,6 +21,7 @@
 }
 
 @layer base {
+
 	input,
 	textarea,
 	select {
@@ -240,7 +241,7 @@ p {
 	@apply font-bold;
 }
 
-section.bg-white + section.bg-white > .container {
+section.bg-white+section.bg-white>.container {
 	@apply pt-0;
 }
 
@@ -277,10 +278,12 @@ section.bg-white + section.bg-white > .container {
 	@apply appearance-none touch-manipulation inline-flex items-center justify-center cursor-pointer border-0 p-0 m-0 bg-transparent size-6 rounded-full;
 	-webkit-tap-highlight-color: transparent;
 }
+
 .embla-testimonials .embla__dot:after {
 	content: "";
 	@apply size-3 rounded-full flex items-center bg-gray-200;
 }
+
 .embla-testimonials .embla__dot--selected:after {
 	content: "";
 	@apply bg-gray-500;
@@ -363,6 +366,7 @@ footer {
 	font-weight: 300;
 	src: url("/fonts/inter/inter-v18-latin-300.woff2") format("woff2");
 }
+
 /* inter-300italic - latin */
 @font-face {
 	font-display: swap;
@@ -371,6 +375,7 @@ footer {
 	font-weight: 300;
 	src: url("/fonts/inter/inter-v18-latin-300italic.woff2") format("woff2");
 }
+
 /* inter-regular - latin */
 @font-face {
 	font-display: swap;
@@ -379,6 +384,7 @@ footer {
 	font-weight: 400;
 	src: url("/fonts/inter/inter-v18-latin-regular.woff2") format("woff2");
 }
+
 /* inter-italic - latin */
 @font-face {
 	font-display: swap;
@@ -387,6 +393,7 @@ footer {
 	font-weight: 400;
 	src: url("/fonts/inter/inter-v18-latin-italic.woff2") format("woff2");
 }
+
 /* inter-500 - latin */
 @font-face {
 	font-display: swap;
@@ -395,6 +402,7 @@ footer {
 	font-weight: 500;
 	src: url("/fonts/inter/inter-v18-latin-500.woff2") format("woff2");
 }
+
 /* inter-500italic - latin */
 @font-face {
 	font-display: swap;
@@ -403,6 +411,7 @@ footer {
 	font-weight: 500;
 	src: url("/fonts/inter/inter-v18-latin-500italic.woff2") format("woff2");
 }
+
 /* inter-600 - latin */
 @font-face {
 	font-display: swap;
@@ -411,6 +420,7 @@ footer {
 	font-weight: 600;
 	src: url("/fonts/inter/inter-v18-latin-600.woff2") format("woff2");
 }
+
 /* inter-600italic - latin */
 @font-face {
 	font-display: swap;
@@ -419,6 +429,7 @@ footer {
 	font-weight: 600;
 	src: url("/fonts/inter/inter-v18-latin-600italic.woff2") format("woff2");
 }
+
 /* inter-700 - latin */
 @font-face {
 	font-display: swap;
@@ -427,6 +438,7 @@ footer {
 	font-weight: 700;
 	src: url("/fonts/inter/inter-v18-latin-700.woff2") format("woff2");
 }
+
 /* inter-700italic - latin */
 @font-face {
 	font-display: swap;
@@ -435,6 +447,7 @@ footer {
 	font-weight: 700;
 	src: url("/fonts/inter/inter-v18-latin-700italic.woff2") format("woff2");
 }
+
 /* inter-900 - latin */
 @font-face {
 	font-display: swap;
@@ -443,6 +456,7 @@ footer {
 	font-weight: 900;
 	src: url("/fonts/inter/inter-v18-latin-900.woff2") format("woff2");
 }
+
 /* inter-900italic - latin */
 @font-face {
 	font-display: swap;

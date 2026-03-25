@@ -1,0 +1,97 @@
+---
+import Layout from "~/layouts/Layout.astro";
+import Section from "~/components/Section.astro";
+import Container from "~/components/Container.astro";
+import { getGruposAprovados, todasCategorias, type Grupo } from "~/lib/grupos";
+import ShowGroups from "~/components/ShowGroups.astro";
+
+const url = new URL(Astro.request.url);
+const searchQuery = url.searchParams.get("search")?.toLowerCase() || "";
+
+let searchResults: Grupo[] = [];
+if (searchQuery) {
+    const todosGrupos = await getGruposAprovados();
+    searchResults = todosGrupos.filter((g) => 
+        g.nome.toLowerCase().includes(searchQuery) || 
+        g.descricao.toLowerCase().includes(searchQuery) ||
+        g.categoria.toLowerCase().includes(searchQuery)
+    );
+}
+
+const pageTitle = searchQuery 
+    ? `Resultados para "${searchQuery}" - GruposWhats.app`
+    : "Categorias de Grupos de WhatsApp - GruposWhats.app";
+---
+
+<Layout
+    pageTitle={pageTitle}
+    description="Navegue por todas as categorias e encontre seu grupo de WhatsApp ideal. Amizade, namoro, figurinhas, jogos e muito mais."
+>
+    <Section class:list={"bg-gray-50 py-12 lg:py-24 min-h-[80vh]"}>
+        <Container>
+            {searchQuery ? (
+                <div class="mb-12">
+                   <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
+                        <div>
+                            <span class="text-[#25D366] font-black uppercase tracking-[0.2em] text-xs mb-3 block">Busca Realizada</span>
+                            <h1 class="text-3xl lg:text-5xl font-black text-gray-950 tracking-tighter">
+                                {searchResults.length} Resultados para <span class="text-[#25D366]">"{searchQuery}"</span>
+                            </h1>
+                        </div>
+                        <a href="/" class="text-sm font-black text-gray-400 uppercase tracking-widest hover:text-gray-950 transition-colors flex items-center gap-2">
+                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                            </svg>
+                            Voltar para Home
+                        </a>
+                   </div>
+                   
+                   <ShowGroups grupos={searchResults} />
+                   
+                   {searchResults.length === 0 && (
+                        <div class="text-center py-24 bg-white rounded-[3rem] border-2 border-dashed border-gray-200 mt-12">
+                             <p class="text-6xl mb-6">🔍</p>
+                             <h3 class="text-2xl font-black text-gray-900 mb-2">Poxa, nada por aqui!</h3>
+                             <p class="text-gray-500 font-medium mb-10">Não encontramos nenhum grupo com esse nome. Tente outras palavras ou navegue nas categorias.</p>
+                             <a href="/categorias" class="inline-flex items-center px-8 py-4 bg-[#25D366] text-white rounded-2xl font-black hover:bg-[#075E54] transition-all shadow-lg active:scale-95">
+                                Ver Todas as Categorias
+                             </a>
+                        </div>
+                   )}
+                </div>
+            ) : (
+                <div class="text-center mb-16">
+                    <span class="text-[#25D366] font-black uppercase tracking-[0.2em] text-xs mb-3 block">Diretório Completo</span>
+                    <h1 class="text-4xl lg:text-6xl font-black text-gray-950 mb-6 tracking-tighter">
+                        Categorias de <span class="text-[#25D366]">Grupos</span>
+                    </h1>
+                    <p class="text-lg lg:text-xl text-gray-500 max-w-2xl mx-auto font-medium leading-relaxed">
+                        Explore nosso catálogo organizado e encontre as melhores comunidades ativas para participar agora.
+                    </p>
+                </div>
+
+                <div
+                    class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 lg:gap-6"
+                >
+                    {
+                        todasCategorias.map((cat) => (
+                            <a
+                                href={`/categorias/${cat.slug}`}
+                                class="bg-white p-6 lg:p-8 rounded-[2rem] shadow-sm border border-transparent hover:border-[#25D366]/20 hover:shadow-2xl hover:shadow-[#25D366]/10 hover:-translate-y-1 transition-all text-center group"
+                            >
+                                <div class="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-[#E8F8F5] transition-all duration-500 transform group-hover:rotate-6">
+                                    <span class="text-2xl font-black text-gray-400 group-hover:text-[#25D366] transition-colors">
+                                        {cat.label.charAt(0)}
+                                    </span>
+                                </div>
+                                <h3 class="font-black text-gray-950 text-base group-hover:text-[#25D366] transition-colors leading-tight truncate">
+                                    {cat.label}
+                                </h3>
+                            </a>
+                        ))
+                    }
+                </div>
+            )}
+        </Container>
+    </Section>
+</Layout>
