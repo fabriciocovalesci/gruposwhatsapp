@@ -465,3 +465,10 @@ footer {
 	font-weight: 900;
 	src: url("/fonts/inter/inter-v18-latin-900italic.woff2") format("woff2");
 }
+
+@utility colored-icon {
+	mask-size: contain;
+	mask-repeat: no-repeat;
+	mask-position: center;
+	mask-image: var(--icon-url);
+}

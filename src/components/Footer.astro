@@ -1,8 +1,8 @@
 ---
 import { siteName } from "~/data/config";
+import iconUsers from "~/assets/images/icons/social-media/grupo-de-usuarios.png";
 import { menuNavigation, menuMisc, menuService, menuLegal } from "~/data/menus";
 import NewsletterFooter from "./forms/NewsletterFooter.astro";
-import IconLogo from "~/assets/images/icons/logo.svg";
 import SocialMediaIcons from "./SocialMediaIcons.astro";
 const year = new Date().getFullYear();
 ---
@@ -19,7 +19,11 @@ const year = new Date().getFullYear();
 						<div
 							class="bg-gray-50 p-2 rounded-2xl shadow-sm border border-gray-100"
 						>
-							<IconLogo class="h-8" />
+							<div
+								class="colored-icon size-8 bg-[#25D366]"
+								style={`--icon-url: url(${iconUsers.src})`}
+							>
+							</div>
 						</div>
 						<span
 							class="font-black text-2xl lg:text-3xl text-gray-950 tracking-tighter"

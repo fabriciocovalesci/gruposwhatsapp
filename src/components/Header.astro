@@ -1,6 +1,6 @@
 ---
 import { menuMain } from "~/data/menus";
-import IconLogo from "~/assets/images/icons/logo.svg";
+import iconUsers from "~/assets/images/icons/social-media/grupo-de-usuarios.png";
 import { siteName } from "~/data/config";
 import { categoriasPorGrupo } from "~/lib/categorias";
 
@@ -23,7 +23,11 @@ const pathname = rmTrailingSlash(Astro.url.pathname);
 				>
 					<div class="flex items-center gap-x-3">
 						<div class="bg-white p-1.5 rounded-xl shadow-sm">
-							<IconLogo class="h-8 lg:h-9" />
+							<div
+								class="colored-icon size-7 lg:size-9 bg-[#25D366]"
+								style={`--icon-url: url(${iconUsers.src})`}
+							>
+							</div>
 						</div>
 						<span
 							class="font-bold text-xl lg:text-3xl tracking-tight hidden lg:block"
