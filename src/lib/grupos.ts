@@ -20,7 +20,8 @@ export interface Grupo {
   foto?: string;
   status: 'pendente' | 'aprovado' | 'rejeitado';
   email?: string;
-  tags?: string[];
+  regras?: string[];
+  criadoEm?: any;
 }
 
 export async function getGruposAprovados(): Promise<Grupo[]> {

@@ -2,264 +2,482 @@
 import Layout from "~/layouts/Layout.astro";
 import Section from "~/components/Section.astro";
 import Container from "~/components/Container.astro";
-import { todasCategorias } from "~/lib/categorias";
+import { todasCategorias, getLabelCategoria } from "~/lib/grupos";
 ---
 
 <Layout
-    pageTitle="Enviar Grupo de WhatsApp - GruposWhats.app"
-    description="Cadastre seu link de grupo ou canal de WhatsApp gratuitamente no nosso diretório para conseguir novos membros."
+    pageTitle="Enviar Grupo ou Canal - gruposwhatsapp.online"
+    description="Divulgue seu grupo ou canal de WhatsApp gratuitamente e comece a receber novos membros agora mesmo."
 >
-    <Section class:list={"bg-gray-50 py-12 lg:py-24 min-h-[80vh]"}>
+    <Section class:list={"bg-gray-50 py-12 lg:py-20 min-h-screen"}>
         <Container>
-            <div
-                class="max-w-2xl mx-auto bg-white rounded-[2.5rem] shadow-xl border border-gray-100 p-8 lg:p-12"
-            >
-                <div class="text-center mb-10">
-                    <span
-                        class="text-[#25D366] font-black uppercase tracking-[0.2em] text-xs mb-3 block"
-                        >Divulgação Grátis</span
-                    >
-                    <h1
-                        class="text-3xl lg:text-5xl font-black text-gray-950 mb-4 tracking-tighter"
-                    >
-                        Cadastrar Meu <span class="text-[#25D366]">Link</span>
-                    </h1>
-                    <p class="text-gray-500 font-medium">
-                        Preencha os dados e receba novos membros em instantes.
-                        Análise rápida e gratuita.
-                    </p>
-                </div>
-
-                <div
-                    id="form-success"
-                    class="hidden mb-8 p-6 bg-green-50 text-green-800 rounded-3xl border border-green-200 animate-bounce"
+            {/* Header */}
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h3
+                    class="text-3xl lg:text-5xl font-black text-gray-950 mb-4 tracking-tighter"
                 >
-                    <div class="flex items-center gap-3">
-                        <span class="text-2xl">🎉</span>
-                        <div>
-                            <strong class="block font-black">Sucesso!</strong>
-                            Seu grupo foi enviado. Em breve estará no ar.
+                    Enviar Grupo ou <span class="text-[#25D366]">Canal</span>
+                </h3>
+                <p class="text-gray-500 font-medium italic">
+                    "Divulgue seu link e receba novos membros em instantes."
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+                {/* Lateral: Preview Card */}
+                <div class="lg:col-span-4 lg:sticky lg:top-24 order-1 z-0">
+                    <div
+                        class="bg-white rounded-[2.5rem] shadow-2xl border border-gray-100 overflow-hidden relative"
+                    >
+                        <div class="p-6">
+                            <div class="flex items-center gap-4 mb-5">
+                                <div class="relative">
+                                    <img
+                                        id="preview-img"
+                                        src="https://ui-avatars.com/api/?name=G&background=25D366&color=fff&size=128&bold=true&rounded=true"
+                                        alt="Preview Avatar"
+                                        class="w-16 h-16 rounded-2xl object-cover bg-gray-50 shadow-sm"
+                                    />
+                                    <div
+                                        class="absolute -bottom-1 -right-1 size-5 rounded-full border-2 border-white bg-[#25D366] shadow-sm"
+                                    >
+                                    </div>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <span
+                                            class="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-lg bg-green-100 text-[#075E54]"
+                                            id="preview-tipo">GRUPO</span
+                                        >
+                                        <span
+                                            class="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-lg bg-gray-50 text-gray-400"
+                                            id="preview-cat">CATEGORIA</span
+                                        >
+                                    </div>
+                                    <h3
+                                        class="font-black text-gray-950 text-lg truncate leading-tight"
+                                        id="preview-nome"
+                                    >
+                                        Nome do Grupo
+                                    </h3>
+                                </div>
+                            </div>
+                            <p
+                                class="text-gray-400 font-medium line-clamp-3 text-xs leading-relaxed mb-6"
+                                id="preview-desc"
+                            >
+                                A descrição do seu grupo aparecerá aqui...
+                            </p>
+                            <div
+                                class="w-full h-12 bg-[#25D366] rounded-2xl flex items-center justify-center font-black text-white text-sm"
+                            >
+                                PARTICIPAR
+                            </div>
+                        </div>
+                        <div
+                            class="bg-gray-900 text-white text-[9px] font-black uppercase tracking-[0.2em] py-2 text-center"
+                        >
+                            Prévia do Card
+                        </div>
+                    </div>
+
+                    <div
+                        class="mt-8 bg-[#25D366]/5 border border-[#25D366]/20 p-6 rounded-3xl"
+                    >
+                        <div class="flex gap-3">
+                            <span class="text-xl">�</span>
+                            <div
+                                class="text-xs text-[#075E54] font-bold leading-relaxed"
+                            >
+                                Dica: Grupos com nomes claros e descrições
+                                detalhadas atraem mais membros engajados!
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div
-                    id="form-error"
-                    class="hidden mb-8 p-6 bg-red-50 text-red-800 rounded-3xl border border-red-200"
-                >
-                    <div class="flex items-center gap-3">
-                        <span class="text-2xl">❌</span>
-                        <div>
-                            <strong class="block font-black">Opa!</strong>
-                            Algo deu errado. Verifique os campos e tente de novo.
-                        </div>
+                {/* Direita: Formulário Workflow */}
+                <div class="lg:col-span-8 order-2">
+                    {/* FEEDBACKS */}
+                    <div
+                        id="msg-erro"
+                        class="hidden mb-6 p-6 bg-red-50 text-red-800 rounded-3xl border border-red-200 font-bold text-sm"
+                    >
                     </div>
-                </div>
 
-                <form id="form-enviar-grupo" class="space-y-8">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div>
-                            <label
-                                for="tipo"
-                                class="block text-sm font-black text-gray-400 uppercase tracking-widest mb-2"
-                                >O que você tem?</label
-                            >
-                            <select
-                                id="tipo"
-                                name="tipo"
-                                required
-                                class="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl focus:ring-4 focus:ring-[#25D366]/20 font-bold text-gray-800 transition-all cursor-pointer"
-                            >
-                                <option value="grupo">Grupo do WhatsApp</option>
-                                <option value="canal">Canal do WhatsApp</option>
-                            </select>
-                        </div>
+                    <div
+                        id="msg-sucesso"
+                        class="hidden text-center py-20 bg-white rounded-[3rem] shadow-xl border border-green-200"
+                    >
+                        <p class="text-7xl mb-6">✅</p>
+                        <h2 class="text-3xl font-black text-gray-900 mb-2">
+                            Sucesso!
+                        </h2>
+                        <p
+                            class="text-gray-500 font-medium mb-10 max-w-sm mx-auto"
+                        >
+                            Seu grupo foi enviado para moderação e em breve
+                            estará no ar.
+                        </p>
+                        <a
+                            href="/"
+                            class="inline-flex px-10 py-4 bg-[#25D366] text-white rounded-2xl font-black hover:bg-gray-950 transition-all"
+                            >Explorar Grupos</a
+                        >
+                    </div>
 
-                        <div>
-                            <label
-                                for="categoria"
-                                class="block text-sm font-black text-gray-400 uppercase tracking-widest mb-2"
-                                >Qual o assunto?</label
+                    <div
+                        id="form-container"
+                        class="bg-white rounded-[2.5rem] shadow-xl border border-gray-100 p-8 lg:p-12"
+                    >
+                        {/* STEP 1: VALIDAR LINK */}
+                        <div id="step-1" class="transition-all">
+                            <h2 class="text-2xl font-black text-gray-950 mb-2">
+                                Primeiro Passo
+                            </h2>
+                            <p
+                                class="text-gray-500 font-medium mb-8 text-sm italic"
                             >
-                            <select
-                                id="categoria"
-                                name="categoria"
-                                required
-                                class="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl focus:ring-4 focus:ring-[#25D366]/20 font-bold text-gray-800 transition-all cursor-pointer"
-                            >
-                                <option value="" disabled selected
-                                    >Escolha uma categoria...</option
+                                Insira o link para preenchermos os dados
+                                automaticamente.
+                            </p>
+
+                            <div class="space-y-6">
+                                <div>
+                                    <label
+                                        for="link-verify"
+                                        class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3"
+                                        >Link do Grupo ou Canal</label
+                                    >
+                                    <input
+                                        type="url"
+                                        id="link-verify"
+                                        placeholder="https://chat.whatsapp.com/..."
+                                        class="w-full px-8 py-5 bg-gray-50 border-none rounded-2xl focus:ring-4 focus:ring-[#25D366]/20 font-bold text-gray-800 transition-all text-lg"
+                                    />
+                                </div>
+
+                                <button
+                                    id="btn-verify"
+                                    class="w-full py-5 bg-gray-950 text-white font-black text-xl rounded-3xl hover:bg-[#25D366] transition-all active:scale-95 flex items-center justify-center gap-3 decoration-0"
                                 >
-                                {
-                                    todasCategorias.map((cat) => (
-                                        <option value={cat.slug}>
-                                            {cat.label}
-                                        </option>
-                                    ))
-                                }
-                            </select>
+                                    <span id="txt-verify">Validar Link</span>
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        class="h-6 w-6"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                        ><path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="3"
+                                            d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                                    </svg>
+                                </button>
+
+                                <p
+                                    class="text-center text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-relaxed"
+                                >
+                                    Segurança: Verificamos se o convite está
+                                    ativo antes de continuar.
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* STEP 2: COMPLETAR DADOS */}
+                        <div
+                            id="step-2"
+                            class="hidden transition-all animate-in fade-in slide-in-from-right-4 duration-500"
+                        >
+                            <h2 class="text-2xl font-black text-gray-950 mb-6">
+                                Quase lá! Complete os Dados
+                            </h2>
+
+                            <form id="form-final" class="space-y-8">
+                                <input
+                                    type="hidden"
+                                    id="final-link"
+                                    name="link"
+                                />
+                                <input
+                                    type="hidden"
+                                    id="final-foto"
+                                    name="foto"
+                                />
+
+                                <div
+                                    class="grid grid-cols-1 md:grid-cols-2 gap-8"
+                                >
+                                    <div>
+                                        <label
+                                            class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2"
+                                            >Tipo de Link</label
+                                        >
+                                        <select
+                                            name="tipo"
+                                            id="final-tipo"
+                                            class="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl font-bold text-gray-800 cursor-pointer"
+                                        >
+                                            <option value="grupo">Grupo</option>
+                                            <option value="canal">Canal</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label
+                                            class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2"
+                                            >Categoria</label
+                                        >
+                                        <select
+                                            name="categoria"
+                                            required
+                                            id="final-cat"
+                                            class="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl font-bold text-gray-800 cursor-pointer"
+                                        >
+                                            <option value="" disabled selected
+                                                >Escolha uma categoria...</option
+                                            >
+                                            {
+                                                todasCategorias.map((c) => (
+                                                    <option value={c.slug}>
+                                                        {c.label}
+                                                    </option>
+                                                ))
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label
+                                        class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2"
+                                        >Nome Exibido</label
+                                    >
+                                    <input
+                                        type="text"
+                                        name="nome"
+                                        id="final-nome"
+                                        required
+                                        class="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl font-bold text-gray-800"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label
+                                        class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2"
+                                        >Descrição Curta</label
+                                    >
+                                    <textarea
+                                        name="descricao"
+                                        id="final-desc"
+                                        rows="3"
+                                        required
+                                        placeholder="Ex: O melhor grupo para colecionadores de moedas!"
+                                        class="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl font-bold text-gray-800 resize-none"
+                                    ></textarea>
+                                </div>
+
+                                <div>
+                                    <label
+                                        class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4"
+                                        >Regras Gerais</label
+                                    >
+                                    <div
+                                        class="grid grid-cols-1 sm:grid-cols-2 gap-3"
+                                    >
+                                        {
+                                            [
+                                                "Proibido conteúdo adulto",
+                                                "Proibido conteúdo agressivo",
+                                                "Proibido uso de palavrões",
+                                                "Proibido trava zap",
+                                                "Proibido menor idade",
+                                                "Proibido enviar links",
+                                            ].map((regra) => (
+                                                <label class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors">
+                                                    <input
+                                                        type="checkbox"
+                                                        name="regras"
+                                                        value={regra}
+                                                        checked
+                                                        class="rounded border-gray-300 text-[#25D366] focus:ring-[#25D366]"
+                                                    />
+                                                    <span class="text-xs font-bold text-gray-600">
+                                                        {regra}
+                                                    </span>
+                                                </label>
+                                            ))
+                                        }
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label
+                                        class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2"
+                                        >E-mail para Receber Avisos</label
+                                    >
+                                    <input
+                                        type="email"
+                                        name="email"
+                                        placeholder="seu@email.com"
+                                        class="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl font-bold text-gray-800"
+                                    />
+                                </div>
+
+                                <button
+                                    type="submit"
+                                    id="btn-enviar"
+                                    class="w-full py-5 bg-[#25D366] text-white font-black text-xl rounded-3xl shadow-xl hover:shadow-[#25D366]/30 transition-all active:scale-95"
+                                >
+                                    Finalizar Cadastro
+                                </button>
+                            </form>
                         </div>
                     </div>
-
-                    <div>
-                        <label
-                            for="nome"
-                            class="block text-sm font-black text-gray-400 uppercase tracking-widest mb-2"
-                            >Nome <span class="text-red-500 font-black">*</span>
-                        </label>
-                        <input
-                            type="text"
-                            id="nome"
-                            name="nome"
-                            placeholder="Ex: Figurinhas Engraçadas 2024"
-                            required
-                            maxlength="60"
-                            class="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl focus:ring-4 focus:ring-[#25D366]/20 font-bold text-gray-800 placeholder:text-gray-300 transition-all"
-                        />
-                    </div>
-
-                    <div>
-                        <label
-                            for="link"
-                            class="block text-sm font-black text-gray-400 uppercase tracking-widest mb-2"
-                            >Link de Convite <span
-                                class="text-red-500 font-black">*</span
-                            >
-                        </label>
-                        <input
-                            type="url"
-                            id="link"
-                            name="link"
-                            placeholder="https://chat.whatsapp.com/..."
-                            required
-                            class="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl focus:ring-4 focus:ring-[#25D366]/20 font-bold text-gray-800 transition-all"
-                        />
-                    </div>
-
-                    <div>
-                        <label
-                            for="descricao"
-                            class="block text-sm font-black text-gray-400 uppercase tracking-widest mb-2"
-                            >Sobre o Grupo <span class="text-red-500 font-black"
-                                >*</span
-                            >
-                        </label>
-                        <textarea
-                            id="descricao"
-                            name="descricao"
-                            rows="4"
-                            placeholder="Conte um pouco sobre o seu grupo e as regras..."
-                            required
-                            maxlength="250"
-                            class="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl focus:ring-4 focus:ring-[#25D366]/20 font-bold text-gray-800 transition-all resize-none"
-                        ></textarea>
-                    </div>
-
-                    <div>
-                        <label
-                            for="email"
-                            class="block text-sm font-black text-gray-400 uppercase tracking-widest mb-2"
-                            >E-mail (Opcional)</label
-                        >
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            placeholder="seu@contato.com"
-                            class="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl focus:ring-4 focus:ring-[#25D366]/20 font-bold text-gray-800 transition-all"
-                        />
-                    </div>
-
-                    <div class="pt-4">
-                        <button
-                            type="submit"
-                            id="btn-submit"
-                            class="w-full py-5 px-8 bg-[#25D366] hover:bg-[#075E54] text-white font-black text-xl rounded-3xl shadow-xl hover:shadow-[#25D366]/40 transition-all active:scale-95 flex justify-center items-center gap-3 group"
-                        >
-                            <span id="btn-text">Cadastrar Meu Grupo</span>
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                class="h-6 w-6 group-hover:translate-x-1 transition-transform"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor font-black"
-                            >
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="3"
-                                    d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
-                            </svg>
-                        </button>
-                    </div>
-
-                    <p
-                        class="text-[10px] font-black uppercase tracking-widest text-center text-gray-400 mt-6 leading-relaxed"
-                    >
-                        Ao cadastrar, você concorda com nossos termos. <br /> Proibido
-                        conteúdo adulto, spam ou links ilegais.
-                    </p>
-                </form>
+                </div>
             </div>
         </Container>
     </Section>
 </Layout>
 
 <script>
-    // Firebase logic to submit form client-side
     import { enviarGrupo } from "~/lib/grupos";
 
-    const form = document.getElementById(
-        "form-enviar-grupo"
-    ) as HTMLFormElement;
-    const btnSubmit = document.getElementById(
-        "btn-submit"
+    const step1 = document.getElementById("step-1")!;
+    const step2 = document.getElementById("step-2")!;
+    const btnVerify = document.getElementById(
+        "btn-verify"
     ) as HTMLButtonElement;
-    const btnText = document.getElementById("btn-text")!;
-    const msgSuccess = document.getElementById("form-success")!;
-    const msgError = document.getElementById("form-error")!;
+    const txtVerify = document.getElementById("txt-verify")!;
+    const linkInput = document.getElementById(
+        "link-verify"
+    ) as HTMLInputElement;
+    const msgErro = document.getElementById("msg-erro")!;
 
-    if (form) {
-        form.addEventListener("submit", async (e) => {
-            e.preventDefault();
+    // Final form elements
+    const formFinal = document.getElementById("form-final") as HTMLFormElement;
+    const finalLink = document.getElementById("final-link") as HTMLInputElement;
+    const finalFoto = document.getElementById("final-foto") as HTMLInputElement;
+    const finalNome = document.getElementById("final-nome") as HTMLInputElement;
+    const finalDesc = document.getElementById(
+        "final-desc"
+    ) as HTMLTextAreaElement;
+    const finalTipo = document.getElementById(
+        "final-tipo"
+    ) as HTMLSelectElement;
+    const finalCat = document.getElementById("final-cat") as HTMLSelectElement;
 
-            // Hide messages
-            msgSuccess.classList.add("hidden");
-            msgError.classList.add("hidden");
+    // Preview elements
+    const pNome = document.getElementById("preview-nome")!;
+    const pDesc = document.getElementById("preview-desc")!;
+    const pTipo = document.getElementById("preview-tipo")!;
+    const pCat = document.getElementById("preview-cat")!;
+    const pImg = document.getElementById("preview-img") as HTMLImageElement;
 
-            // Loading state
-            btnSubmit.disabled = true;
-            btnText.innerHTML =
-                '<svg class="animate-spin h-5 w-5 mr-3 text-white" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Enviando...';
+    // Webhook logic
+    btnVerify.addEventListener("click", async () => {
+        const link = linkInput.value.trim();
+        if (!link.includes("whatsapp.com")) {
+            msgErro.textContent =
+                "Por favor, insira um link de grupo ou canal do WhatsApp válido.";
+            msgErro.classList.remove("hidden");
+            return;
+        }
 
-            const formData = new FormData(form);
+        msgErro.classList.add("hidden");
+        btnVerify.disabled = true;
+        txtVerify.textContent = "Buscando dados...";
 
-            const dados = {
-                nome: formData.get("nome") as string,
-                descricao: formData.get("descricao") as string,
-                categoria: formData.get("categoria") as string,
-                tipo: formData.get("tipo") as "grupo" | "canal",
-                link: formData.get("link") as string,
-                email: (formData.get("email") as string) || undefined,
-            };
+        try {
+            const res = await fetch(
+                "https://n8n.qrlembrancasvivas.com.br/webhook/verify",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: "Basic YWRtaW5ncnVwb3M6YlFZVjhkMDkyWG1i",
+                    },
+                    body: JSON.stringify({ group: link }),
+                }
+            );
 
-            try {
-                await enviarGrupo(dados);
-                form.reset();
-                msgSuccess.classList.remove("hidden");
+            if (!res.ok) throw new Error("Falha na comunicação.");
 
-                // Optional: scroll to success message
-                msgSuccess.scrollIntoView({
-                    behavior: "smooth",
-                    block: "center",
-                });
-            } catch (error) {
-                console.error("Erro ao enviar grupo:", error);
-                msgError.classList.remove("hidden");
-            } finally {
-                btnSubmit.disabled = false;
-                btnText.textContent = "Enviar Grupo para Análise";
+            const data = await res.json();
+
+            if (data.success) {
+                // Pre-fill Step 2
+                finalLink.value = link;
+                finalNome.value = data.groupName || "";
+                finalFoto.value = data.groupImage || "";
+
+                // Update Preview immediately
+                pNome.textContent = data.groupName || "Nome do Grupo";
+                if (data.groupImage) pImg.src = data.groupImage;
+
+                // Move to step 2
+                step1.classList.add("hidden");
+                step2.classList.remove("hidden");
+            } else {
+                msgErro.textContent =
+                    data.error ||
+                    "Link inválido. Verifique se o convite não expirou.";
+                msgErro.classList.remove("hidden");
             }
+        } catch (err) {
+            msgErro.textContent =
+                "Ops! Tivemos um problema técnico. Tente novamente.";
+            msgErro.classList.remove("hidden");
+        } finally {
+            btnVerify.disabled = false;
+            txtVerify.textContent = "Validar Link";
+        }
+    });
+
+    // Real-time Preview logic
+    [finalNome, finalDesc, finalTipo, finalCat].forEach((el) => {
+        el.addEventListener("input", () => {
+            pNome.textContent = finalNome.value || "Nome do Grupo";
+            const desc = finalDesc.value || "A descrição aparecerá aqui...";
+            pDesc.textContent = desc;
+            pTipo.textContent = finalTipo.value.toUpperCase();
+            pCat.textContent =
+                finalCat.options[finalCat.selectedIndex]?.text.toUpperCase() ||
+                "CATEGORIA";
         });
-    }
+    });
+
+    // Final Form Submission
+    formFinal.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById("btn-enviar") as HTMLButtonElement;
+        btn.disabled = true;
+        btn.textContent = "Publicando...";
+
+        const formData = new FormData(formFinal);
+        const regras = formData.getAll("regras") as string[];
+
+        const dados = {
+            nome: formData.get("nome") as string,
+            descricao: formData.get("descricao") as string,
+            categoria: formData.get("categoria") as string,
+            tipo: formData.get("tipo") as "grupo" | "canal",
+            link: formData.get("link") as string,
+            foto: formData.get("foto") as string,
+            email: (formData.get("email") as string) || undefined,
+            regras: regras,
+        };
+
+        try {
+            await enviarGrupo(dados);
+            document.getElementById("form-container")!.classList.add("hidden");
+            document.getElementById("msg-sucesso")!.classList.remove("hidden");
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        } catch (err) {
+            msgErro.textContent = "Erro ao salvar seu grupo. Tente novamente.";
+            msgErro.classList.remove("hidden");
+            btn.disabled = false;
+            btn.textContent = "Finalizar Cadastro";
+        }
+    });
 </script>
