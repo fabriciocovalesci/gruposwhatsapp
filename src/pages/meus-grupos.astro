@@ -1,0 +1,201 @@
+---
+import Layout from "~/layouts/Layout.astro";
+import Section from "~/components/Section.astro";
+import Container from "~/components/Container.astro";
+const siteName = "gruposwhatsapp.online";
+---
+
+<Layout
+    pageTitle={`Gerenciar Meus Grupos - ${siteName}`}
+    description="Acesse e gerencie os grupos de WhatsApp que você enviou para o nosso diretório."
+>
+    <Section class:list={"bg-gray-50 py-12 lg:py-24 min-h-screen"}>
+        <Container>
+            <div class="max-w-4xl mx-auto mb-16">
+                <div
+                    class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12"
+                >
+                    <div>
+                        <span
+                            class="text-[#028b3a] font-black uppercase tracking-[0.2em] text-xs mb-3 block"
+                            >Gerenciamento Local</span
+                        >
+                        <h1
+                            class="text-3xl lg:text-5xl font-black text-gray-950 tracking-tighter"
+                        >
+                            Meus <span class="text-[#028b3a]">Grupos</span>
+                        </h1>
+                    </div>
+                    <a
+                        href="/enviar-grupo"
+                        class="inline-flex items-center px-8 py-4 bg-[#028b3a] text-white rounded-2xl font-black hover:bg-gray-950 transition-all shadow-lg active:scale-95"
+                    >
+                        + Enviar Novo Grupo
+                    </a>
+                </div>
+
+                <div
+                    class="bg-blue-50 border border-blue-100 p-8 rounded-[2.5rem] mb-12"
+                >
+                    <div class="flex gap-4">
+                        <span class="text-3xl">💾</span>
+                        <div>
+                            <p class="text-blue-900 font-bold mb-1">
+                                Seus grupos ficam salvos neste dispositivo para
+                                sua segurança e privacidade.
+                            </p>
+                            <p class="text-blue-700 text-sm font-medium">
+                                Acesse sempre do mesmo navegador para
+                                gerenciá-los facilmente.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="grupos-loading" class="text-center py-24">
+                    <div
+                        class="inline-block size-12 border-4 border-[#028b3a]/20 border-t-[#028b3a] rounded-full animate-spin"
+                    >
+                    </div>
+                    <p
+                        class="mt-4 text-gray-400 font-bold uppercase tracking-widest text-xs"
+                    >
+                        Carregando seus grupos...
+                    </p>
+                </div>
+
+                <div
+                    id="grupos-container"
+                    class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8"
+                >
+                    {/* Será preenchido via JS */}
+                </div>
+
+                <div
+                    id="grupos-vazio"
+                    class="hidden text-center py-24 bg-white rounded-[3rem] border-2 border-dashed border-gray-200"
+                >
+                    <p class="text-6xl mb-6">🏜️</p>
+                    <h3 class="text-2xl font-black text-gray-900 mb-2">
+                        Nenhum grupo encontrado
+                    </h3>
+                    <p class="text-gray-500 font-medium mb-10 max-w-sm mx-auto">
+                        Você ainda não enviou nenhum grupo ou limpou os dados do
+                        seu navegador recentemente.
+                    </p>
+                    <a
+                        href="/enviar-grupo"
+                        class="inline-flex items-center px-10 py-5 bg-[#028b3a] text-white rounded-[2rem] font-black hover:bg-gray-950 transition-all shadow-xl active:scale-95"
+                    >
+                        Começar AGORA
+                    </a>
+                </div>
+
+                <div
+                    class="mt-16 bg-orange-50 border border-orange-100 p-6 rounded-3xl"
+                >
+                    <div class="flex gap-4 items-center">
+                        <span class="text-xl">💡</span>
+                        <p class="text-orange-900 text-sm font-bold italic">
+                            Dica: Se limpar os dados do navegador, basta
+                            reenviar seus grupos novamente para que eles voltem
+                            a aparecer aqui.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </Container>
+    </Section>
+</Layout>
+
+<script>
+    import { getGruposByIds } from "~/lib/grupos";
+
+    async function carregarGrupos() {
+        const container = document.getElementById("grupos-container");
+        const loading = document.getElementById("grupos-loading");
+        const vazio = document.getElementById("grupos-vazio");
+
+        try {
+            const ids = JSON.parse(localStorage.getItem("meus_grupos") || "[]");
+
+            if (ids.length === 0) {
+                loading?.classList.add("hidden");
+                vazio?.classList.remove("hidden");
+                return;
+            }
+
+            const grupos = await getGruposByIds(ids);
+
+            if (grupos.length === 0) {
+                loading?.classList.add("hidden");
+                vazio?.classList.remove("hidden");
+                return;
+            }
+
+            // Gerar HTML para os cards (simplificado para o cliente)
+            if (container) {
+                container.innerHTML = grupos
+                    .map(
+                        (grupo) => `
+                    <div class="bg-white rounded-[2.5rem] shadow-xl border border-gray-100 overflow-hidden flex flex-col h-full group transition-all hover:shadow-2xl hover:-translate-y-1">
+                        <div class="relative p-6 pt-10">
+                            <div class="flex items-center gap-5 mb-6">
+                                <img src="${
+                                    grupo.foto ||
+                                    "https://ui-avatars.com/api/?name=" +
+                                        encodeURIComponent(
+                                            grupo.nome.slice(0, 2)
+                                        ) +
+                                        "&background=028b3a&color=fff&size=128&bold=true&rounded=true"
+                                }" 
+                                     class="size-20 rounded-[1.5rem] object-cover border-4 border-gray-50 shadow-md"
+                                />
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center gap-2 mb-1">
+                                         <span class="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-lg ${
+                                             grupo.status === "aprovado"
+                                                 ? "bg-green-100 text-green-700"
+                                                 : grupo.status === "pendente"
+                                                 ? "bg-orange-100 text-orange-700"
+                                                 : "bg-red-100 text-red-700"
+                                         }">${grupo.status.toUpperCase()}</span>
+                                    </div>
+                                    <h4 class="font-black text-gray-950 text-lg truncate leading-tight">${
+                                        grupo.nome
+                                    }</h4>
+                                </div>
+                                <a href="/enviar-grupo?edit=${
+                                    grupo.id
+                                }" class="bg-[#028b3a] text-white p-2 rounded-xl text-xs font-black uppercase tracking-tighter hover:bg-gray-950 transition-colors">EDITAR</a>
+                            </div>
+                            <p class="text-gray-500 font-medium line-clamp-2 text-sm leading-relaxed mb-6">${
+                                grupo.descricao
+                            }</p>
+                            <a href="/grupo/${
+                                grupo.id
+                            }" class="w-full inline-flex items-center justify-center gap-2 px-6 py-4 text-sm font-black text-white bg-gray-900 rounded-2xl hover:bg-[#028b3a] transition-all">
+                                Ver Página do Grupo
+                            </a>
+                        </div>
+                    </div>
+                `
+                    )
+                    .join("");
+
+                loading?.classList.add("hidden");
+                container.classList.remove("hidden");
+            }
+        } catch (err) {
+            console.error(err);
+            loading?.classList.add("hidden");
+            vazio?.classList.remove("hidden");
+        }
+    }
+
+    // Carregar na montagem
+    carregarGrupos();
+
+    // Suporte a transições Astro
+    document.addEventListener("astro:after-swap", carregarGrupos);
+</script>

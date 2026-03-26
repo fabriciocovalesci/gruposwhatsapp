@@ -2,11 +2,19 @@
 import Layout from "~/layouts/Layout.astro";
 import Section from "~/components/Section.astro";
 import Container from "~/components/Container.astro";
-import { todasCategorias, getLabelCategoria } from "~/lib/grupos";
+import { todasCategorias, getLabelCategoria, getGrupoById } from "~/lib/grupos";
+
+const editId = Astro.url.searchParams.get("edit");
+let editGrupo = null;
+if (editId) {
+    editGrupo = await getGrupoById(editId);
+}
 ---
 
 <Layout
-    pageTitle="Enviar Grupo ou Canal - gruposwhatsapp.online"
+    pageTitle={editGrupo
+        ? `Editar ${editGrupo.nome} - gruposwhatsapp.online`
+        : "Enviar Grupo ou Canal - gruposwhatsapp.online"}
     description="Divulgue seu grupo ou canal de WhatsApp gratuitamente e comece a receber novos membros agora mesmo."
 >
     <Section class:list={"bg-gray-50 py-12 lg:py-20 min-h-screen"}>
@@ -16,7 +24,9 @@ import { todasCategorias, getLabelCategoria } from "~/lib/grupos";
                 <h1
                     class="text-3xl lg:text-5xl font-black text-gray-950 mb-4 tracking-tighter"
                 >
-                    Enviar Grupo ou <span class="text-[#028b3a]">Canal</span>
+                    {editGrupo ? "Editar" : "Enviar"} Grupo ou <span
+                        class="text-[#028b3a]">Canal</span
+                    >
                 </h1>
                 <p class="text-gray-500 font-medium italic">
                     "Divulgue seu link e receba novos membros em instantes."
@@ -29,7 +39,10 @@ import { todasCategorias, getLabelCategoria } from "~/lib/grupos";
                 {/* Lateral: Preview Card */}
                 <div
                     id="preview-container"
-                    class="lg:col-span-4 lg:sticky lg:top-24 order-1 z-0 hidden"
+                    class:list={[
+                        "lg:col-span-4 lg:sticky lg:top-24 order-1 z-0",
+                        !editGrupo && "hidden",
+                    ]}
                 >
                     <div
                         class="bg-white rounded-[2.5rem] shadow-2xl border border-gray-100 overflow-hidden relative"
@@ -39,7 +52,8 @@ import { todasCategorias, getLabelCategoria } from "~/lib/grupos";
                                 <div class="relative">
                                     <img
                                         id="preview-img"
-                                        src="https://ui-avatars.com/api/?name=G&background=028b3a&color=fff&size=128&bold=true&rounded=true"
+                                        src={editGrupo?.foto ||
+                                            "https://ui-avatars.com/api/?name=G&background=028b3a&color=fff&size=128&bold=true&rounded=true"}
                                         alt="Preview Avatar"
                                         class="w-16 h-16 rounded-2xl object-cover bg-gray-50 shadow-sm"
                                     />
@@ -52,18 +66,27 @@ import { todasCategorias, getLabelCategoria } from "~/lib/grupos";
                                     <div class="flex items-center gap-2 mb-1">
                                         <span
                                             class="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-lg bg-green-100 text-[#075E54]"
-                                            id="preview-tipo">GRUPO</span
-                                        >
+                                            id="preview-tipo"
+                                            >{
+                                                editGrupo?.tipo?.toUpperCase() ||
+                                                    "GRUPO"
+                                            }
+                                        </span>
                                         <span
                                             class="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-lg bg-gray-50 text-gray-700"
-                                            id="preview-cat">CATEGORIA</span
-                                        >
+                                            id="preview-cat"
+                                            >{
+                                                getLabelCategoria(
+                                                    editGrupo?.categoria || ""
+                                                )?.toUpperCase() || "CATEGORIA"
+                                            }
+                                        </span>
                                     </div>
                                     <h3
                                         class="font-black text-gray-950 text-lg truncate leading-tight"
                                         id="preview-nome"
                                     >
-                                        Nome do Grupo
+                                        {editGrupo?.nome || "Nome do Grupo"}
                                     </h3>
                                 </div>
                             </div>
@@ -71,7 +94,10 @@ import { todasCategorias, getLabelCategoria } from "~/lib/grupos";
                                 class="text-gray-600 font-medium line-clamp-3 text-xs leading-relaxed mb-6"
                                 id="preview-desc"
                             >
-                                A descrição do seu grupo aparecerá aqui...
+                                {
+                                    editGrupo?.descricao ||
+                                        "A descrição do seu grupo aparecerá aqui..."
+                                }
                             </p>
                             <div
                                 class="w-full h-12 bg-[#028b3a] rounded-2xl flex items-center justify-center font-black text-white text-sm"
@@ -104,32 +130,33 @@ import { todasCategorias, getLabelCategoria } from "~/lib/grupos";
                 {/* Direita: Formulário Workflow */}
                 <div
                     id="main-form-col"
-                    class="lg:col-span-8 lg:col-start-3 order-2"
+                    class:list={[
+                        "lg:col-span-8 order-2",
+                        !editId && "lg:col-start-3",
+                    ]}
+                    data-edit-id={editId}
+                    data-status={editGrupo?.status}
                 >
                     {/* FEEDBACKS */}
                     <div
                         id="msg-erro"
-                        class="hidden mb-6 p-6 bg-red-50 text-red-800 rounded-3xl border border-red-200 font-bold text-sm"
+                        class="hidden mb-6 p-4 bg-red-50 text-red-800 rounded-2xl border border-red-200 font-bold text-xs"
                     >
                     </div>
 
                     <div
                         id="msg-sucesso"
-                        class="hidden text-center py-20 bg-white rounded-[3rem] shadow-xl border border-green-200"
+                        class="hidden text-center py-12 bg-white rounded-[2rem] shadow-xl border border-green-200"
                     >
-                        <p class="text-7xl mb-6">✅</p>
-                        <h2 class="text-3xl font-black text-gray-900 mb-2">
-                            Sucesso!
-                        </h2>
                         <p
-                            class="text-gray-500 font-medium mb-10 max-w-sm mx-auto"
+                            id="success-text"
+                            class="text-md font-black text-gray-900 mb-8 px-6"
                         >
-                            Seu grupo foi enviado para moderação e em breve
-                            estará no ar.
+                            ✅ Recebido! Em breve estará no ar.
                         </p>
                         <a
                             href="/"
-                            class="inline-flex px-10 py-4 bg-[#028b3a] text-white rounded-2xl font-black hover:bg-gray-950 transition-all"
+                            class="inline-flex px-8 py-3 bg-[#028b3a] text-white rounded-xl font-black text-xs hover:bg-gray-950 transition-all shadow-sm uppercase tracking-widest"
                             >Explorar Grupos</a
                         >
                     </div>
@@ -139,8 +166,13 @@ import { todasCategorias, getLabelCategoria } from "~/lib/grupos";
                         class="bg-white rounded-[2.5rem] shadow-xl border border-gray-100 p-8 lg:p-12"
                     >
                         {/* STEP 1: VALIDAR LINK */}
-                        <div id="step-1" class="transition-all">
-                            <h2 class="text-2xl font-black text-gray-950 mb-2">
+                        <div
+                            id="step-1"
+                            class:list={["transition-all", editId && "hidden"]}
+                        >
+                            <h2
+                                class="text-2xl font-black text-gray-950 mb-2 font-Inter"
+                            >
                                 Primeiro Passo
                             </h2>
                             <p
@@ -162,6 +194,7 @@ import { todasCategorias, getLabelCategoria } from "~/lib/grupos";
                                         id="link-verify"
                                         placeholder="https://chat.whatsapp.com/..."
                                         class="w-full px-8 py-5 bg-gray-50 border-none rounded-2xl focus:ring-4 focus:ring-[#028b3a]/20 font-bold text-gray-800 transition-all text-lg"
+                                        value={editGrupo?.link || ""}
                                     />
                                 </div>
 
@@ -196,25 +229,57 @@ import { todasCategorias, getLabelCategoria } from "~/lib/grupos";
                         {/* STEP 2: COMPLETAR DADOS */}
                         <div
                             id="step-2"
-                            class="hidden transition-all animate-in fade-in slide-in-from-right-4 duration-500"
+                            class:list={[
+                                "transition-all animate-in fade-in slide-in-from-right-4 duration-500",
+                                !editId && "hidden",
+                            ]}
                         >
                             <h2
                                 class="text-2xl font-black text-gray-950 mb-6 font-Inter"
                             >
-                                Quase lá! Complete os Dados
+                                {
+                                    editId
+                                        ? "Editar Detalhes"
+                                        : "Quase lá! Complete os Dados"
+                                }
                             </h2>
 
                             <form id="form-final" class="space-y-8">
                                 <input
                                     type="hidden"
-                                    id="final-link"
-                                    name="link"
-                                />
-                                <input
-                                    type="hidden"
                                     id="final-foto"
                                     name="foto"
+                                    value={editGrupo?.foto || ""}
                                 />
+
+                                {
+                                    editId && (
+                                        <div>
+                                            <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">
+                                                Link do Grupo
+                                            </label>
+                                            <input
+                                                type="url"
+                                                name="link"
+                                                id="final-link"
+                                                required
+                                                class="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl font-bold text-gray-800"
+                                                value={editGrupo?.link || ""}
+                                            />
+                                        </div>
+                                    )
+                                }
+
+                                {
+                                    !editId && (
+                                        <input
+                                            type="hidden"
+                                            id="final-link"
+                                            name="link"
+                                            value=""
+                                        />
+                                    )
+                                }
 
                                 <div
                                     class="grid grid-cols-1 md:grid-cols-2 gap-8"
@@ -229,8 +294,16 @@ import { todasCategorias, getLabelCategoria } from "~/lib/grupos";
                                             id="final-tipo"
                                             class="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl font-bold text-gray-800 cursor-pointer"
                                         >
-                                            <option value="grupo">Grupo</option>
-                                            <option value="canal">Canal</option>
+                                            <option
+                                                value="grupo"
+                                                selected={editGrupo?.tipo ===
+                                                    "grupo"}>Grupo</option
+                                            >
+                                            <option
+                                                value="canal"
+                                                selected={editGrupo?.tipo ===
+                                                    "canal"}>Canal</option
+                                            >
                                         </select>
                                     </div>
                                     <div>
@@ -244,12 +317,21 @@ import { todasCategorias, getLabelCategoria } from "~/lib/grupos";
                                             id="final-cat"
                                             class="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl font-bold text-gray-800 cursor-pointer"
                                         >
-                                            <option value="" disabled selected
+                                            <option
+                                                value=""
+                                                disabled
+                                                selected={!editGrupo}
                                                 >Escolha uma categoria...</option
                                             >
                                             {
                                                 todasCategorias.map((c) => (
-                                                    <option value={c.slug}>
+                                                    <option
+                                                        value={c.slug}
+                                                        selected={
+                                                            editGrupo?.categoria ===
+                                                            c.slug
+                                                        }
+                                                    >
                                                         {c.label}
                                                     </option>
                                                 ))
@@ -269,6 +351,7 @@ import { todasCategorias, getLabelCategoria } from "~/lib/grupos";
                                         id="final-nome"
                                         required
                                         class="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl font-bold text-gray-800"
+                                        value={editGrupo?.nome || ""}
                                     />
                                 </div>
 
@@ -284,7 +367,8 @@ import { todasCategorias, getLabelCategoria } from "~/lib/grupos";
                                         required
                                         placeholder="Ex: O melhor grupo para colecionadores de moedas!"
                                         class="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl font-bold text-gray-800 resize-none"
-                                    ></textarea>
+                                        >{editGrupo?.descricao || ""}
+                                    </textarea>
                                 </div>
 
                                 <div
@@ -301,45 +385,36 @@ import { todasCategorias, getLabelCategoria } from "~/lib/grupos";
                                                 "Proibido Adulto",
                                                 "Sem Agressividade",
                                                 "Sem Palavrões",
-                                                "Sem Trava Zap",
-                                                "Apenas +18",
-                                                "Sem Links",
-                                            ].map((regra) => (
-                                                <label class="flex items-center gap-1.5 px-2.5 py-1.5 bg-white border border-gray-200 rounded-full cursor-pointer transition-all hover:border-[#028b3a] group has-[:checked]:bg-[#028b3a]/5 has-[:checked]:border-[#028b3a] shadow-sm">
+                                                "Proibido Flood",
+                                                "Só Adm Posta",
+                                                "Respeite os Membros",
+                                                "Sem Links Externos",
+                                                "Sem Vendas",
+                                                "Assunto Específico",
+                                            ].map((r) => (
+                                                <label class="cursor-pointer group">
                                                     <input
                                                         type="checkbox"
                                                         name="regras"
-                                                        value={regra}
-                                                        checked
-                                                        class="size-3 rounded-full border-gray-300 text-[#028b3a] focus:ring-[#028b3a] transition-all"
+                                                        value={r}
+                                                        class="hidden peer"
+                                                        checked={editGrupo?.regras?.includes(
+                                                            r
+                                                        )}
                                                     />
-                                                    <span class="text-[9px] font-black text-gray-500 uppercase tracking-tight group-hover:text-[#075E54]">
-                                                        {regra}
+                                                    <span class="px-4 py-2 rounded-xl border border-gray-200 bg-white text-[10px] font-bold text-gray-500 uppercase tracking-tight transition-all peer-checked:bg-[#028b3a] peer-checked:text-white peer-checked:border-[#028b3a] group-hover:border-gray-300">
+                                                        {r}
                                                     </span>
                                                 </label>
                                             ))
                                         }
                                     </div>
-
-                                    <div class="space-y-2">
-                                        <label
-                                            class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 italic"
-                                            >Deseja adicionar mais regras
-                                            personalizadas?</label
-                                        >
-                                        <textarea
-                                            name="regras_extras"
-                                            rows="2"
-                                            placeholder="Escreva uma regra por linha..."
-                                            class="w-full px-5 py-3 bg-white border border-gray-200 rounded-2xl text-[11px] font-bold text-gray-600 focus:ring-2 focus:ring-[#028b3a]/20 transition-all resize-none shadow-sm"
-                                        ></textarea>
-                                        <p
-                                            class="text-[8px] text-gray-400 font-bold uppercase tracking-widest leading-tight"
-                                        >
-                                            Opcional: Você pode escrever as
-                                            regras do seu grupo, uma por linha.
-                                        </p>
-                                    </div>
+                                    <textarea
+                                        name="regras_extras"
+                                        rows="2"
+                                        placeholder="Outras regras (uma por linha)..."
+                                        class="w-full px-4 py-3 bg-white border border-gray-100 rounded-xl text-xs font-medium text-gray-600 focus:ring-2 focus:ring-[#028b3a]/20 outline-none resize-none"
+                                    ></textarea>
                                 </div>
 
                                 <div>
@@ -352,6 +427,7 @@ import { todasCategorias, getLabelCategoria } from "~/lib/grupos";
                                         name="email"
                                         placeholder="seu@email.com"
                                         class="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl font-bold text-gray-800"
+                                        value={editGrupo?.email || ""}
                                     />
                                 </div>
 
@@ -360,8 +436,19 @@ import { todasCategorias, getLabelCategoria } from "~/lib/grupos";
                                     id="btn-enviar"
                                     class="w-full py-5 bg-[#028b3a] text-white font-black text-xl rounded-3xl shadow-xl hover:shadow-[#028b3a]/30 transition-all active:scale-95"
                                 >
-                                    Finalizar Cadastro
+                                    {
+                                        editId
+                                            ? "Salvar Alterações"
+                                            : "Publicar Agora"
+                                    }
                                 </button>
+
+                                <p
+                                    class="text-center text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-relaxed"
+                                >
+                                    Ao publicar, você concorda com nossos termos
+                                    de uso e privacidade.
+                                </p>
                             </form>
                         </div>
                     </div>
@@ -372,10 +459,14 @@ import { todasCategorias, getLabelCategoria } from "~/lib/grupos";
 </Layout>
 
 <script>
-    import { enviarGrupo } from "~/lib/grupos";
+    import { enviarGrupo, editarGrupo } from "~/lib/grupos";
 
     const step1 = document.getElementById("step-1")!;
     const step2 = document.getElementById("step-2")!;
+    const mainFormCol = document.getElementById("main-form-col")!;
+    const editId = mainFormCol.dataset.editId;
+    const currentStatus = mainFormCol.dataset.status;
+
     const btnVerify = document.getElementById(
         "btn-verify"
     ) as HTMLButtonElement;
@@ -403,63 +494,45 @@ import { todasCategorias, getLabelCategoria } from "~/lib/grupos";
     const pDesc = document.getElementById("preview-desc")!;
     const pTipo = document.getElementById("preview-tipo")!;
     const pCat = document.getElementById("preview-cat")!;
-    const pImg = document.getElementById("preview-img") as HTMLImageElement;
 
-    // Webhook logic
-    btnVerify.addEventListener("click", async () => {
-        const link = linkInput.value.trim();
-        const isGroup = link.startsWith("https://chat.whatsapp.com/");
-        const isChannel =
-            link.startsWith("https://whatsapp.com/channel/") ||
-            link.startsWith("https://www.whatsapp.com/channel/");
+    // Verify Link Step
+    btnVerify?.addEventListener("click", async () => {
+        const url = linkInput.value;
+        if (!url) return;
 
-        if (!isGroup && !isChannel) {
-            msgErro.textContent =
-                "Link inválido: Use um link válido do WhatsApp (Grupos ou Canais) no formato: https://chat.whatsapp.com/ ou https://whatsapp.com/channel/";
-            msgErro.classList.remove("hidden");
-            return;
-        }
-
-        msgErro.classList.add("hidden");
         btnVerify.disabled = true;
-        txtVerify.textContent = "Analisando Link...";
+        txtVerify.textContent = "Validando...";
+        msgErro.classList.add("hidden");
 
         try {
             const res = await fetch(
-                "https://n8n.qrlembrancasvivas.com.br/webhook/verify",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: "Basic YWRtaW5ncnVwb3M6YlFZVjhkMDkyWG1i",
-                    },
-                    body: JSON.stringify({ group: link }),
-                }
+                `https://n8n.qrlembrancasvivas.com.br/webhook/a9630c77-4409-4089-9e8c-55077dedb2bf?url=${encodeURIComponent(
+                    url
+                )}`
             );
-
-            if (!res.ok) throw new Error("Falha na comunicação.");
-
             const data = await res.json();
 
-            if (data.success) {
-                // Pre-fill Step 2
-                finalLink.value = link;
-                finalNome.value = data.groupName || "";
-                finalFoto.value = data.groupImage || "";
+            if (data.status === "active") {
+                finalLink.value = url;
+                finalFoto.value = data.thumb || "";
+                finalNome.value = data.name || "";
+                finalDesc.value = data.description || "";
 
-                // Update Preview immediately
-                pNome.textContent = data.groupName || "Nome do Grupo";
-                if (data.groupImage) pImg.src = data.groupImage;
-
-                // Move to step 2
-                const previewCont =
-                    document.getElementById("preview-container");
-                const formCol = document.getElementById("main-form-col");
-                previewCont?.classList.remove("hidden");
-                formCol?.classList.remove("lg:col-start-3");
+                // Update Previews
+                pNome.textContent = data.name || "Nome do Grupo";
+                pDesc.textContent =
+                    data.description || "A descrição aparecerá aqui...";
+                const img = document.getElementById(
+                    "preview-img"
+                ) as HTMLImageElement;
+                if (img && data.thumb) img.src = data.thumb;
 
                 step1.classList.add("hidden");
                 step2.classList.remove("hidden");
+                document
+                    .getElementById("preview-container")
+                    ?.classList.remove("hidden");
+                mainFormCol.classList.remove("lg:col-start-3");
             } else {
                 msgErro.textContent =
                     data.error ||
@@ -478,11 +551,11 @@ import { todasCategorias, getLabelCategoria } from "~/lib/grupos";
 
     // Real-time Preview logic
     [finalNome, finalDesc, finalTipo, finalCat].forEach((el) => {
-        el.addEventListener("input", () => {
+        el?.addEventListener("input", () => {
             pNome.textContent = finalNome.value || "Nome do Grupo";
             const desc = finalDesc.value || "A descrição aparecerá aqui...";
             pDesc.textContent = desc;
-            pTipo.textContent = finalTipo.value.toUpperCase();
+            pTipo.textContent = (finalTipo.value || "").toUpperCase();
             pCat.textContent =
                 finalCat.options[finalCat.selectedIndex]?.text.toUpperCase() ||
                 "CATEGORIA";
@@ -494,45 +567,89 @@ import { todasCategorias, getLabelCategoria } from "~/lib/grupos";
         e.preventDefault();
         const btn = document.getElementById("btn-enviar") as HTMLButtonElement;
         btn.disabled = true;
-        btn.textContent = "Publicando...";
+        btn.textContent = editId ? "Salvando Alterações..." : "Publicando...";
 
         const formData = new FormData(formFinal);
         const regrasMarcadas = formData.getAll("regras") as string[];
         const regrasExtrasRaw = formData.get("regras_extras") as string;
         const regrasExtras = regrasExtrasRaw
-            ? regrasExtrasRaw
+            ? (regrasExtrasRaw as string)
                   .split("\n")
                   .map((r) => r.trim())
                   .filter((r) => r.length > 0)
             : [];
         const regras = [...regrasMarcadas, ...regrasExtras];
 
+        const link = formData.get("link") as string;
+        const valLink = link.toLowerCase();
+        const isWhatsapp =
+            valLink.includes("chat.whatsapp.com") ||
+            valLink.includes("whatsapp.com/channel");
+
+        if (!isWhatsapp) {
+            msgErro.textContent =
+                "Insira um link válido do WhatsApp (Grupo ou Canal).";
+            msgErro.classList.remove("hidden");
+            btn.disabled = false;
+            btn.textContent = editId ? "Salvar Alterações" : "Publicar Agora";
+            window.scrollTo({ top: 0, behavior: "smooth" });
+            return;
+        }
+
         const dados = {
             nome: formData.get("nome") as string,
             descricao: formData.get("descricao") as string,
             categoria: formData.get("categoria") as string,
             tipo: formData.get("tipo") as "grupo" | "canal",
-            link: formData.get("link") as string,
+            link: link,
             foto: formData.get("foto") as string,
             email: (formData.get("email") as string) || undefined,
             regras: regras,
         };
 
         try {
-            await enviarGrupo(dados);
+            if (editId) {
+                await editarGrupo(editId, dados, currentStatus);
+            } else {
+                const id = await enviarGrupo(dados);
+
+                // Salvar no localStorage para o usuário gerenciar
+                const meusGrupos = JSON.parse(
+                    localStorage.getItem("meus_grupos") || "[]"
+                );
+                if (!meusGrupos.includes(id)) {
+                    meusGrupos.push(id);
+                    localStorage.setItem(
+                        "meus_grupos",
+                        JSON.stringify(meusGrupos)
+                    );
+                }
+            }
+
             const previewCont = document.getElementById("preview-container");
-            const formCol = document.getElementById("main-form-col");
+            const fCol = document.getElementById("main-form-col")!;
             previewCont?.classList.add("hidden");
-            formCol?.classList.add("lg:col-start-3");
+            fCol.classList.add("lg:col-start-3");
 
             document.getElementById("form-container")!.classList.add("hidden");
-            document.getElementById("msg-sucesso")!.classList.remove("hidden");
+            const msgSucesso = document.getElementById("msg-sucesso")!;
+            const successText = document.getElementById("success-text")!;
+            if (editId) {
+                successText.textContent =
+                    currentStatus === "aprovado"
+                        ? "✅ Suas alterações foram atualizadas."
+                        : "✅ Recebido! Em breve será revisado.";
+            }
+            msgSucesso.classList.remove("hidden");
             window.scrollTo({ top: 0, behavior: "smooth" });
         } catch (err) {
+            console.error(err);
             msgErro.textContent = "Erro ao salvar seu grupo. Tente novamente.";
             msgErro.classList.remove("hidden");
             btn.disabled = false;
-            btn.textContent = "Finalizar Cadastro";
+            btn.textContent = editId
+                ? "Tentar Novamente"
+                : "Finalizar Cadastro";
         }
     });
 </script>

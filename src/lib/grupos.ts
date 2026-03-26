@@ -75,10 +75,24 @@ export async function alternarDestaque(id: string, atualDestaque: boolean) {
   await updateDoc(doc(db, 'grupos', id), { destaque: !atualDestaque });
 }
 
-export async function enviarGrupo(dados: Omit<Grupo, 'id' | 'status'>) {
-  await addDoc(collection(db, 'grupos'), {
+export async function enviarGrupo(dados: Omit<Grupo, "id" | "status">) {
+  const docRef = await addDoc(collection(db, "grupos"), {
     ...dados,
-    status: 'pendente',
+    status: "pendente",
     criadoEm: serverTimestamp(),
+  });
+  return docRef.id;
+}
+export async function getGruposByIds(ids: string[]): Promise<Grupo[]> {
+  if (!ids || ids.length === 0) return [];
+  const promises = ids.map((id) => getGrupoById(id));
+  const results = await Promise.all(promises);
+  return results.filter((g) => g !== null) as Grupo[];
+}
+export async function editarGrupo(id: string, dados: any, statusAtual?: string) {
+  const status = statusAtual === "aprovado" ? "aprovado" : "pendente";
+  await updateDoc(doc(db, "grupos", id), {
+    ...dados,
+    status: status,
   });
 }

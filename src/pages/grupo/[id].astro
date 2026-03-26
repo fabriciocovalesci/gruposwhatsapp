@@ -10,7 +10,7 @@ if (!id) return Astro.redirect("/404");
 
 const grupo = await getGrupoById(id);
 
-if (!grupo || grupo.status !== "aprovado") {
+if (!grupo) {
     return Astro.redirect("/404");
 }
 
@@ -161,25 +161,6 @@ const schema = {
                                             ></path>
                                         </svg>
                                     </a>
-
-                                    {/* ADS SQUARE 300x250 - BELOW JOIN */}
-                                    <div
-                                        class="flex justify-center md:justify-start"
-                                    >
-                                        <script is:inline>
-                                            atOptions = {
-                                                key: "4338a28875296e7802a9ca55bd939643",
-                                                format: "iframe",
-                                                height: 250,
-                                                width: 300,
-                                                params: {},
-                                            };
-                                        </script>
-                                        <script
-                                            is:inline
-                                            src="https://www.highperformanceformat.com/4338a28875296e7802a9ca55bd939643/invoke.js"
-                                        ></script>
-                                    </div>
                                 </div>
                             </div>
                         </div>

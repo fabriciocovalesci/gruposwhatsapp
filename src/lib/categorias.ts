@@ -61,6 +61,7 @@ export const categoriasPorGrupo = [
     grupo: 'Compras & Ofertas',
     items: [
       { slug: 'ofertas', label: 'Ofertas' },
+      { slug: 'achadinhos', label: 'Achadinhos' },
       { slug: 'vendas-online', label: 'Vendas Online' },
       { slug: 'cashback', label: 'Cashback' },
       { slug: 'importados', label: 'Importados' },

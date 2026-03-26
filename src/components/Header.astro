@@ -38,19 +38,19 @@ const pathname = rmTrailingSlash(Astro.url.pathname);
 
 				{/* Mobile Buttons - Center (New) */}
 				<div
-					class="lg:hidden flex items-center gap-2 flex-1 justify-center"
+					class="lg:hidden flex items-center gap-1.5 flex-1 justify-end pr-2"
 				>
 					<a
 						href="/enviar-grupo"
-						class="bg-white text-[#075E54] px-3 py-1.5 rounded-lg font-black text-[10px] uppercase border-none shadow-sm"
+						class="bg-white text-[#028b3a] px-2.5 py-1.5 rounded-lg font-black text-[9px] uppercase border-none shadow-sm"
 					>
 						Enviar Grupo
 					</a>
 					<a
-						href="/categorias"
-						class="bg-black/20 text-white px-3 py-1.5 rounded-lg border border-white/40 font-black text-[10px] uppercase"
+						href="/meus-grupos"
+						class="bg-black/20 text-white px-2.5 py-1.5 rounded-lg border border-white/20 font-black text-[9px] uppercase"
 					>
-						Categorias
+						Meus Grupos
 					</a>
 				</div>
 
@@ -78,8 +78,13 @@ const pathname = rmTrailingSlash(Astro.url.pathname);
 							))
 						}
 						<a
+							href="/meus-grupos"
+							class="bg-black/10 text-white px-6 py-2.5 rounded-full font-bold text-sm hover:bg-black/20 transition-all"
+							>Meus Grupos</a
+						>
+						<a
 							href="/enviar-grupo"
-							class="bg-white text-[#075E54] px-6 py-2.5 rounded-full font-bold text-sm shadow-md hover:bg-gray-50 transition-colors"
+							class="bg-white text-[#028b3a] px-6 py-2.5 rounded-full font-bold text-sm shadow-md hover:bg-gray-50 transition-colors"
 							>Enviar Grupo</a
 						>
 					</div>

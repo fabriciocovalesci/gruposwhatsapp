@@ -23,7 +23,6 @@ if (!categoria) throw new Error("Categoria não encontrada");
 const label = getLabelCategoria(categoria) || categoria;
 
 // Obter grupos
-// Em um app real enorme, filtraríamos no backend. Aqui para SSG podemos filtrar no build
 const todosGrupos = await getGruposAprovados();
 const gruposDaCategoria = todosGrupos.filter((g) => g.categoria === categoria);
 ---
@@ -36,33 +35,14 @@ const gruposDaCategoria = todosGrupos.filter((g) => g.categoria === categoria);
         <Container>
             <div class="mb-10 text-center lg:text-left">
                 <h1
-                    class="text-2xl lg:text-4xl font-bold text-gray-950 tracking-tight"
+                    class="text-2xl lg:text-4xl font-black text-gray-950 tracking-tight"
                 >
-                    Grupos de <span class="text-[#25D366]">{label}</span>
+                    Grupos de <span class="text-[#028b3a]">{label}</span>
                 </h1>
                 <p class="text-sm text-gray-700 font-medium lg:max-w-xl">
                     Participar de comunidades reais de {label} no WhatsApp. Atualizado
                     diariamente.
                 </p>
-            </div>
-
-            {/* ADS BANNER 468x60 - CATEGORY TOP */}
-            <div
-                class="flex justify-center mb-10 overflow-hidden rounded-xl bg-gray-50 py-4 border border-gray-100"
-            >
-                <script is:inline>
-                    atOptions = {
-                        key: "b49215a7ca184ae7aab08492486df4e8",
-                        format: "iframe",
-                        height: 60,
-                        width: 468,
-                        params: {},
-                    };
-                </script>
-                <script
-                    is:inline
-                    src="https://www.highperformanceformat.com/b49215a7ca184ae7aab08492486df4e8/invoke.js"
-                ></script>
             </div>
 
             <div
@@ -95,11 +75,11 @@ const gruposDaCategoria = todosGrupos.filter((g) => g.categoria === categoria);
         <Container>
             <div class="max-w-3xl mx-auto text-center">
                 <h2
-                    class="text-3xl lg:text-4xl font-bold text-gray-950 mb-6 tracking-tight"
+                    class="text-3xl lg:text-4xl font-black text-gray-950 mb-6 tracking-tight"
                 >
                     Ainda procurando?
                 </h2>
-                <p class="text-gray-500 text-lg mb-12 font-medium">
+                <p class="text-gray-700 text-lg mb-12 font-medium">
                     Navegue por outras categorias populares para encontrar
                     exatamente o que deseja no WhatsApp.
                 </p>
@@ -111,18 +91,12 @@ const gruposDaCategoria = todosGrupos.filter((g) => g.categoria === categoria);
                             .map((cat) => (
                                 <a
                                     href={`/categorias/${cat.slug}`}
-                                    class="px-5 py-2.5 bg-white border border-gray-200 rounded-2xl text-sm text-gray-700 font-bold hover:bg-[#E8F8F5] hover:text-[#25D366] hover:border-[#25D366]/20 transition-all"
+                                    class="px-5 py-2.5 bg-white border border-gray-200 rounded-2xl text-sm text-gray-800 font-bold hover:bg-[#E8F8F5] hover:text-[#028b3a] hover:border-[#028b3a]/20 transition-all"
                                 >
                                     {cat.label}
                                 </a>
                             ))
                     }
-                    <a
-                        href="/categorias"
-                        class="px-5 py-2.5 bg-gray-900 rounded-2xl text-sm text-white font-bold hover:bg-gray-800 transition-all"
-                    >
-                        Ver todas
-                    </a>
                 </div>
             </div>
         </Container>
