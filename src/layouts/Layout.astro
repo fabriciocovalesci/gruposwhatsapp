@@ -6,14 +6,24 @@ import Footer from "~/components/Footer.astro";
 import { siteName, siteLang, themeColor } from "~/data/config";
 
 const baseUrl = `${Astro.url.protocol}//${Astro.url.host}`;
-const { pageTitle, title, description, noindex = false } = Astro.props;
 
 interface Props {
 	pageTitle?: string;
 	title?: string;
 	description?: string;
+	keywords?: string;
 	noindex?: boolean;
 }
+
+const defaultKeywords =
+	"links de grupos de whatsapp, grupos de whatsapp 2025, entrar em grupos de whatsapp, link de canal whatsapp, grupos de amizade whatsapp, grupos de namoro whatsapp, grupos de figurinhas whatsapp, grupos de ganhar dinheiro whatsapp, grupos de divulgacao whatsapp, grupos de emprego whatsapp, whatsapp groups links";
+const {
+	pageTitle,
+	title,
+	description,
+	keywords = defaultKeywords,
+	noindex = false,
+} = Astro.props;
 ---
 
 <!DOCTYPE html>
@@ -23,8 +33,12 @@ interface Props {
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="theme-color" content={themeColor} />
 		<meta name="description" content={description} />
+		<meta name="keywords" content={keywords} />
 		<link rel="canonical" href={Astro.url} />
-		<meta name="robots" content="index, follow" />
+		<meta
+			name="robots"
+			content={noindex ? "noindex, nofollow" : "index, follow"}
+		/>
 		<link rel="author" href="humans.txt" />
 
 		<link rel="icon" type="image/png" href="/favicon.png" sizes="96x96" />
