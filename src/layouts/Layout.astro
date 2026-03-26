@@ -23,7 +23,8 @@ interface Props {
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="theme-color" content={themeColor} />
 		<meta name="description" content={description} />
-		{noindex && <meta name="robots" content="noindex,nofollow" />}
+		<link rel="canonical" href={Astro.url} />
+		<meta name="robots" content="index, follow" />
 		<link rel="author" href="humans.txt" />
 
 		<link
@@ -40,21 +41,26 @@ interface Props {
 			href="/apple-touch-icon.png"
 		/>
 		<meta name="apple-mobile-web-app-title" content={siteName} />
-		<!-- <link rel="manifest" href="/site.webmanifest" /> -->
 
 		<meta property="og:url" content={Astro.url} />
 		<meta property="og:type" content="website" />
-		<meta property="og:title" content={`${title} | ${siteName}`} />
+		<meta
+			property="og:title"
+			content={pageTitle || `${title} | ${siteName}`}
+		/>
 		<meta property="og:image" content={`${baseUrl}/images/og-image.jpg`} />
 		<meta property="og:description" content={description} />
 		<meta property="og:site_name" content={siteName} />
-		<meta property="og:locale" content={siteLang} />
+		<meta property="og:locale" content="pt_BR" />
 
-		<meta name="twitter:card" content="summary" />
+		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="twitter:url" content={Astro.url} />
-		<meta name="twitter:title" content={`${title} | ${siteName}`} />
+		<meta
+			name="twitter:title"
+			content={pageTitle || `${title} | ${siteName}`}
+		/>
 		<meta name="twitter:description" content={description} />
-		<!-- <meta name="twitter:image" content={`${baseUrl}/images/og-image.jpg`} /> -->
+		<meta name="twitter:image" content={`${baseUrl}/images/og-image.jpg`} />
 
 		<title>{pageTitle}</title>
 
