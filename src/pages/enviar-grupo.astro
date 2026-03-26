@@ -13,17 +13,19 @@ import { todasCategorias, getLabelCategoria } from "~/lib/grupos";
         <Container>
             {/* Header */}
             <div class="text-center max-w-3xl mx-auto mb-16">
-                <h3
+                <h1
                     class="text-3xl lg:text-5xl font-black text-gray-950 mb-4 tracking-tighter"
                 >
-                    Enviar Grupo ou <span class="text-[#25D366]">Canal</span>
-                </h3>
+                    Enviar Grupo ou <span class="text-[#028b3a]">Canal</span>
+                </h1>
                 <p class="text-gray-500 font-medium italic">
                     "Divulgue seu link e receba novos membros em instantes."
                 </p>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+            <div
+                class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start justify-center"
+            >
                 {/* Lateral: Preview Card */}
                 <div
                     id="preview-container"
@@ -37,12 +39,12 @@ import { todasCategorias, getLabelCategoria } from "~/lib/grupos";
                                 <div class="relative">
                                     <img
                                         id="preview-img"
-                                        src="https://ui-avatars.com/api/?name=G&background=25D366&color=fff&size=128&bold=true&rounded=true"
+                                        src="https://ui-avatars.com/api/?name=G&background=028b3a&color=fff&size=128&bold=true&rounded=true"
                                         alt="Preview Avatar"
                                         class="w-16 h-16 rounded-2xl object-cover bg-gray-50 shadow-sm"
                                     />
                                     <div
-                                        class="absolute -bottom-1 -right-1 size-5 rounded-full border-2 border-white bg-[#25D366] shadow-sm"
+                                        class="absolute -bottom-1 -right-1 size-5 rounded-full border-2 border-white bg-[#028b3a] shadow-sm"
                                     >
                                     </div>
                                 </div>
@@ -53,7 +55,7 @@ import { todasCategorias, getLabelCategoria } from "~/lib/grupos";
                                             id="preview-tipo">GRUPO</span
                                         >
                                         <span
-                                            class="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-lg bg-gray-50 text-gray-400"
+                                            class="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-lg bg-gray-50 text-gray-700"
                                             id="preview-cat">CATEGORIA</span
                                         >
                                     </div>
@@ -66,13 +68,13 @@ import { todasCategorias, getLabelCategoria } from "~/lib/grupos";
                                 </div>
                             </div>
                             <p
-                                class="text-gray-400 font-medium line-clamp-3 text-xs leading-relaxed mb-6"
+                                class="text-gray-600 font-medium line-clamp-3 text-xs leading-relaxed mb-6"
                                 id="preview-desc"
                             >
                                 A descrição do seu grupo aparecerá aqui...
                             </p>
                             <div
-                                class="w-full h-12 bg-[#25D366] rounded-2xl flex items-center justify-center font-black text-white text-sm"
+                                class="w-full h-12 bg-[#028b3a] rounded-2xl flex items-center justify-center font-black text-white text-sm"
                             >
                                 PARTICIPAR
                             </div>
@@ -85,7 +87,7 @@ import { todasCategorias, getLabelCategoria } from "~/lib/grupos";
                     </div>
 
                     <div
-                        class="mt-8 bg-[#25D366]/5 border border-[#25D366]/20 p-6 rounded-3xl"
+                        class="mt-8 bg-[#028b3a]/5 border border-[#028b3a]/20 p-6 rounded-3xl"
                     >
                         <div class="flex gap-3">
                             <span class="text-xl">🚀</span>
@@ -100,7 +102,10 @@ import { todasCategorias, getLabelCategoria } from "~/lib/grupos";
                 </div>
 
                 {/* Direita: Formulário Workflow */}
-                <div class="lg:col-span-8 order-2">
+                <div
+                    id="main-form-col"
+                    class="lg:col-span-8 lg:col-start-3 order-2"
+                >
                     {/* FEEDBACKS */}
                     <div
                         id="msg-erro"
@@ -124,7 +129,7 @@ import { todasCategorias, getLabelCategoria } from "~/lib/grupos";
                         </p>
                         <a
                             href="/"
-                            class="inline-flex px-10 py-4 bg-[#25D366] text-white rounded-2xl font-black hover:bg-gray-950 transition-all"
+                            class="inline-flex px-10 py-4 bg-[#028b3a] text-white rounded-2xl font-black hover:bg-gray-950 transition-all"
                             >Explorar Grupos</a
                         >
                     </div>
@@ -156,13 +161,13 @@ import { todasCategorias, getLabelCategoria } from "~/lib/grupos";
                                         type="url"
                                         id="link-verify"
                                         placeholder="https://chat.whatsapp.com/..."
-                                        class="w-full px-8 py-5 bg-gray-50 border-none rounded-2xl focus:ring-4 focus:ring-[#25D366]/20 font-bold text-gray-800 transition-all text-lg"
+                                        class="w-full px-8 py-5 bg-gray-50 border-none rounded-2xl focus:ring-4 focus:ring-[#028b3a]/20 font-bold text-gray-800 transition-all text-lg"
                                     />
                                 </div>
 
                                 <button
                                     id="btn-verify"
-                                    class="w-full py-5 bg-gray-950 text-white font-black text-xl rounded-3xl hover:bg-[#25D366] transition-all active:scale-95 flex items-center justify-center gap-3"
+                                    class="w-full py-5 bg-gray-950 text-white font-black text-xl rounded-3xl hover:bg-[#028b3a] transition-all active:scale-95 flex items-center justify-center gap-3"
                                 >
                                     <span id="txt-verify">Validar Link</span>
                                     <svg
@@ -300,13 +305,13 @@ import { todasCategorias, getLabelCategoria } from "~/lib/grupos";
                                                 "Apenas +18",
                                                 "Sem Links",
                                             ].map((regra) => (
-                                                <label class="flex items-center gap-1.5 px-2.5 py-1.5 bg-white border border-gray-200 rounded-full cursor-pointer transition-all hover:border-[#25D366] group has-[:checked]:bg-[#25D366]/5 has-[:checked]:border-[#25D366] shadow-sm">
+                                                <label class="flex items-center gap-1.5 px-2.5 py-1.5 bg-white border border-gray-200 rounded-full cursor-pointer transition-all hover:border-[#028b3a] group has-[:checked]:bg-[#028b3a]/5 has-[:checked]:border-[#028b3a] shadow-sm">
                                                     <input
                                                         type="checkbox"
                                                         name="regras"
                                                         value={regra}
                                                         checked
-                                                        class="size-3 rounded-full border-gray-300 text-[#25D366] focus:ring-[#25D366] transition-all"
+                                                        class="size-3 rounded-full border-gray-300 text-[#028b3a] focus:ring-[#028b3a] transition-all"
                                                     />
                                                     <span class="text-[9px] font-black text-gray-500 uppercase tracking-tight group-hover:text-[#075E54]">
                                                         {regra}
@@ -326,7 +331,7 @@ import { todasCategorias, getLabelCategoria } from "~/lib/grupos";
                                             name="regras_extras"
                                             rows="2"
                                             placeholder="Escreva uma regra por linha..."
-                                            class="w-full px-5 py-3 bg-white border border-gray-200 rounded-2xl text-[11px] font-bold text-gray-600 focus:ring-2 focus:ring-[#25D366]/20 transition-all resize-none shadow-sm"
+                                            class="w-full px-5 py-3 bg-white border border-gray-200 rounded-2xl text-[11px] font-bold text-gray-600 focus:ring-2 focus:ring-[#028b3a]/20 transition-all resize-none shadow-sm"
                                         ></textarea>
                                         <p
                                             class="text-[8px] text-gray-400 font-bold uppercase tracking-widest leading-tight"
@@ -353,7 +358,7 @@ import { todasCategorias, getLabelCategoria } from "~/lib/grupos";
                                 <button
                                     type="submit"
                                     id="btn-enviar"
-                                    class="w-full py-5 bg-[#25D366] text-white font-black text-xl rounded-3xl shadow-xl hover:shadow-[#25D366]/30 transition-all active:scale-95"
+                                    class="w-full py-5 bg-[#028b3a] text-white font-black text-xl rounded-3xl shadow-xl hover:shadow-[#028b3a]/30 transition-all active:scale-95"
                                 >
                                     Finalizar Cadastro
                                 </button>
@@ -447,9 +452,12 @@ import { todasCategorias, getLabelCategoria } from "~/lib/grupos";
                 if (data.groupImage) pImg.src = data.groupImage;
 
                 // Move to step 2
-                document
-                    .getElementById("preview-container")
-                    ?.classList.remove("hidden");
+                const previewCont =
+                    document.getElementById("preview-container");
+                const formCol = document.getElementById("main-form-col");
+                previewCont?.classList.remove("hidden");
+                formCol?.classList.remove("lg:col-start-3");
+
                 step1.classList.add("hidden");
                 step2.classList.remove("hidden");
             } else {
@@ -512,9 +520,11 @@ import { todasCategorias, getLabelCategoria } from "~/lib/grupos";
 
         try {
             await enviarGrupo(dados);
-            document
-                .getElementById("preview-container")
-                ?.classList.add("hidden");
+            const previewCont = document.getElementById("preview-container");
+            const formCol = document.getElementById("main-form-col");
+            previewCont?.classList.add("hidden");
+            formCol?.classList.add("lg:col-start-3");
+
             document.getElementById("form-container")!.classList.add("hidden");
             document.getElementById("msg-sucesso")!.classList.remove("hidden");
             window.scrollTo({ top: 0, behavior: "smooth" });
