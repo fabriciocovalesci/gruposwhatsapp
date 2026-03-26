@@ -1,0 +1,53 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Yandex
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: AhrefsBot
+Allow: /
+
+# Bloqueia bots de IA e outros que não sejam de indexação pura
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: PerplexityBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: dotbot
+Disallow: /
+
+# Regra geral para o resto
+User-agent: *
+Disallow: /
+
+Host: https://gruposwhatsapp.online
+Sitemap: https://gruposwhatsapp.online/sitemap.xml
