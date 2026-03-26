@@ -1,0 +1,44 @@
+Aqui estão todas as 35 categorias que temos atualmente no projeto, organizadas por grupos:
+
+💻 Tecnologia & Trabalho
+Tecnologia
+Programação
+Design
+Marketing Digital
+Vagas de Emprego
+Freelancer
+💰 Finanças & Negócios
+Finanças
+Investimentos
+Criptomoedas
+Empreendedorismo
+Renda Extra
+📚 Educação & Idiomas
+Educação
+Concursos
+Idiomas
+ENEM
+Cursos Gratuitos
+🍎 Saúde & Bem-estar
+Saúde
+Fitness
+Nutrição
+Meditação
+🎮 Entretenimento
+Games
+Séries & Filmes
+Música
+Humor
+Esportes
+Animes
+🛍️ Compras & Ofertas
+Ofertas
+Cashback
+Importados
+🌍 Estilo de Vida
+Viagens
+Culinária
+Pets
+Moda
+Política
+Religião

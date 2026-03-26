@@ -116,12 +116,13 @@ const pathname = rmTrailingSlash(Astro.url.pathname);
 	>
 		<div class="p-6">
 			<div class="flex justify-between items-center mb-10">
-				<span class="font-black text-2xl text-[#25D366]"
+				<span class="font-black text-2xl text-[#028b3a]"
 					>{siteName}
 				</span>
 				<button
 					id="mobile-menu-close"
-					class="p-2 text-gray-500 hover:bg-gray-100 rounded-full transition-colors"
+					aria-label="Fechar Menu"
+					class="p-2 text-gray-700 hover:bg-gray-100 rounded-full transition-colors"
 				>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
@@ -142,7 +143,7 @@ const pathname = rmTrailingSlash(Astro.url.pathname);
 			<nav class="space-y-8">
 				<div>
 					<h3
-						class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4"
+						class="text-xs font-bold text-gray-700 uppercase tracking-widest mb-4"
 					>
 						Navegação
 					</h3>

@@ -30,7 +30,7 @@ const latestGrupos = grupos.slice(0, 12);
 					class="text-4xl lg:text-7xl font-black text-white tracking-tight mb-8 leading-[1.1]"
 				>
 					Encontre agora os melhores <br class="hidden lg:block" />
-					<span class="text-black/30">Grupos de WhatsApp</span>
+					<span class="text-black/50">Grupos de WhatsApp</span>
 				</h1>
 				<p
 					class="text-lg lg:text-2xl text-white mb-14 max-w-2xl mx-auto font-medium leading-relaxed"
@@ -114,7 +114,7 @@ const latestGrupos = grupos.slice(0, 12);
 					}
 					<a
 						href="/categorias"
-						class="px-6 py-3 text-[#25D366] font-bold text-sm whitespace-nowrap hover:underline"
+						class="px-6 py-3 text-[#028b3a] font-bold text-sm whitespace-nowrap hover:underline"
 						>Ver todas as {todasCategorias.length} →</a
 					>
 				</div>
@@ -125,6 +125,7 @@ const latestGrupos = grupos.slice(0, 12);
 	{/* Últimos Grupos - Ultra Compact */}
 	<Section class:list={"pt-4 pb-12 lg:pt-6 lg:pb-20"}>
 		<Container>
+			<h2 class="sr-only">Últimos Grupos Adicionados</h2>
 			<ShowGroups grupos={latestGrupos} />
 		</Container>
 	</Section>
@@ -132,19 +133,19 @@ const latestGrupos = grupos.slice(0, 12);
 	{/* Call to Action - Clean & Premium */}
 	<Section class:list={"bg-gray-900 py-24 lg:py-48 relative overflow-hidden"}>
 		<div
-			class="absolute inset-0 bg-[#25D366] opacity-5 pointer-events-none"
+			class="absolute inset-0 bg-[#028b3a] opacity-5 pointer-events-none"
 		>
 		</div>
 		<Container class="relative z-10">
 			<div class="text-center max-w-4xl mx-auto">
 				<span
-					class="inline-flex items-center px-4 py-1.5 rounded-full bg-[#25D366] text-white text-[10px] font-black uppercase tracking-widest mb-10 shadow-lg"
+					class="inline-flex items-center px-4 py-1.5 rounded-full bg-[#028b3a] text-white text-[10px] font-black uppercase tracking-widest mb-10 shadow-lg"
 					>Ganhe novos membros hoje</span
 				>
 				<h2
 					class="text-5xl lg:text-8xl font-bold text-white leading-[1.05] mb-10 tracking-tighter"
 				>
-					Turbine o seu <span class="text-[#25D366]">Link</span> Gratuitamente.
+					Turbine o seu <span class="text-[#028b3a]">Link</span> Gratuitamente.
 				</h2>
 				<p
 					class="text-gray-400 text-xl lg:text-2xl mb-16 font-medium leading-relaxed max-w-2xl mx-auto"

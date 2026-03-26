@@ -72,11 +72,11 @@ const categoriaLabel = getLabelCategoria(grupo.categoria) || grupo.categoria;
                         {categoriaLabel}
                     </span>
                 </div>
-                <h5
-                    class="font-black text-gray-950 text-lg truncate group-hover:text-[#25D366] transition-colors leading-tight"
+                <h3
+                    class="font-black text-gray-950 text-lg truncate group-hover:text-[#028b3a] transition-colors leading-tight"
                 >
                     {grupo.nome}
-                </h5>
+                </h3>
             </div>
         </div>
 
@@ -90,7 +90,8 @@ const categoriaLabel = getLabelCategoria(grupo.categoria) || grupo.categoria;
     <div class="px-6 pb-6 mt-auto">
         <a
             href={`/grupo/${grupo.id}`}
-            class="w-full inline-flex items-center justify-center gap-2 px-6 py-4 text-base font-black text-white bg-[#25D366] rounded-2xl hover:bg-[#075E54] transition-all shadow-lg hover:shadow-[#25D366]/30 active:scale-95 group-hover:bg-[#075E54]"
+            aria-label={`Participar do grupo ${grupo.nome}`}
+            class="w-full inline-flex items-center justify-center gap-2 px-6 py-4 text-base font-black text-white bg-[#028b3a] rounded-2xl hover:bg-[#075E54] transition-all shadow-lg hover:shadow-[#028b3a]/30 active:scale-95 group-hover:bg-[#075E54]"
         >
             <span>Participar</span>
             <svg
@@ -111,7 +112,7 @@ const categoriaLabel = getLabelCategoria(grupo.categoria) || grupo.categoria;
         <div class="mt-4 flex justify-center">
             <a
                 href={`/categorias/${grupo.categoria}`}
-                class="text-[11px] font-black text-gray-600 uppercase tracking-widest hover:text-[#25D366] transition-colors"
+                class="text-[11px] font-black text-gray-600 uppercase tracking-widest hover:text-[#028b3a] transition-colors"
             >
                 Ver mais {categoriaLabel}
             </a>
