@@ -89,9 +89,7 @@ const categoriaLabel = getLabelCategoria(grupo.categoria) || grupo.categoria;
 
     <div class="px-6 pb-6 mt-auto">
         <a
-            href={grupo.link}
-            target="_blank"
-            rel="noopener noreferrer"
+            href={`/grupo/${grupo.id}`}
             class="w-full inline-flex items-center justify-center gap-2 px-6 py-4 text-base font-black text-white bg-[#25D366] rounded-2xl hover:bg-[#075E54] transition-all shadow-lg hover:shadow-[#25D366]/30 active:scale-95 group-hover:bg-[#075E54]"
         >
             <span>Participar</span>

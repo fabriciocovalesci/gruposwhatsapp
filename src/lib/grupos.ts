@@ -1,6 +1,6 @@
 import {
-  collection, getDocs, addDoc, updateDoc,
-  doc, query, where, orderBy, serverTimestamp,
+  collection, getDocs, addDoc, updateDoc, getDoc,
+  doc, query, where, serverTimestamp,
 } from 'firebase/firestore';
 import { db } from './firebase';
 
@@ -56,6 +56,15 @@ export async function getGruposPorStatus(status: string): Promise<Grupo[]> {
       const timeB = b.criadoEm?.seconds || 0;
       return timeB - timeA;
     });
+}
+
+export async function getGrupoById(id: string): Promise<Grupo | null> {
+  const ref = doc(db, 'grupos', id);
+  const snap = await getDoc(ref);
+  if (snap.exists()) {
+    return { id: snap.id, ...snap.data() } as Grupo;
+  }
+  return null;
 }
 
 export async function atualizarStatus(id: string, status: 'aprovado' | 'rejeitado') {

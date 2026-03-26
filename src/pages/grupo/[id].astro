@@ -1,0 +1,314 @@
+---
+import Layout from "~/layouts/Layout.astro";
+import Section from "~/components/Section.astro";
+import Container from "~/components/Container.astro";
+import { getGrupoById, getLabelCategoria } from "~/lib/grupos";
+
+const { id } = Astro.params;
+
+if (!id) return Astro.redirect("/404");
+
+const grupo = await getGrupoById(id);
+
+if (!grupo || grupo.status !== "aprovado") {
+    return Astro.redirect("/404");
+}
+
+const categoriaLabel = getLabelCategoria(grupo.categoria) || grupo.categoria;
+const avatarUrl =
+    grupo.foto ??
+    `https://ui-avatars.com/api/?name=${encodeURIComponent(
+        grupo.nome.slice(0, 2)
+    )}&background=25D366&color=fff&size=256&bold=true&rounded=true`;
+
+const schema = {
+    "@context": "https://schema.org",
+    "@type": "Group",
+    name: grupo.nome,
+    description: grupo.descricao,
+    image: avatarUrl,
+    url: `https://gruposwhatsapp.online/grupo/${id}`,
+};
+---
+
+<Layout
+    pageTitle={`${grupo.nome} - Entrar no Grupo de WhatsApp`}
+    description={`Entre agora no grupo ${grupo.nome}. Categoria: ${categoriaLabel}. Veja as regras e participe da comunidade.`}
+>
+    <script type="application/ld+json" set:html={JSON.stringify(schema)}
+    ></script>
+
+    <Section class:list={"bg-gray-50 py-8 lg:py-16"}>
+        <Container>
+            <div class="max-w-4xl mx-auto">
+                {/* ADS BANNER 468x60 - TOP */}
+                <div
+                    class="flex justify-center mb-8 overflow-hidden rounded-xl"
+                >
+                    <script is:inline>
+                        atOptions = {
+                            key: "b49215a7ca184ae7aab08492486df4e8",
+                            format: "iframe",
+                            height: 60,
+                            width: 468,
+                            params: {},
+                        };
+                    </script>
+                    <script
+                        is:inline
+                        src="https://www.highperformanceformat.com/b49215a7ca184ae7aab08492486df4e8/invoke.js"
+                    ></script>
+                </div>
+
+                {/* Card Principal */}
+                <div
+                    class="bg-white rounded-[3rem] shadow-2xl border border-gray-100 overflow-hidden relative mb-12"
+                >
+                    {/* Banner/Header Background */}
+                    <div
+                        class="h-32 bg-gradient-to-r from-[#25D366] to-[#075E54] opacity-10 absolute top-0 left-0 w-full"
+                    >
+                    </div>
+
+                    <div class="relative p-8 lg:p-16 pt-20">
+                        <div
+                            class="flex flex-col md:flex-row gap-12 items-start"
+                        >
+                            {/* Imagem */}
+                            <div class="relative group mx-auto md:mx-0">
+                                <img
+                                    src={avatarUrl}
+                                    alt={grupo.nome}
+                                    class="size-48 lg:size-56 rounded-[3rem] object-cover border-8 border-white shadow-2xl transition-transform group-hover:scale-105"
+                                />
+                                <div
+                                    class="absolute -bottom-2 -right-2 size-12 rounded-2xl border-4 border-white bg-[#25D366] shadow-xl flex items-center justify-center text-white"
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        class="size-6"
+                                        fill="currentColor"
+                                        viewBox="0 0 24 24"
+                                        ><path
+                                            d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.246 2.248 3.484 5.232 3.483 8.412-.003 6.557-5.338 11.892-11.893 11.892-1.997-.001-3.951-.5-5.688-1.448l-6.308 1.656zm6.29-4.171c1.589.945 3.554 1.443 5.548 1.444 5.485 0 9.948-4.463 9.95-9.948.001-2.659-1.033-5.156-2.911-7.034-1.878-1.878-4.374-2.911-7.035-2.912-5.483 0-9.947 4.463-9.95 9.948-.002 2.099.519 4.143 1.512 5.923l-1.015 3.707 3.801-.998zm11.776-7.188c-.303-.151-1.791-.883-2.069-.985-.278-.102-.48-.153-.682.152-.202.304-.783.985-.96 1.189-.177.203-.354.228-.658.077-.304-.152-1.282-.473-2.443-1.508-.902-.805-1.511-1.8-1.688-2.103-.177-.304-.019-.468.133-.619.135-.136.304-.354.455-.532.152-.178.202-.304.304-.506.101-.203.051-.38-.025-.532-.076-.152-.682-1.644-.935-2.251-.246-.591-.497-.511-.682-.521l-.582-.01c-.202 0-.531.076-.809.38-.278.304-1.062 1.039-1.062 2.536 0 1.497 1.088 2.943 1.24 3.146.152.203 2.142 3.272 5.19 4.587.725.312 1.291.498 1.731.638.728.231 1.391.198 1.915.12.584-.087 1.791-.733 2.044-1.441.253-.708.253-1.315.177-1.441-.076-.126-.278-.203-.582-.354z"
+                                        ></path>
+                                    </svg>
+                                </div>
+                            </div>
+
+                            {/* Detalhes */}
+                            <div class="flex-1 text-center md:text-left">
+                                <nav
+                                    class="flex items-center justify-center md:justify-start gap-2 mb-6 text-[10px] font-black uppercase tracking-widest"
+                                >
+                                    <a
+                                        href="/"
+                                        class="text-gray-400 hover:text-[#25D366] transition-colors"
+                                        >Início</a
+                                    >
+                                    <span class="text-gray-300">/</span>
+                                    <a
+                                        href={`/categorias/${grupo.categoria}`}
+                                        class="text-[#25D366]"
+                                        >{categoriaLabel}
+                                    </a>
+                                </nav>
+
+                                <h1
+                                    class="text-4xl lg:text-5xl font-black text-gray-950 mb-6 leading-tight tracking-tighter"
+                                >
+                                    {grupo.nome}
+                                </h1>
+
+                                <p
+                                    class="text-gray-500 text-lg leading-relaxed mb-8 max-w-xl"
+                                >
+                                    {grupo.descricao}
+                                </p>
+
+                                <div
+                                    class="flex flex-wrap items-center justify-center md:justify-start gap-4 mb-10"
+                                >
+                                    <div
+                                        class="px-5 py-2 bg-gray-50 rounded-full border border-gray-100 flex items-center gap-2"
+                                    >
+                                        <span
+                                            class="size-2 rounded-full bg-[#25D366]"
+                                        ></span>
+                                        <span
+                                            class="text-xs font-black text-gray-600 uppercase tracking-widest"
+                                            >{grupo.tipo}
+                                        </span>
+                                    </div>
+                                    <div
+                                        class="px-5 py-2 bg-gray-50 rounded-full border border-gray-100 flex items-center gap-2"
+                                    >
+                                        <span
+                                            class="size-2 rounded-full bg-blue-500"
+                                        ></span>
+                                        <span
+                                            class="text-xs font-black text-gray-600 uppercase tracking-widest"
+                                            >{categoriaLabel}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                {/* Botão de Ação */}
+                                <div class="space-y-6">
+                                    <a
+                                        href={grupo.link}
+                                        target="_blank"
+                                        rel="nofollow"
+                                        class="inline-flex w-full md:w-auto px-12 py-5 bg-[#25D366] text-white font-black text-xl rounded-3xl shadow-2xl shadow-[#25D366]/40 hover:scale-105 active:scale-95 transition-all justify-center items-center gap-4"
+                                    >
+                                        ENTRAR NO GRUPO
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            class="size-6"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                            ><path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="3"
+                                                d="M13 7l5 5m0 0l-5 5m5-5H6"
+                                            ></path>
+                                        </svg>
+                                    </a>
+
+                                    {/* ADS SQUARE 300x250 - BELOW JOIN */}
+                                    <div
+                                        class="flex justify-center md:justify-start"
+                                    >
+                                        <script is:inline>
+                                            atOptions = {
+                                                key: "4338a28875296e7802a9ca55bd939643",
+                                                format: "iframe",
+                                                height: 250,
+                                                width: 300,
+                                                params: {},
+                                            };
+                                        </script>
+                                        <script
+                                            is:inline
+                                            src="https://www.highperformanceformat.com/4338a28875296e7802a9ca55bd939643/invoke.js"
+                                        ></script>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* ADS CONTAINER - ABOVE RULES */}
+                    <div
+                        class="px-8 lg:px-12 py-6 border-t border-gray-100 flex justify-center bg-gray-50/50 min-h-[100px]"
+                    >
+                        <script
+                            async="async"
+                            data-cfasync="false"
+                            src="https://pl28981420.profitablecpmratenetwork.com/3aa6960b714f1d6ec8455774e5160d8e/invoke.js"
+                        ></script>
+                        <div
+                            id="container-3aa6960b714f1d6ec8455774e5160d8e"
+                            class="w-full"
+                        >
+                        </div>
+                    </div>
+
+                    {/* Footer do Card com Regras */}
+                    {
+                        grupo.regras && grupo.regras.length > 0 && (
+                            <div class="bg-gray-50 border-t border-gray-100 p-8 lg:p-12">
+                                <h2 class="text-xl font-black text-gray-950 mb-8 flex items-center gap-3 tracking-tight">
+                                    <span class="size-8 rounded-xl bg-gray-900 text-white flex items-center justify-center text-sm">
+                                        ⚠️
+                                    </span>
+                                    Regras da Comunidade
+                                </h2>
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                    {grupo.regras.map((regra) => (
+                                        <div class="flex items-center gap-3 p-4 bg-white rounded-2xl border border-gray-200 shadow-sm transition-all hover:bg-gray-50 hover:border-[#25D366]/40 cursor-default">
+                                            <span class="size-5 rounded-full bg-[#25D366]/10 text-[#25D366] flex items-center justify-center flex-shrink-0">
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    class="size-3"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke="currentColor"
+                                                >
+                                                    <path
+                                                        stroke-linecap="round"
+                                                        stroke-linejoin="round"
+                                                        stroke-width="4"
+                                                        d="M5 13l4 4L19 7"
+                                                    />
+                                                </svg>
+                                            </span>
+                                            <span class="text-xs font-bold text-gray-600 uppercase tracking-tight leading-snug">
+                                                {regra}
+                                            </span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )
+                    }
+                </div>
+
+                {/* Segurança e Dicas */}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div
+                        class="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-xl"
+                    >
+                        <div
+                            class="size-12 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center mb-6"
+                        >
+                            🛡️
+                        </div>
+                        <h3 class="text-lg font-black text-gray-900 mb-2">
+                            Dica de Segurança
+                        </h3>
+                        <p
+                            class="text-sm text-gray-500 font-medium leading-relaxed"
+                        >
+                            Nunca compartilhe seus dados pessoais ou faça
+                            transferências financeiras dentro de grupos
+                            desconhecidos. O administrador nunca pedirá sua
+                            senha.
+                        </p>
+                    </div>
+                    <div
+                        class="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-xl"
+                    >
+                        <div
+                            class="size-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center mb-6"
+                        >
+                            ✨
+                        </div>
+                        <h3 class="text-lg font-black text-gray-900 mb-2">
+                            Como Funciona?
+                        </h3>
+                        <p
+                            class="text-sm text-gray-500 font-medium leading-relaxed"
+                        >
+                            Clicando no botão acima, você será levado ao convite
+                            oficial. Se o convite estiver expirado, você pode
+                            voltar e denunciar o link no nosso painel.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </Container>
+    </Section>
+
+    {/* BACKGROUND SCRIPTS (POP-UNDERS / SOCIAL BARS) */}
+    <script
+        is:inline
+        src="https://pl28981421.profitablecpmratenetwork.com/d2/ee/fe/d2eefe65801032e60736ccd404ed350f.js"
+    ></script>
+    <script
+        is:inline
+        src="https://pl28981422.profitablecpmratenetwork.com/7c/25/54/7c255470fd6b5fdd4bf9497258281d6d.js"
+    ></script>
+</Layout>
