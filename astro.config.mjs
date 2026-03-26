@@ -2,7 +2,7 @@
 import { defineConfig } from "astro/config";
 import mdx from "@astrojs/mdx";
 import playformInline from "@playform/inline";
-import netlify from "@astrojs/netlify";
+import vercel from "@astrojs/vercel";
 import tailwindcss from "@tailwindcss/vite";
 
 // https://astro.build/config
@@ -14,7 +14,7 @@ export default defineConfig({
 	devToolbar: {
 		enabled: false,
 	},
-	adapter: netlify(),
+	adapter: vercel(),
 	vite: {
 		plugins: [tailwindcss()],
 	},
