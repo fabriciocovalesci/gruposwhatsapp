@@ -32,6 +32,8 @@ export async function getGruposAprovados(): Promise<Grupo[]> {
   return snap.docs
     .map(d => ({ id: d.id, ...d.data() } as Grupo))
     .sort((a: any, b: any) => {
+      if (a.destaque && !b.destaque) return -1;
+      if (!a.destaque && b.destaque) return 1;
       const timeA = a.criadoEm?.seconds || 0;
       const timeB = b.criadoEm?.seconds || 0;
       return timeB - timeA;
@@ -47,6 +49,8 @@ export async function getGruposPorStatus(status: string): Promise<Grupo[]> {
   return snap.docs
     .map(d => ({ id: d.id, ...d.data() } as Grupo))
     .sort((a: any, b: any) => {
+      if (a.destaque && !b.destaque) return -1;
+      if (!a.destaque && b.destaque) return 1;
       const timeA = a.criadoEm?.seconds || 0;
       const timeB = b.criadoEm?.seconds || 0;
       return timeB - timeA;
@@ -55,6 +59,10 @@ export async function getGruposPorStatus(status: string): Promise<Grupo[]> {
 
 export async function atualizarStatus(id: string, status: 'aprovado' | 'rejeitado') {
   await updateDoc(doc(db, 'grupos', id), { status });
+}
+
+export async function alternarDestaque(id: string, atualDestaque: boolean) {
+  await updateDoc(doc(db, 'grupos', id), { destaque: !atualDestaque });
 }
 
 export async function enviarGrupo(dados: Omit<Grupo, 'id' | 'status'>) {

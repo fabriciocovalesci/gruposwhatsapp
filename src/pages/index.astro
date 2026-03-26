@@ -14,7 +14,7 @@ const latestGrupos = grupos.slice(0, 12);
 ---
 
 <Layout
-	pageTitle="GruposWhats.app - Links de Grupos de WhatsApp"
+	pageTitle="gruposwhatsapp.online - Links de Grupos de WhatsApp"
 	description="Encontre os melhores links de grupos de WhatsApp, canais, namoro, amizade e muito mais. Mande seu grupo e consiga mais membros gratis!"
 >
 	{/* Hero Section - Matching Hyperdrive Soul */}
@@ -122,46 +122,9 @@ const latestGrupos = grupos.slice(0, 12);
 		</Container>
 	</div>
 
-	{/* Últimos Grupos - Restored Clean Style */}
-	<Section class:list={"py-24 lg:py-36"}>
+	{/* Últimos Grupos - Ultra Compact */}
+	<Section class:list={"pt-4 pb-12 lg:pt-6 lg:pb-20"}>
 		<Container>
-			<div
-				class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6"
-			>
-				<div class="max-w-2xl">
-					<span
-						class="text-[#25D366] font-bold uppercase tracking-[0.2em] text-xs mb-3 block"
-						>Atualização em tempo real</span
-					>
-					<h2
-						class="text-4xl lg:text-5xl font-bold text-gray-950 tracking-tight"
-					>
-						Melhores Links <span class="text-gray-400"
-							>Recentes</span
-						>
-					</h2>
-				</div>
-				<div>
-					<a
-						href="/categorias"
-						class="inline-flex items-center gap-2 px-10 py-4 bg-gray-50 text-gray-700 rounded-2xl font-bold hover:bg-gray-100 transition-all border border-gray-100 shadow-sm active:scale-95"
-					>
-						Ver Tudo
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							class="h-5 w-5"
-							viewBox="0 0 20 20"
-							fill="currentColor"
-						>
-							<path
-								fill-rule="evenodd"
-								d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-								clip-rule="evenodd"></path>
-						</svg>
-					</a>
-				</div>
-			</div>
-
 			<ShowGroups grupos={latestGrupos} />
 		</Container>
 	</Section>
