@@ -7,7 +7,7 @@ import tailwindcss from "@tailwindcss/vite";
 
 // https://astro.build/config
 export default defineConfig({
-	site: "https://astro-hyperdrive.netlify.app",
+	site: "https://gruposwhatsapp.online",
 	base: "/",
 	integrations: [mdx(), playformInline({ Critters: true })],
 	output: "static",
