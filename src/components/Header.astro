@@ -14,7 +14,7 @@ const pathname = rmTrailingSlash(Astro.url.pathname);
 ---
 
 <header class="sticky top-0 z-50">
-	<section class="bg-[#25D366] text-white">
+	<section class="bg-[#028b3a] text-white">
 		<div class="container py-3 lg:py-6">
 			<div class="flex justify-between items-center gap-x-4">
 				<a
@@ -24,13 +24,13 @@ const pathname = rmTrailingSlash(Astro.url.pathname);
 					<div class="flex items-center gap-x-3">
 						<div class="bg-white p-1.5 rounded-xl shadow-sm">
 							<div
-								class="colored-icon size-7 lg:size-9 bg-[#25D366]"
+								class="colored-icon size-7 lg:size-9 bg-[#028b3a]"
 								style={`--icon-url: url(${iconUsers.src})`}
 							>
 							</div>
 						</div>
 						<span
-							class="font-bold text-xl lg:text-3xl tracking-tight hidden lg:block"
+							class="font-black text-xl lg:text-3xl tracking-tight hidden lg:block"
 							>{siteName}
 						</span>
 					</div>
@@ -42,13 +42,13 @@ const pathname = rmTrailingSlash(Astro.url.pathname);
 				>
 					<a
 						href="/enviar-grupo"
-						class="bg-white text-[#075E54] px-3 py-1.5 rounded-lg font-bold text-[10px] uppercase border border-white shadow-sm"
+						class="bg-white text-[#075E54] px-3 py-1.5 rounded-lg font-black text-[10px] uppercase border-none shadow-sm"
 					>
 						Enviar Grupo
 					</a>
 					<a
 						href="/categorias"
-						class="bg-[#075E54]/20 text-white px-3 py-1.5 rounded-lg border border-white/30 font-bold text-[10px] uppercase"
+						class="bg-black/20 text-white px-3 py-1.5 rounded-lg border border-white/40 font-black text-[10px] uppercase"
 					>
 						Categorias
 					</a>

@@ -40,10 +40,29 @@ const gruposDaCategoria = todosGrupos.filter((g) => g.categoria === categoria);
                 >
                     Grupos de <span class="text-[#25D366]">{label}</span>
                 </h1>
-                <p class="text-sm text-gray-500 font-medium lg:max-w-xl">
+                <p class="text-sm text-gray-700 font-medium lg:max-w-xl">
                     Participar de comunidades reais de {label} no WhatsApp. Atualizado
                     diariamente.
                 </p>
+            </div>
+
+            {/* ADS BANNER 468x60 - CATEGORY TOP */}
+            <div
+                class="flex justify-center mb-10 overflow-hidden rounded-xl bg-gray-50 py-4 border border-gray-100"
+            >
+                <script is:inline>
+                    atOptions = {
+                        key: "b49215a7ca184ae7aab08492486df4e8",
+                        format: "iframe",
+                        height: 60,
+                        width: 468,
+                        params: {},
+                    };
+                </script>
+                <script
+                    is:inline
+                    src="https://www.highperformanceformat.com/b49215a7ca184ae7aab08492486df4e8/invoke.js"
+                ></script>
             </div>
 
             <div
@@ -51,18 +70,18 @@ const gruposDaCategoria = todosGrupos.filter((g) => g.categoria === categoria);
             >
                 <div>
                     <span
-                        class="text-[#25D366] font-bold uppercase tracking-[0.2em] text-[10px] mb-2 block"
+                        class="text-[#028b3a] font-black uppercase tracking-[0.2em] text-[10px] mb-2 block"
                         >Listagem de Grupos</span
                     >
                     <h2
-                        class="text-2xl lg:text-3xl font-bold text-gray-950 tracking-tight"
+                        class="text-2xl lg:text-3xl font-black text-gray-950 tracking-tight"
                     >
                         {gruposDaCategoria.length} Disponíveis
                     </h2>
                 </div>
                 <a
                     href="/enviar-grupo"
-                    class="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-gray-900 text-white rounded-2xl font-bold hover:bg-[#25D366] transition-all shadow-xl active:scale-95 text-sm"
+                    class="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-gray-900 text-white rounded-2xl font-black hover:bg-[#028b3a] transition-all shadow-xl active:scale-95 text-sm"
                 >
                     + Divulgar Meu Grupo
                 </a>
