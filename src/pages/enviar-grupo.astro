@@ -41,7 +41,7 @@ if (editId) {
                     id="preview-container"
                     class:list={[
                         "lg:col-span-4 lg:sticky lg:top-24 order-1 z-0",
-                        !editGrupo && "hidden",
+                        !editId && "hidden",
                     ]}
                 >
                     <div
@@ -199,6 +199,7 @@ if (editId) {
                                 </div>
 
                                 <button
+                                    type="button"
                                     id="btn-verify"
                                     class="w-full py-5 bg-gray-950 text-white font-black text-xl rounded-3xl hover:bg-[#028b3a] transition-all active:scale-95 flex items-center justify-center gap-3"
                                 >
@@ -243,6 +244,18 @@ if (editId) {
                                         : "Quase lá! Complete os Dados"
                                 }
                             </h2>
+
+                            {
+                                !editId && (
+                                    <button
+                                        type="button"
+                                        id="btn-back-step1"
+                                        class="mb-6 text-[10px] font-black text-[#028b3a] uppercase tracking-widest hover:underline flex items-center gap-1"
+                                    >
+                                        ← Voltar e trocar link
+                                    </button>
+                                )
+                            }
 
                             <form id="form-final" class="space-y-8">
                                 <input
@@ -461,195 +474,250 @@ if (editId) {
 <script>
     import { enviarGrupo, editarGrupo } from "~/lib/grupos";
 
-    const step1 = document.getElementById("step-1")!;
-    const step2 = document.getElementById("step-2")!;
-    const mainFormCol = document.getElementById("main-form-col")!;
-    const editId = mainFormCol.dataset.editId;
-    const currentStatus = mainFormCol.dataset.status;
+    function initForm() {
+        const step1 = document.getElementById("step-1");
+        const step2 = document.getElementById("step-2");
+        const mainFormCol = document.getElementById("main-form-col");
+        if (!step1 || !step2 || !mainFormCol) return;
 
-    const btnVerify = document.getElementById(
-        "btn-verify"
-    ) as HTMLButtonElement;
-    const txtVerify = document.getElementById("txt-verify")!;
-    const linkInput = document.getElementById(
-        "link-verify"
-    ) as HTMLInputElement;
-    const msgErro = document.getElementById("msg-erro")!;
+        const editId = mainFormCol.dataset.editId;
+        const currentStatus = mainFormCol.dataset.status;
 
-    // Final form elements
-    const formFinal = document.getElementById("form-final") as HTMLFormElement;
-    const finalLink = document.getElementById("final-link") as HTMLInputElement;
-    const finalFoto = document.getElementById("final-foto") as HTMLInputElement;
-    const finalNome = document.getElementById("final-nome") as HTMLInputElement;
-    const finalDesc = document.getElementById(
-        "final-desc"
-    ) as HTMLTextAreaElement;
-    const finalTipo = document.getElementById(
-        "final-tipo"
-    ) as HTMLSelectElement;
-    const finalCat = document.getElementById("final-cat") as HTMLSelectElement;
+        const btnVerify = document.getElementById(
+            "btn-verify"
+        ) as HTMLButtonElement;
+        const txtVerify = document.getElementById("txt-verify");
+        const linkInput = document.getElementById(
+            "link-verify"
+        ) as HTMLInputElement;
+        const msgErro = document.getElementById("msg-erro")!;
 
-    // Preview elements
-    const pNome = document.getElementById("preview-nome")!;
-    const pDesc = document.getElementById("preview-desc")!;
-    const pTipo = document.getElementById("preview-tipo")!;
-    const pCat = document.getElementById("preview-cat")!;
+        // Final form elements
+        const formFinal = document.getElementById(
+            "form-final"
+        ) as HTMLFormElement;
+        const finalLink = document.getElementById(
+            "final-link"
+        ) as HTMLInputElement;
+        const finalFoto = document.getElementById(
+            "final-foto"
+        ) as HTMLInputElement;
+        const finalNome = document.getElementById(
+            "final-nome"
+        ) as HTMLInputElement;
+        const finalDesc = document.getElementById(
+            "final-desc"
+        ) as HTMLTextAreaElement;
+        const finalTipo = document.getElementById(
+            "final-tipo"
+        ) as HTMLSelectElement;
+        const finalCat = document.getElementById(
+            "final-cat"
+        ) as HTMLSelectElement;
 
-    // Verify Link Step
-    btnVerify?.addEventListener("click", async () => {
-        const url = linkInput.value;
-        if (!url) return;
+        // Preview elements
+        const pNome = document.getElementById("preview-nome");
+        const pDesc = document.getElementById("preview-desc");
+        const pTipo = document.getElementById("preview-tipo");
+        const pCat = document.getElementById("preview-cat");
+        const btnBack1 = document.getElementById("btn-back-step1");
 
-        btnVerify.disabled = true;
-        txtVerify.textContent = "Validando...";
-        msgErro.classList.add("hidden");
-
-        try {
-            const res = await fetch(
-                `https://n8n.qrlembrancasvivas.com.br/webhook/a9630c77-4409-4089-9e8c-55077dedb2bf?url=${encodeURIComponent(
-                    url
-                )}`
-            );
-            const data = await res.json();
-
-            if (data.status === "active") {
-                finalLink.value = url;
-                finalFoto.value = data.thumb || "";
-                finalNome.value = data.name || "";
-                finalDesc.value = data.description || "";
-
-                // Update Previews
-                pNome.textContent = data.name || "Nome do Grupo";
-                pDesc.textContent =
-                    data.description || "A descrição aparecerá aqui...";
-                const img = document.getElementById(
-                    "preview-img"
-                ) as HTMLImageElement;
-                if (img && data.thumb) img.src = data.thumb;
-
-                step1.classList.add("hidden");
-                step2.classList.remove("hidden");
-                document
-                    .getElementById("preview-container")
-                    ?.classList.remove("hidden");
-                mainFormCol.classList.remove("lg:col-start-3");
-            } else {
-                msgErro.textContent =
-                    data.error ||
-                    "Link inválido. Verifique se o convite não expirou.";
-                msgErro.classList.remove("hidden");
-            }
-        } catch (err) {
-            msgErro.textContent =
-                "Ops! Tivemos um problema técnico. Tente novamente.";
-            msgErro.classList.remove("hidden");
-        } finally {
-            btnVerify.disabled = false;
-            txtVerify.textContent = "Validar Link";
-        }
-    });
-
-    // Real-time Preview logic
-    [finalNome, finalDesc, finalTipo, finalCat].forEach((el) => {
-        el?.addEventListener("input", () => {
-            pNome.textContent = finalNome.value || "Nome do Grupo";
-            const desc = finalDesc.value || "A descrição aparecerá aqui...";
-            pDesc.textContent = desc;
-            pTipo.textContent = (finalTipo.value || "").toUpperCase();
-            pCat.textContent =
-                finalCat.options[finalCat.selectedIndex]?.text.toUpperCase() ||
-                "CATEGORIA";
-        });
-    });
-
-    // Final Form Submission
-    formFinal.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const btn = document.getElementById("btn-enviar") as HTMLButtonElement;
-        btn.disabled = true;
-        btn.textContent = editId ? "Salvando Alterações..." : "Publicando...";
-
-        const formData = new FormData(formFinal);
-        const regrasMarcadas = formData.getAll("regras") as string[];
-        const regrasExtrasRaw = formData.get("regras_extras") as string;
-        const regrasExtras = regrasExtrasRaw
-            ? (regrasExtrasRaw as string)
-                  .split("\n")
-                  .map((r) => r.trim())
-                  .filter((r) => r.length > 0)
-            : [];
-        const regras = [...regrasMarcadas, ...regrasExtras];
-
-        const link = formData.get("link") as string;
-        const valLink = link.toLowerCase();
-        const isWhatsapp =
-            valLink.includes("chat.whatsapp.com") ||
-            valLink.includes("whatsapp.com/channel");
-
-        if (!isWhatsapp) {
-            msgErro.textContent =
-                "Insira um link válido do WhatsApp (Grupo ou Canal).";
-            msgErro.classList.remove("hidden");
-            btn.disabled = false;
-            btn.textContent = editId ? "Salvar Alterações" : "Publicar Agora";
-            window.scrollTo({ top: 0, behavior: "smooth" });
-            return;
-        }
-
-        const dados = {
-            nome: formData.get("nome") as string,
-            descricao: formData.get("descricao") as string,
-            categoria: formData.get("categoria") as string,
-            tipo: formData.get("tipo") as "grupo" | "canal",
-            link: link,
-            foto: formData.get("foto") as string,
-            email: (formData.get("email") as string) || undefined,
-            regras: regras,
-        };
-
-        try {
-            if (editId) {
-                await editarGrupo(editId, dados, currentStatus);
-            } else {
-                const id = await enviarGrupo(dados);
-
-                // Salvar no localStorage para o usuário gerenciar
-                const meusGrupos = JSON.parse(
-                    localStorage.getItem("meus_grupos") || "[]"
-                );
-                if (!meusGrupos.includes(id)) {
-                    meusGrupos.push(id);
-                    localStorage.setItem(
-                        "meus_grupos",
-                        JSON.stringify(meusGrupos)
-                    );
+        if (linkInput && btnVerify) {
+            linkInput.onkeypress = (e) => {
+                if (e.key === "Enter") {
+                    e.preventDefault();
+                    btnVerify.click();
                 }
-            }
-
-            const previewCont = document.getElementById("preview-container");
-            const fCol = document.getElementById("main-form-col")!;
-            previewCont?.classList.add("hidden");
-            fCol.classList.add("lg:col-start-3");
-
-            document.getElementById("form-container")!.classList.add("hidden");
-            const msgSucesso = document.getElementById("msg-sucesso")!;
-            const successText = document.getElementById("success-text")!;
-            if (editId) {
-                successText.textContent =
-                    currentStatus === "aprovado"
-                        ? "✅ Suas alterações foram atualizadas."
-                        : "✅ Recebido! Em breve será revisado.";
-            }
-            msgSucesso.classList.remove("hidden");
-            window.scrollTo({ top: 0, behavior: "smooth" });
-        } catch (err) {
-            console.error(err);
-            msgErro.textContent = "Erro ao salvar seu grupo. Tente novamente.";
-            msgErro.classList.remove("hidden");
-            btn.disabled = false;
-            btn.textContent = editId
-                ? "Tentar Novamente"
-                : "Finalizar Cadastro";
+            };
         }
-    });
+
+        // Verify Link Step
+        btnVerify?.addEventListener("click", async () => {
+            const url = linkInput.value;
+            if (!url) return;
+
+            btnVerify.disabled = true;
+            if (txtVerify) txtVerify.textContent = "Validando...";
+            msgErro.classList.add("hidden");
+
+            try {
+                // Adicionamos um timestamp para evitar cache do navegador
+                const res = await fetch(
+                    `/api/scrape?url=${encodeURIComponent(url)}&t=${Date.now()}`
+                );
+                const data = await res.json();
+
+                if (data.status === "active") {
+                    if (finalLink) finalLink.value = url;
+                    if (finalFoto) finalFoto.value = data.thumb || "";
+                    if (finalNome) finalNome.value = data.name || "";
+                    if (finalDesc) finalDesc.value = data.description || "";
+
+                    // Update Previews
+                    if (pNome) pNome.textContent = data.name || "Nome do Grupo";
+                    if (pDesc)
+                        pDesc.textContent =
+                            data.description || "A descrição aparecerá aqui...";
+                    const img = document.getElementById(
+                        "preview-img"
+                    ) as HTMLImageElement;
+                    if (img && data.thumb) img.src = data.thumb;
+
+                    step1.classList.add("hidden");
+                    step2.classList.remove("hidden");
+                    document
+                        .getElementById("preview-container")
+                        ?.classList.remove("hidden");
+                    mainFormCol.classList.remove("lg:col-start-3");
+                } else {
+                    msgErro.textContent =
+                        data.error ||
+                        "Link inválido. Verifique se o convite não expirou.";
+                    msgErro.classList.remove("hidden");
+                }
+            } catch (err) {
+                msgErro.textContent =
+                    "Ops! Tivemos um problema técnico. Tente novamente.";
+                msgErro.classList.remove("hidden");
+            } finally {
+                btnVerify.disabled = false;
+                if (txtVerify) txtVerify.textContent = "Validar Link";
+            }
+        });
+
+        btnBack1?.addEventListener("click", () => {
+            step2.classList.add("hidden");
+            step1.classList.remove("hidden");
+            document
+                .getElementById("preview-container")
+                ?.classList.add("hidden");
+            mainFormCol.classList.add("lg:col-start-3");
+        });
+
+        // Real-time Preview logic
+        [finalNome, finalDesc, finalTipo, finalCat].forEach((el) => {
+            el?.addEventListener("input", () => {
+                if (pNome)
+                    pNome.textContent = finalNome.value || "Nome do Grupo";
+                const desc = finalDesc.value || "A descrição aparecerá aqui...";
+                if (pDesc) pDesc.textContent = desc;
+                if (pTipo)
+                    pTipo.textContent = (finalTipo.value || "").toUpperCase();
+                if (pCat)
+                    pCat.textContent =
+                        finalCat.options[
+                            finalCat.selectedIndex
+                        ]?.text.toUpperCase() || "CATEGORIA";
+            });
+        });
+
+        // Final Form Submission
+        formFinal?.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById(
+                "btn-enviar"
+            ) as HTMLButtonElement;
+            btn.disabled = true;
+            btn.textContent = editId
+                ? "Salvando Alterações..."
+                : "Publicando...";
+
+            const formData = new FormData(formFinal);
+            const regrasMarcadas = formData.getAll("regras") as string[];
+            const regrasExtrasRaw = formData.get("regras_extras") as string;
+            const regrasExtras = regrasExtrasRaw
+                ? (regrasExtrasRaw as string)
+                      .split("\n")
+                      .map((r) => r.trim())
+                      .filter((r) => r.length > 0)
+                : [];
+            const regras = [...regrasMarcadas, ...regrasExtras];
+
+            const link = formData.get("link") as string;
+            const valLink = link.toLowerCase();
+            const isWhatsapp =
+                valLink.includes("chat.whatsapp.com") ||
+                valLink.includes("whatsapp.com/channel");
+
+            if (!isWhatsapp) {
+                msgErro.textContent =
+                    "Insira um link válido do WhatsApp (Grupo ou Canal).";
+                msgErro.classList.remove("hidden");
+                btn.disabled = false;
+                btn.textContent = editId
+                    ? "Salvar Alterações"
+                    : "Publicar Agora";
+                window.scrollTo({ top: 0, behavior: "smooth" });
+                return;
+            }
+
+            const dados = {
+                nome: formData.get("nome") as string,
+                descricao: formData.get("descricao") as string,
+                categoria: formData.get("categoria") as string,
+                tipo: formData.get("tipo") as "grupo" | "canal",
+                link: link,
+                foto: formData.get("foto") as string,
+                email: (formData.get("email") as string) || undefined,
+                regras: regras,
+            };
+
+            try {
+                if (editId) {
+                    await editarGrupo(editId, dados, currentStatus);
+                } else {
+                    const id = await enviarGrupo(dados);
+
+                    // Salvar no localStorage para o usuário gerenciar
+                    const meusGrupos = JSON.parse(
+                        localStorage.getItem("meus_grupos") || "[]"
+                    );
+                    if (!meusGrupos.includes(id)) {
+                        meusGrupos.push(id);
+                        localStorage.setItem(
+                            "meus_grupos",
+                            JSON.stringify(meusGrupos)
+                        );
+                    }
+                }
+
+                const previewCont =
+                    document.getElementById("preview-container");
+                const fCol = document.getElementById("main-form-col")!;
+                previewCont?.classList.add("hidden");
+                fCol.classList.add("lg:col-start-3");
+
+                document
+                    .getElementById("form-container")!
+                    .classList.add("hidden");
+                const msgSucesso = document.getElementById("msg-sucesso")!;
+                const successText = document.getElementById("success-text")!;
+                if (editId) {
+                    successText.textContent =
+                        currentStatus === "aprovado"
+                            ? "✅ Suas alterações foram atualizadas."
+                            : "✅ Recebido! Em breve será revisado.";
+                }
+                msgSucesso.classList.remove("hidden");
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            } catch (err) {
+                console.error(err);
+                msgErro.textContent =
+                    "Erro ao salvar seu grupo. Tente novamente.";
+                msgErro.classList.remove("hidden");
+                btn.disabled = false;
+                btn.textContent = editId
+                    ? "Tentar Novamente"
+                    : "Finalizar Cadastro";
+            }
+        });
+    }
+
+    // Inicializa na primeira carga
+    initForm();
+
+    // Re-inicializa em cada navegação (suporte a View Transitions)
+    document.addEventListener("astro:after-swap", initForm);
+    // Também adicionamos no astro:page-load para garantir
+    document.addEventListener("astro:page-load", initForm);
 </script>
