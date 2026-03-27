@@ -541,67 +541,75 @@ if (editId) {
         }
 
         // Verify Link Step
-        btnVerify?.addEventListener("click", async () => {
-            const url = linkInput.value;
-            if (!url) return;
+        if (btnVerify) {
+            btnVerify.onclick = async () => {
+                const url = linkInput.value;
+                if (!url) return;
 
-            btnVerify.disabled = true;
-            if (txtVerify) txtVerify.textContent = "Validando...";
-            msgErro.classList.add("hidden");
+                btnVerify.disabled = true;
+                if (txtVerify) txtVerify.textContent = "Validando...";
+                msgErro.classList.add("hidden");
 
-            try {
-                // Adicionamos um timestamp para evitar cache do navegador
-                const res = await fetch(
-                    `/api/scrape?url=${encodeURIComponent(url)}&t=${Date.now()}`
-                );
-                const data = await res.json();
+                try {
+                    // Adicionamos um timestamp para evitar cache do navegador
+                    const res = await fetch(
+                        `/api/scrape?url=${encodeURIComponent(
+                            url
+                        )}&t=${Date.now()}`
+                    );
+                    const data = await res.json();
 
-                if (data.status === "active") {
-                    if (finalLink) finalLink.value = url;
-                    if (finalFoto) finalFoto.value = data.thumb || "";
-                    if (finalNome) finalNome.value = data.name || "";
-                    if (finalDesc) finalDesc.value = data.description || "";
+                    if (data.status === "active") {
+                        if (finalLink) finalLink.value = url;
+                        if (finalFoto) finalFoto.value = data.thumb || "";
+                        if (finalNome) finalNome.value = data.name || "";
+                        if (finalDesc) finalDesc.value = data.description || "";
 
-                    // Update Previews
-                    if (pNome) pNome.textContent = data.name || "Nome do Grupo";
-                    if (pDesc)
-                        pDesc.textContent =
-                            data.description || "A descrição aparecerá aqui...";
-                    const img = document.getElementById(
-                        "preview-img"
-                    ) as HTMLImageElement;
-                    if (img && data.thumb) img.src = data.thumb;
+                        // Update Previews
+                        if (pNome)
+                            pNome.textContent = data.name || "Nome do Grupo";
+                        if (pDesc)
+                            pDesc.textContent =
+                                data.description ||
+                                "A descrição aparecerá aqui...";
+                        const img = document.getElementById(
+                            "preview-img"
+                        ) as HTMLImageElement;
+                        if (img && data.thumb) img.src = data.thumb;
 
-                    step1.classList.add("hidden");
-                    step2.classList.remove("hidden");
-                    document
-                        .getElementById("preview-container")
-                        ?.classList.remove("hidden");
-                    mainFormCol.classList.remove("lg:col-start-3");
-                } else {
+                        step1.classList.add("hidden");
+                        step2.classList.remove("hidden");
+                        document
+                            .getElementById("preview-container")
+                            ?.classList.remove("hidden");
+                        mainFormCol.classList.remove("lg:col-start-3");
+                    } else {
+                        msgErro.textContent =
+                            data.error ||
+                            "Link inválido. Verifique se o convite não expirou.";
+                        msgErro.classList.remove("hidden");
+                    }
+                } catch (err) {
                     msgErro.textContent =
-                        data.error ||
-                        "Link inválido. Verifique se o convite não expirou.";
+                        "Ops! Tivemos um problema técnico. Tente novamente.";
                     msgErro.classList.remove("hidden");
+                } finally {
+                    btnVerify.disabled = false;
+                    if (txtVerify) txtVerify.textContent = "Validar Link";
                 }
-            } catch (err) {
-                msgErro.textContent =
-                    "Ops! Tivemos um problema técnico. Tente novamente.";
-                msgErro.classList.remove("hidden");
-            } finally {
-                btnVerify.disabled = false;
-                if (txtVerify) txtVerify.textContent = "Validar Link";
-            }
-        });
+            };
+        }
 
-        btnBack1?.addEventListener("click", () => {
-            step2.classList.add("hidden");
-            step1.classList.remove("hidden");
-            document
-                .getElementById("preview-container")
-                ?.classList.add("hidden");
-            mainFormCol.classList.add("lg:col-start-3");
-        });
+        if (btnBack1) {
+            btnBack1.onclick = () => {
+                step2.classList.add("hidden");
+                step1.classList.remove("hidden");
+                document
+                    .getElementById("preview-container")
+                    ?.classList.add("hidden");
+                mainFormCol.classList.add("lg:col-start-3");
+            };
+        }
 
         // Real-time Preview logic
         [finalNome, finalDesc, finalTipo, finalCat].forEach((el) => {
@@ -621,126 +629,131 @@ if (editId) {
         });
 
         // Final Form Submission
-        formFinal?.addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById(
-                "btn-enviar"
-            ) as HTMLButtonElement;
-            btn.disabled = true;
-            btn.textContent = editId
-                ? "Salvando Alterações..."
-                : "Publicando...";
-
-            const formData = new FormData(formFinal);
-            const regrasMarcadas = formData.getAll("regras") as string[];
-            const regrasExtrasRaw = formData.get("regras_extras") as string;
-            const regrasExtras = regrasExtrasRaw
-                ? (regrasExtrasRaw as string)
-                      .split("\n")
-                      .map((r) => r.trim())
-                      .filter((r) => r.length > 0)
-                : [];
-            const regras = [...regrasMarcadas, ...regrasExtras];
-
-            const link = formData.get("link") as string;
-            const valLink = link.toLowerCase();
-            const isWhatsapp =
-                valLink.includes("chat.whatsapp.com") ||
-                valLink.includes("whatsapp.com/channel");
-
-            if (!isWhatsapp) {
-                msgErro.textContent =
-                    "Insira um link válido do WhatsApp (Grupo ou Canal).";
-                msgErro.classList.remove("hidden");
-                btn.disabled = false;
+        if (formFinal) {
+            formFinal.onsubmit = async (e) => {
+                e.preventDefault();
+                const btn = document.getElementById(
+                    "btn-enviar"
+                ) as HTMLButtonElement;
+                btn.disabled = true;
                 btn.textContent = editId
-                    ? "Salvar Alterações"
-                    : "Publicar Agora";
-                window.scrollTo({ top: 0, behavior: "smooth" });
-                return;
-            }
+                    ? "Salvando Alterações..."
+                    : "Publicando...";
 
-            const dados = {
-                nome: formData.get("nome") as string,
-                descricao: formData.get("descricao") as string,
-                categoria: formData.get("categoria") as string,
-                tipo: formData.get("tipo") as "grupo" | "canal",
-                link: link,
-                foto: formData.get("foto") as string,
-                email: (formData.get("email") as string) || undefined,
-                regras: regras,
-            };
+                const formData = new FormData(formFinal);
+                const regrasMarcadas = formData.getAll("regras") as string[];
+                const regrasExtrasRaw = formData.get("regras_extras") as string;
+                const regrasExtras = regrasExtrasRaw
+                    ? (regrasExtrasRaw as string)
+                          .split("\n")
+                          .map((r) => r.trim())
+                          .filter((r) => r.length > 0)
+                    : [];
+                const regras = [...regrasMarcadas, ...regrasExtras];
 
-            try {
-                if (editId) {
-                    await editarGrupo(editId, dados, currentStatus);
-                } else {
-                    const id = await enviarGrupo(dados);
+                const link = formData.get("link") as string;
+                const valLink = link.toLowerCase();
+                const isWhatsapp =
+                    valLink.includes("chat.whatsapp.com") ||
+                    valLink.includes("whatsapp.com/channel");
 
-                    // Notifica sobre o recebimento se o e-mail foi fornecido
-                    if (dados.email) {
-                        try {
-                            fetch("/api/notificar-recebimento.json", {
-                                method: "POST",
-                                headers: { "Content-Type": "application/json" },
-                                body: JSON.stringify({
-                                    email: dados.email,
-                                    nome: dados.nome,
-                                }),
-                            }).catch((err) =>
-                                console.error(
-                                    "Erro ao notificar backend sobre recebimento:",
-                                    err
-                                )
+                if (!isWhatsapp) {
+                    msgErro.textContent =
+                        "Insira um link válido do WhatsApp (Grupo ou Canal).";
+                    msgErro.classList.remove("hidden");
+                    btn.disabled = false;
+                    btn.textContent = editId
+                        ? "Salvar Alterações"
+                        : "Publicar Agora";
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                    return;
+                }
+
+                const dados = {
+                    nome: formData.get("nome") as string,
+                    descricao: formData.get("descricao") as string,
+                    categoria: formData.get("categoria") as string,
+                    tipo: formData.get("tipo") as "grupo" | "canal",
+                    link: link,
+                    foto: formData.get("foto") as string,
+                    email: (formData.get("email") as string) || undefined,
+                    regras: regras,
+                };
+
+                try {
+                    if (editId) {
+                        await editarGrupo(editId, dados, currentStatus);
+                    } else {
+                        const id = await enviarGrupo(dados);
+
+                        // Notifica sobre o recebimento se o e-mail foi fornecido
+                        if (dados.email) {
+                            try {
+                                fetch("/api/notificar-recebimento.json", {
+                                    method: "POST",
+                                    headers: {
+                                        "Content-Type": "application/json",
+                                    },
+                                    body: JSON.stringify({
+                                        email: dados.email,
+                                        nome: dados.nome,
+                                    }),
+                                }).catch((err) =>
+                                    console.error(
+                                        "Erro ao notificar backend sobre recebimento:",
+                                        err
+                                    )
+                                );
+                            } catch (e) {
+                                /* ignore */
+                            }
+                        }
+
+                        // Salvar no localStorage para o usuário gerenciar
+                        const meusGrupos = JSON.parse(
+                            localStorage.getItem("meus_grupos") || "[]"
+                        );
+                        if (!meusGrupos.includes(id)) {
+                            meusGrupos.push(id);
+                            localStorage.setItem(
+                                "meus_grupos",
+                                JSON.stringify(meusGrupos)
                             );
-                        } catch (e) {
-                            /* ignore */
                         }
                     }
 
-                    // Salvar no localStorage para o usuário gerenciar
-                    const meusGrupos = JSON.parse(
-                        localStorage.getItem("meus_grupos") || "[]"
-                    );
-                    if (!meusGrupos.includes(id)) {
-                        meusGrupos.push(id);
-                        localStorage.setItem(
-                            "meus_grupos",
-                            JSON.stringify(meusGrupos)
-                        );
+                    const previewCont =
+                        document.getElementById("preview-container");
+                    const fCol = document.getElementById("main-form-col")!;
+                    previewCont?.classList.add("hidden");
+                    fCol.classList.add("lg:col-start-3");
+
+                    document
+                        .getElementById("form-container")!
+                        .classList.add("hidden");
+                    const msgSucesso = document.getElementById("msg-sucesso")!;
+                    const successText =
+                        document.getElementById("success-text")!;
+                    if (editId) {
+                        successText.textContent =
+                            currentStatus === "aprovado"
+                                ? "✅ Suas alterações foram atualizadas."
+                                : "✅ Recebido! Em breve será revisado.";
                     }
+                    msgSucesso.classList.remove("hidden");
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                } catch (err) {
+                    console.error(err);
+                    msgErro.textContent =
+                        "Erro ao salvar seu grupo. Tente novamente.";
+                    msgErro.classList.remove("hidden");
+                    btn.disabled = false;
+                    btn.textContent = editId
+                        ? "Tentar Novamente"
+                        : "Finalizar Cadastro";
                 }
-
-                const previewCont =
-                    document.getElementById("preview-container");
-                const fCol = document.getElementById("main-form-col")!;
-                previewCont?.classList.add("hidden");
-                fCol.classList.add("lg:col-start-3");
-
-                document
-                    .getElementById("form-container")!
-                    .classList.add("hidden");
-                const msgSucesso = document.getElementById("msg-sucesso")!;
-                const successText = document.getElementById("success-text")!;
-                if (editId) {
-                    successText.textContent =
-                        currentStatus === "aprovado"
-                            ? "✅ Suas alterações foram atualizadas."
-                            : "✅ Recebido! Em breve será revisado.";
-                }
-                msgSucesso.classList.remove("hidden");
-                window.scrollTo({ top: 0, behavior: "smooth" });
-            } catch (err) {
-                console.error(err);
-                msgErro.textContent =
-                    "Erro ao salvar seu grupo. Tente novamente.";
-                msgErro.classList.remove("hidden");
-                btn.disabled = false;
-                btn.textContent = editId
-                    ? "Tentar Novamente"
-                    : "Finalizar Cadastro";
-            }
-        });
+            };
+        }
     }
 
     // Inicializa o formulário para a primeira carga e navegações subsequentes (View Transitions)

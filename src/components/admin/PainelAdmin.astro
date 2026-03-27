@@ -376,16 +376,10 @@
       btnAprovar.classList.remove("hidden");
     }
 
-    btnAprovar.addEventListener("click", () =>
-      mudarStatus(grupo.id!, "aprovado")
-    );
-    btnRejeitar.addEventListener("click", () =>
-      mudarStatus(grupo.id!, "rejeitado")
-    );
-    btnExcluir.addEventListener("click", () => deletarGrupo(grupo.id!));
-    btnDestaque.addEventListener("click", () =>
-      toggleDestaque(grupo.id!, !!grupo.destaque)
-    );
+    btnAprovar.onclick = () => mudarStatus(grupo, "aprovado");
+    btnRejeitar.onclick = () => mudarStatus(grupo, "rejeitado");
+    btnExcluir.onclick = () => deletarGrupo(grupo.id!);
+    btnDestaque.onclick = () => toggleDestaque(grupo.id!, !!grupo.destaque);
 
     listaEl.appendChild(clone);
   }
@@ -410,21 +404,41 @@
     }
   }
 
-  async function mudarStatus(id: string, novoStatus: "aprovado" | "rejeitado") {
+  async function mudarStatus(
+    grupo: GrupoAdmin,
+    novoStatus: "aprovado" | "rejeitado"
+  ) {
     try {
+      const id = grupo.id;
+      // 1. Atualizar o Firestore diretamente pelo navegador,
+      // pois a permissão do Admin está na sessão do Firebase Auth do client
+      await updateDoc(doc(db, "grupos", id), { status: novoStatus });
+
+      // Atualiza UI de imediato
+      carregarGrupos(abaAtual);
+      atualizarBadge();
+
+      // 2. Chama a API do servidor APENAS para enviar o e-mail de notificação
       const res = await fetch("/api/admin/mudar-status.json", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id, status: novoStatus }),
+        body: JSON.stringify({
+          id,
+          status: novoStatus,
+          email: grupo.email,
+          nome: grupo.nome,
+        }),
       });
 
-      if (!res.ok) throw new Error("Erro ao atualizar status");
-
-      carregarGrupos(abaAtual);
-      atualizarBadge();
+      if (!res.ok) {
+        console.warn(
+          "Status atualizado no banco, mas houve falha ao enviar notificação de e-mail."
+        );
+      }
     } catch (e) {
       alert(
-        "Erro ao notificar: " + (e instanceof Error ? e.message : String(e))
+        "Erro ao atualizar status: " +
+          (e instanceof Error ? e.message : String(e))
       );
     }
   }
