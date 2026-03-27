@@ -206,28 +206,30 @@ const pathname = rmTrailingSlash(Astro.url.pathname);
 </header>
 
 <script>
-	const toggle = document.getElementById("mobile-menu-toggle");
-	const close = document.getElementById("mobile-menu-close");
-	const menu = document.getElementById("mobile-menu");
+	document.addEventListener("astro:page-load", () => {
+		const toggle = document.getElementById("mobile-menu-toggle");
+		const close = document.getElementById("mobile-menu-close");
+		const menu = document.getElementById("mobile-menu");
 
-	if (toggle && close && menu) {
-		toggle.addEventListener("click", () => {
-			menu.classList.remove("translate-x-full");
-			document.body.style.overflow = "hidden";
-		});
+		if (toggle && close && menu) {
+			toggle.onclick = () => {
+				menu.classList.remove("translate-x-full");
+				document.body.style.overflow = "hidden";
+			};
 
-		close.addEventListener("click", () => {
-			menu.classList.add("translate-x-full");
-			document.body.style.overflow = "";
-		});
-
-		// Close menu on link clicks
-		const links = menu.querySelectorAll("a");
-		links.forEach((link) => {
-			link.addEventListener("click", () => {
+			close.onclick = () => {
 				menu.classList.add("translate-x-full");
 				document.body.style.overflow = "";
+			};
+
+			// Close menu on link clicks
+			const links = menu.querySelectorAll("a");
+			links.forEach((link) => {
+				link.onclick = () => {
+					menu.classList.add("translate-x-full");
+					document.body.style.overflow = "";
+				};
 			});
-		});
-	}
+		}
+	});
 </script>
