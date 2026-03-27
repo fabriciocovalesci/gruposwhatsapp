@@ -4,6 +4,8 @@ import { ClientRouter } from "astro:transitions";
 import Header from "~/components/Header.astro";
 import Footer from "~/components/Footer.astro";
 import { siteName, siteLang, themeColor } from "~/data/config";
+import { getDoc, doc } from "firebase/firestore";
+import { db } from "~/lib/firebase";
 
 const baseUrl = `${Astro.url.protocol}//${Astro.url.host}`;
 
@@ -13,6 +15,18 @@ interface Props {
 	description?: string;
 	keywords?: string;
 	noindex?: boolean;
+}
+
+let adsAtivos = true;
+if (!Astro.url.pathname.startsWith("/admin")) {
+	try {
+		const configSnap = await getDoc(doc(db, "configs", "ads"));
+		if (configSnap.exists()) {
+			adsAtivos = configSnap.data().ativo !== false;
+		}
+	} catch (e) {
+		console.error("Falha ao ler status de ads no SSR: ", e);
+	}
 }
 
 const defaultKeywords =
@@ -120,7 +134,7 @@ const {
 
 		{
 			/* BACKGROUND SCRIPTS (POP-UNDERS / SOCIAL BARS) - ONLY ON NON-ADMIN PAGES */
-			!Astro.url.pathname.startsWith("/admin") && (
+			!Astro.url.pathname.startsWith("/admin") && adsAtivos && (
 				<>
 					<script
 						is:inline

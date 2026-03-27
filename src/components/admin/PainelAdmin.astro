@@ -36,8 +36,32 @@
         <div>
           <h1 class="h4">Painel de moderação</h1>
           <p id="label-usuario" class="text-base text-gray-600 mt-0.5"></p>
+          <div class="flex items-center gap-3 lg:gap-6">
+            <label
+              class="flex items-center cursor-pointer gap-2 bg-yellow-300/50 px-3 py-1.5 rounded-lg border border-yellow-400/50"
+            >
+              <span class="text-xs font-bold text-gray-800 hidden sm:block"
+                >ADS Ativos</span
+              >
+              <div class="relative">
+                <input
+                  type="checkbox"
+                  id="toggle-ads"
+                  class="sr-only peer"
+                  checked
+                />
+                <div
+                  class="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#028b3a]"
+                >
+                </div>
+              </div>
+            </label>
+            <button
+              id="btn-sair"
+              class="button button-black !px-4 !py-1.5 !text-sm">Sair</button
+            >
+          </div>
         </div>
-        <button id="btn-sair" class="button button-black">Sair</button>
       </div>
     </div>
   </section>
@@ -190,7 +214,13 @@
     signOut,
     onAuthStateChanged,
   } from "firebase/auth";
-  import { doc, updateDoc, deleteDoc } from "firebase/firestore";
+  import {
+    doc,
+    updateDoc,
+    deleteDoc,
+    getDoc,
+    setDoc,
+  } from "firebase/firestore";
 
   interface GrupoAdmin {
     id: string;
@@ -213,6 +243,7 @@
   const inputSenha = document.getElementById("input-senha") as HTMLInputElement;
   const btnLogin = document.getElementById("btn-login") as HTMLButtonElement;
   const erroLogin = document.getElementById("erro-login")!;
+  const toggleAds = document.getElementById("toggle-ads") as HTMLInputElement;
   const btnSair = document.getElementById("btn-sair")!;
   const labelUsuario = document.getElementById("label-usuario")!;
   const loadingEl = document.getElementById("loading-grupos")!;
@@ -227,13 +258,26 @@
   let abaAtual = "pendente";
 
   // Auth — monitora estado de login
-  onAuthStateChanged(auth, (user) => {
+  onAuthStateChanged(auth, async (user) => {
     if (user) {
       telaLogin.classList.add("hidden");
       painel.classList.remove("hidden");
       labelUsuario.textContent = user.email;
       carregarGrupos(abaAtual);
       atualizarBadge();
+
+      // Carregar state do ADS
+      try {
+        const adsRef = await getDoc(doc(db, "configs", "ads"));
+        if (adsRef.exists()) {
+          toggleAds.checked = adsRef.data().ativo !== false;
+        } else {
+          await setDoc(doc(db, "configs", "ads"), { ativo: true });
+          toggleAds.checked = true;
+        }
+      } catch (e) {
+        console.error("Falha ao carregar estado do ADS", e);
+      }
     } else {
       telaLogin.classList.remove("hidden");
       painel.classList.add("hidden");
@@ -267,6 +311,18 @@
   );
 
   btnSair.addEventListener("click", () => signOut(auth));
+
+  // Toggle ADS Event
+  toggleAds.addEventListener("change", async (e) => {
+    const isChecked = (e.target as HTMLInputElement).checked;
+    try {
+      await updateDoc(doc(db, "configs", "ads"), { ativo: isChecked });
+      alert(isChecked ? "🎯 Anúncios ATIVADOS!" : "⏸️ Anúncios PAUSADOS!");
+    } catch (err) {
+      alert("Erro ao salvar config do ADS.");
+      (e.target as HTMLInputElement).checked = !isChecked; // reverte mudança visual
+    }
+  });
 
   // Abas
   abaBtns.forEach((btn) => {
