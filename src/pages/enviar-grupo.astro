@@ -411,9 +411,18 @@ if (editId) {
                                                         name="regras"
                                                         value={r}
                                                         class="hidden peer"
-                                                        checked={editGrupo?.regras?.includes(
-                                                            r
-                                                        )}
+                                                        checked={
+                                                            editGrupo
+                                                                ? editGrupo.regras?.includes(
+                                                                      r
+                                                                  )
+                                                                : [
+                                                                      "Proibido Adulto",
+                                                                      "Sem Agressividade",
+                                                                      "Sem Palavrões",
+                                                                      "Respeite os Membros",
+                                                                  ].includes(r)
+                                                        }
                                                     />
                                                     <span class="px-4 py-2 rounded-xl border border-gray-200 bg-white text-[10px] font-bold text-gray-500 uppercase tracking-tight transition-all peer-checked:bg-[#028b3a] peer-checked:text-white peer-checked:border-[#028b3a] group-hover:border-gray-300">
                                                         {r}
@@ -713,11 +722,6 @@ if (editId) {
         });
     }
 
-    // Inicializa na primeira carga
-    initForm();
-
-    // Re-inicializa em cada navegação (suporte a View Transitions)
-    document.addEventListener("astro:after-swap", initForm);
-    // Também adicionamos no astro:page-load para garantir
+    // Inicializa o formulário para a primeira carga e navegações subsequentes (View Transitions)
     document.addEventListener("astro:page-load", initForm);
 </script>
