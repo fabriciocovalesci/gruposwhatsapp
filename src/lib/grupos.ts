@@ -1,6 +1,6 @@
 import {
   collection, getDocs, addDoc, updateDoc, getDoc,
-  doc, query, where, serverTimestamp,
+  doc, query, where, serverTimestamp, orderBy, limit, startAfter
 } from 'firebase/firestore';
 import { db } from './firebase';
 
@@ -79,8 +79,23 @@ export async function enviarGrupo(dados: Omit<Grupo, "id" | "status">) {
   const docRef = await addDoc(collection(db, "grupos"), {
     ...dados,
     status: "pendente",
+    destaque: false,
     criadoEm: serverTimestamp(),
   });
+
+  // Salva no Marketing/Newsletter se tiver e-mail
+  if (dados.email) {
+    try {
+      await addDoc(collection(db, "leads"), {
+        email: dados.email,
+        origem: "enviar-grupo",
+        data: serverTimestamp()
+      });
+    } catch (e) {
+      console.error("Erro ao salvar lead:", e);
+    }
+  }
+
   return docRef.id;
 }
 export async function getGruposByIds(ids: string[]): Promise<Grupo[]> {
@@ -95,4 +110,56 @@ export async function editarGrupo(id: string, dados: any, statusAtual?: string) 
     ...dados,
     status: status,
   });
+
+  // Atualiza/Sincroniza no Marketing se tiver e-mail
+  if (dados.email) {
+    try {
+      await addDoc(collection(db, "leads"), {
+        email: dados.email,
+        origem: "editar-grupo",
+        data: serverTimestamp()
+      });
+    } catch (e) {
+      console.error("Erro ao salvar lead na edição:", e);
+    }
+  }
+}
+export async function getGruposDestaque(limitNum = 10): Promise<Grupo[]> {
+  const q = query(
+    collection(db, 'grupos'),
+    where('status', '==', 'aprovado'),
+    where('destaque', '==', true),
+    orderBy('criadoEm', 'desc'),
+    limit(limitNum)
+  );
+  const snap = await getDocs(q);
+  return snap.docs.map(d => ({ id: d.id, ...d.data() } as Grupo));
+}
+
+export async function getGruposPaginados(limitNum = 10, lastId?: string): Promise<{ grupos: Grupo[], lastId?: string }> {
+  let q = query(
+    collection(db, 'grupos'),
+    where('status', '==', 'aprovado'),
+    orderBy('criadoEm', 'desc'),
+    limit(limitNum)
+  );
+
+  if (lastId) {
+    const lastDoc = await getDoc(doc(db, 'grupos', lastId));
+    if (lastDoc.exists()) {
+      q = query(
+        collection(db, 'grupos'),
+        where('status', '==', 'aprovado'),
+        orderBy('criadoEm', 'desc'),
+        startAfter(lastDoc),
+        limit(limitNum)
+      );
+    }
+  }
+
+  const snap = await getDocs(q);
+  const grupos = snap.docs.map(d => ({ id: d.id, ...d.data() } as Grupo));
+  const newLastId = snap.docs.length > 0 ? snap.docs[snap.docs.length - 1].id : undefined;
+
+  return { grupos, lastId: newLastId };
 }
