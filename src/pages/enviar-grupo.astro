@@ -677,6 +677,27 @@ if (editId) {
                 } else {
                     const id = await enviarGrupo(dados);
 
+                    // Notifica sobre o recebimento se o e-mail foi fornecido
+                    if (dados.email) {
+                        try {
+                            fetch("/api/notificar-recebimento.json", {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({
+                                    email: dados.email,
+                                    nome: dados.nome,
+                                }),
+                            }).catch((err) =>
+                                console.error(
+                                    "Erro ao notificar backend sobre recebimento:",
+                                    err
+                                )
+                            );
+                        } catch (e) {
+                            /* ignore */
+                        }
+                    }
+
                     // Salvar no localStorage para o usuário gerenciar
                     const meusGrupos = JSON.parse(
                         localStorage.getItem("meus_grupos") || "[]"

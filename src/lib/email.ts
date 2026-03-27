@@ -1,12 +1,22 @@
-const BREVO_API_KEY = import.meta.env.BREVO_API_KEY;
+const BREVO_API_KEY = import.meta.env.BREVO_API_KEY || (typeof process !== 'undefined' ? process.env.BREVO_API_KEY : '');
 
-export async function enviarEmailNotificacao(status: 'aprovado' | 'rejeitado', paraEmail: string, nomeGrupo: string) {
-    if (!paraEmail || !BREVO_API_KEY) return;
+export async function enviarEmailNotificacao(status: 'aprovado' | 'rejeitado' | 'recebido', paraEmail: string, nomeGrupo: string) {
+    if (!paraEmail || !BREVO_API_KEY) {
+        console.warn('Falta email ou API Key do Brevo', { paraEmail, hasApiKey: !!BREVO_API_KEY });
+        return;
+    }
 
     const isAprovado = status === 'aprovado';
-    const assunto = isAprovado
-        ? `✅ Boas notícias! Seu grupo "${nomeGrupo}" foi aprovado`
-        : `⚠️ Atualização sobre seu grupo "${nomeGrupo}"`;
+    const isRecebido = status === 'recebido';
+
+    let assunto = '';
+    if (isRecebido) {
+        assunto = `📩 Recebemos seu grupo "${nomeGrupo}" para análise`;
+    } else if (isAprovado) {
+        assunto = `✅ Boas notícias! Seu grupo "${nomeGrupo}" foi aprovado`;
+    } else {
+        assunto = `⚠️ Atualização sobre seu grupo "${nomeGrupo}"`;
+    }
 
     const html = `
     <div style="font-family: 'Inter', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px; color: #1a1a1a; background-color: #f9fafb;">
@@ -21,6 +31,16 @@ export async function enviarEmailNotificacao(status: 'aprovado' | 'rejeitado', p
                 Temos uma atualização sobre o grupo <strong>"${nomeGrupo}"</strong> que você enviou ao nosso diretório.
             </p>
 
+            ${isRecebido ? `
+            <div style="background-color: #f0fdf4; border: 1px solid #dcfce7; padding: 24px; border-radius: 16px; margin-bottom: 32px;">
+                <p style="font-size: 16px; font-weight: 600; color: #166534; margin: 0;">
+                    ⏳ Seu grupo foi RECEBIDO com sucesso e está na nossa fila de moderação!
+                </p>
+            </div>
+            <p style="font-size: 15px; color: #6b7280; margin-bottom: 32px;">
+                Nossa equipe analisará se as regras estão sendo cumpridas. Em breve, você receberá um novo e-mail com o status final (Aprovado ou Rejeitado).
+            </p>
+            ` : `
             <div style="background-color: ${isAprovado ? '#f0fdf4' : '#fef2f2'}; border: 1px solid ${isAprovado ? '#dcfce7' : '#fee2e2'}; padding: 24px; border-radius: 16px; margin-bottom: 32px;">
                 <p style="font-size: 16px; font-weight: 600; color: ${isAprovado ? '#166534' : '#991b1b'}; margin: 0;">
                     ${isAprovado
@@ -41,6 +61,7 @@ export async function enviarEmailNotificacao(status: 'aprovado' | 'rejeitado', p
                 Certifique-se de que o grupo cumpre todas as nossas regras (não permitido conteúdo adulto, links quebrados ou agressividade) e tente enviá-lo novamente no futuro.
             </p>
             `}
+            `}
 
             <hr style="border: 0; border-top: 1px solid #e5e7eb; margin: 40px 0;">
             
@@ -58,6 +79,7 @@ export async function enviarEmailNotificacao(status: 'aprovado' | 'rejeitado', p
     `;
 
     try {
+        console.log(`Enviando email de ${status} para: ${paraEmail}`);
         const response = await fetch('https://api.brevo.com/v3/smtp/email', {
             method: 'POST',
             headers: {
@@ -67,7 +89,7 @@ export async function enviarEmailNotificacao(status: 'aprovado' | 'rejeitado', p
             },
             body: JSON.stringify({
                 sender: {
-                    name: "Suporte WhatsDir",
+                    name: "Suporte Grupos WhatsApp",
                     email: "suporte@gruposwhatsapp.online"
                 },
                 to: [{ email: paraEmail }],
@@ -79,6 +101,8 @@ export async function enviarEmailNotificacao(status: 'aprovado' | 'rejeitado', p
         if (!response.ok) {
             const err = await response.json();
             console.error('Brevo Error:', err);
+        } else {
+            console.log(`Email de ${status} enviado com sucesso para ${paraEmail}!`);
         }
     } catch (e) {
         console.error('Email Fail:', e);
