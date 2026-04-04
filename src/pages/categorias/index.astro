@@ -3,10 +3,12 @@ import Layout from "~/layouts/Layout.astro";
 import Section from "~/components/Section.astro";
 import Container from "~/components/Container.astro";
 import { getGruposAprovados, todasCategorias, type Grupo } from "~/lib/grupos";
+import { registrarPesquisaGrupo } from "~/lib/pesquisasGrupos";
 import ShowGroups from "~/components/ShowGroups.astro";
 
 const url = new URL(Astro.request.url);
-const searchQuery = url.searchParams.get("search")?.toLowerCase() || "";
+const rawSearch = url.searchParams.get("search")?.trim() ?? "";
+const searchQuery = rawSearch.toLowerCase();
 
 let searchResults: Grupo[] = [];
 if (searchQuery) {
@@ -16,10 +18,20 @@ if (searchQuery) {
         g.descricao.toLowerCase().includes(searchQuery) ||
         g.categoria.toLowerCase().includes(searchQuery)
     );
+    try {
+        await registrarPesquisaGrupo({
+            termoBruto: rawSearch,
+            termoNormalizado: searchQuery,
+            resultados: searchResults.length,
+            origem: "categorias",
+        });
+    } catch (e) {
+        console.error("Falha ao registrar pesquisa de grupos:", e);
+    }
 }
 
 const pageTitle = searchQuery 
-    ? `Resultados para "${searchQuery}" - GruposWhats.app`
+    ? `Resultados para "${rawSearch}" - GruposWhats.app`
     : "Categorias de Grupos de WhatsApp - GruposWhats.app";
 ---
 
@@ -35,7 +47,7 @@ const pageTitle = searchQuery
                         <div>
                             <span class="text-[#25D366] font-black uppercase tracking-[0.2em] text-xs mb-3 block">Busca Realizada</span>
                             <h1 class="text-3xl lg:text-5xl font-black text-gray-950 tracking-tighter">
-                                {searchResults.length} Resultados para <span class="text-[#25D366]">"{searchQuery}"</span>
+                                {searchResults.length} Resultados para <span class="text-[#25D366]">"{rawSearch}"</span>
                             </h1>
                         </div>
                         <a href="/" class="text-sm font-black text-gray-400 uppercase tracking-widest hover:text-gray-950 transition-colors flex items-center gap-2">

@@ -91,6 +91,12 @@
         >
           Rejeitados
         </button>
+        <button
+          class="aba-btn px-6 py-4 text-base font-semibold border-b-2 border-transparent text-gray-400 hover:text-gray-800 transition"
+          data-aba="pesquisas"
+        >
+          Pesquisas
+        </button>
       </div>
     </div>
   </section>
@@ -122,6 +128,151 @@
         <p class="text-lg font-semibold">Nenhum grupo aqui</p>
       </div>
       <div id="lista-grupos" class="hidden space-y-4"></div>
+      <div id="lista-pesquisas" class="hidden space-y-4">
+        <div
+          id="pesquisas-filtros"
+          class="rounded-2xl border border-gray-200/90 bg-white p-4 shadow-sm ring-1 ring-black/[0.04]"
+        >
+          <p
+            class="text-[11px] font-black uppercase tracking-widest text-gray-400 mb-3"
+          >
+            Filtros
+          </p>
+          <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-12 lg:items-end">
+            <div class="lg:col-span-2">
+              <label
+                for="pesq-data-de"
+                class="mb-1 block text-xs font-semibold text-gray-600"
+                >Data inicial</label
+              >
+              <input
+                type="date"
+                id="pesq-data-de"
+                autocomplete="off"
+                class="w-full min-h-11 rounded-xl border border-gray-200 bg-gray-50/80 px-3 text-sm text-gray-900 outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-500/20"
+              />
+            </div>
+            <div class="lg:col-span-2">
+              <label
+                for="pesq-data-ate"
+                class="mb-1 block text-xs font-semibold text-gray-600"
+                >Data final</label
+              >
+              <input
+                type="date"
+                id="pesq-data-ate"
+                autocomplete="off"
+                class="w-full min-h-11 rounded-xl border border-gray-200 bg-gray-50/80 px-3 text-sm text-gray-900 outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-500/20"
+              />
+            </div>
+            <div class="sm:col-span-2 lg:col-span-4">
+              <label
+                for="pesq-termo"
+                class="mb-1 block text-xs font-semibold text-gray-600"
+                >Termo contém</label
+              >
+              <input
+                type="search"
+                id="pesq-termo"
+                enterkeyhint="search"
+                placeholder="Ex.: figurinha, emprego…"
+                class="w-full min-h-11 rounded-xl border border-gray-200 bg-gray-50/80 px-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-500/20"
+              />
+            </div>
+            <div
+              class="flex flex-col gap-2 sm:flex-row sm:col-span-2 lg:col-span-4"
+            >
+              <button
+                type="button"
+                id="pesq-btn-filtrar"
+                class="min-h-11 flex-1 touch-manipulation rounded-xl bg-emerald-600 px-4 text-sm font-bold text-white shadow-sm transition hover:bg-emerald-700 active:scale-[0.98]"
+              >
+                Filtrar
+              </button>
+              <button
+                type="button"
+                id="pesq-btn-limpar"
+                class="min-h-11 touch-manipulation rounded-xl border border-gray-200 bg-white px-4 text-sm font-bold text-gray-700 transition hover:bg-gray-50 active:scale-[0.98]"
+              >
+                Limpar
+              </button>
+            </div>
+          </div>
+          <p
+            id="pesquisas-filtro-aviso"
+            class="mt-2 hidden text-[11px] text-amber-700/90"
+          >
+          </p>
+        </div>
+
+        <ul
+          id="pesquisas-cards"
+          class="md:hidden space-y-2.5"
+          aria-label="Lista de pesquisas"
+        >
+        </ul>
+
+        <div
+          class="hidden md:block overflow-hidden rounded-2xl border border-gray-200/90 bg-white shadow-sm ring-1 ring-black/[0.04]"
+        >
+          <div class="overflow-x-auto">
+            <table class="w-full min-w-[560px] text-left text-sm">
+              <thead>
+                <tr
+                  class="bg-gradient-to-r from-slate-800 to-slate-900 text-[11px] font-bold uppercase tracking-wider text-white/95"
+                >
+                  <th class="px-4 py-3 whitespace-nowrap w-[92px]">Data</th>
+                  <th class="px-4 py-3 whitespace-nowrap w-[80px]">Hora</th>
+                  <th class="px-4 py-3">Termo</th>
+                  <th
+                    class="px-4 py-3 w-14 text-center"
+                    title="Grupos encontrados">#</th>
+                </tr>
+              </thead>
+              <tbody
+                id="pesquisas-tbody"
+                class="divide-y divide-gray-100 text-gray-800"
+              >
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div
+          class="flex flex-col gap-3 rounded-2xl border border-gray-100 bg-gray-50/80 px-3 py-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between"
+        >
+          <button
+            type="button"
+            id="pesquisas-prev"
+            class="min-h-11 touch-manipulation rounded-xl border border-gray-200 bg-white px-4 text-sm font-bold text-gray-800 shadow-sm transition hover:bg-white disabled:pointer-events-none disabled:opacity-35 sm:order-1"
+          >
+            ← Anterior
+          </button>
+          <span
+            id="pesquisas-page-meta"
+            class="order-3 text-center text-xs font-medium leading-snug text-gray-600 sm:order-2 sm:max-w-[55%] sm:flex-1"
+          ></span>
+          <button
+            type="button"
+            id="pesquisas-next"
+            class="min-h-11 touch-manipulation rounded-xl border border-gray-200 bg-white px-4 text-sm font-bold text-gray-800 shadow-sm transition hover:bg-white disabled:pointer-events-none disabled:opacity-35 sm:order-3"
+          >
+            Próxima →
+          </button>
+        </div>
+      </div>
+      <div id="vazio-pesquisas" class="hidden text-center py-16 text-gray-400">
+        <p class="text-5xl mb-4">🔎</p>
+        <p class="text-lg font-semibold msg">Nenhuma pesquisa registrada ainda</p>
+        <p class="err-detail text-xs mt-3 max-w-lg mx-auto text-red-600 font-mono whitespace-pre-wrap hidden">
+        </p>
+        <p class="text-sm mt-2 max-w-md mx-auto text-gray-500 hint">
+          Quando alguém usar “Buscar grupos” (home → categorias), o termo e a data/hora são
+          gravados na collection
+          <code class="text-xs bg-gray-100 px-1 rounded text-gray-700">pesquisas_grupos</code>.
+          Confira se as regras do Firestore foram publicadas.
+        </p>
+      </div>
     </div>
   </section>
 </div>
@@ -220,6 +371,16 @@
     deleteDoc,
     getDoc,
     setDoc,
+    collection,
+    query,
+    where,
+    orderBy,
+    limit,
+    startAfter,
+    getDocs,
+    Timestamp,
+    type QueryDocumentSnapshot,
+    type DocumentData,
   } from "firebase/firestore";
 
   interface GrupoAdmin {
@@ -248,6 +409,35 @@
   const labelUsuario = document.getElementById("label-usuario")!;
   const loadingEl = document.getElementById("loading-grupos")!;
   const listaEl = document.getElementById("lista-grupos")!;
+  const listaPesquisas = document.getElementById("lista-pesquisas")!;
+  const pesquisasTbody = document.getElementById("pesquisas-tbody")!;
+  const pesquisasCards = document.getElementById("pesquisas-cards")!;
+  const pesquisasFiltroAviso = document.getElementById(
+    "pesquisas-filtro-aviso"
+  ) as HTMLElement;
+  const inputPesqDataDe = document.getElementById(
+    "pesq-data-de"
+  ) as HTMLInputElement;
+  const inputPesqDataAte = document.getElementById(
+    "pesq-data-ate"
+  ) as HTMLInputElement;
+  const inputPesqTermo = document.getElementById(
+    "pesq-termo"
+  ) as HTMLInputElement;
+  const btnPesqFiltrar = document.getElementById(
+    "pesq-btn-filtrar"
+  ) as HTMLButtonElement;
+  const btnPesqLimpar = document.getElementById(
+    "pesq-btn-limpar"
+  ) as HTMLButtonElement;
+  const btnPesquisasPrev = document.getElementById(
+    "pesquisas-prev"
+  ) as HTMLButtonElement;
+  const btnPesquisasNext = document.getElementById(
+    "pesquisas-next"
+  ) as HTMLButtonElement;
+  const pesquisasPageMeta = document.getElementById("pesquisas-page-meta")!;
+  const vazioPesquisas = document.getElementById("vazio-pesquisas")!;
   const vazioEl = document.getElementById("lista-vazia")!;
   const badgeEl = document.getElementById("badge-pendente")!;
   const abaBtns = Array.from(
@@ -256,6 +446,492 @@
   const tpl = document.getElementById("tpl-card") as HTMLTemplateElement;
 
   let abaAtual = "pendente";
+
+  const TZ_BRASILIA = "America/Sao_Paulo";
+
+  /** Tabela compacta: data curta + hora */
+  function formatarDataHoraCompacta(
+    criadoEm: { toDate?: () => Date } | undefined
+  ) {
+    const dt = criadoEm?.toDate?.();
+    if (!dt) {
+      return { data: "—", hora: "—" };
+    }
+    const data = new Intl.DateTimeFormat("pt-BR", {
+      timeZone: TZ_BRASILIA,
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    }).format(dt);
+    const hora = new Intl.DateTimeFormat("pt-BR", {
+      timeZone: TZ_BRASILIA,
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    }).format(dt);
+    return { data, hora };
+  }
+
+  const PESQ_PAGE_SIZE = 30;
+  /** Máximo de docs com filtros (1 leitura em lote — rápido no celular). */
+  const PESQ_FILTER_MAX = 800;
+
+  let pesqMetaLinhaExtra = "";
+
+  type PesqCachedPage = {
+    rows: Record<string, unknown>[];
+    lastSnap: QueryDocumentSnapshot<DocumentData>;
+  };
+
+  let pesqMode: "firestore" | "memory" = "firestore";
+  let pesqCachedPages: PesqCachedPage[] = [];
+  let pesqPageIdx = 0;
+  let pesqLastFetchedPageHasMore = false;
+  let pesqMemoryAll: Record<string, unknown>[] = [];
+  let pesqMemoryPageIdx = 0;
+
+  function pesquisasResetEstado() {
+    pesqMode = "firestore";
+    pesqCachedPages = [];
+    pesqPageIdx = 0;
+    pesqLastFetchedPageHasMore = false;
+    pesqMemoryAll = [];
+    pesqMemoryPageIdx = 0;
+    pesqMetaLinhaExtra = "";
+    pesquisasTbody.innerHTML = "";
+    pesquisasCards.innerHTML = "";
+    pesquisasFiltroAviso.classList.add("hidden");
+    pesquisasFiltroAviso.textContent = "";
+  }
+
+  function pesquisasTemFiltrosNosInputs(): boolean {
+    return !!(
+      inputPesqDataDe.value ||
+      inputPesqDataAte.value ||
+      inputPesqTermo.value.trim()
+    );
+  }
+
+  function parseDateLocalStart(iso: string): Date | null {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(iso)) return null;
+    const [y, m, d] = iso.split("-").map(Number);
+    return new Date(y, m - 1, d, 0, 0, 0, 0);
+  }
+
+  function parseDateLocalEnd(iso: string): Date | null {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(iso)) return null;
+    const [y, m, d] = iso.split("-").map(Number);
+    return new Date(y, m - 1, d, 23, 59, 59, 999);
+  }
+
+  function filtrarLinhasPorTermo(
+    rows: Record<string, unknown>[],
+    termo: string
+  ): Record<string, unknown>[] {
+    const t = termo.trim().toLowerCase();
+    if (!t) return rows;
+    return rows.filter((r) => {
+      const a = String(r.termo ?? "").toLowerCase();
+      const b = String(r.termoNormalizado ?? "").toLowerCase();
+      return a.includes(t) || b.includes(t);
+    });
+  }
+
+  function renderPesquisasResultados(rows: Record<string, unknown>[]) {
+    pesquisasTbody.innerHTML = "";
+    pesquisasCards.innerHTML = "";
+
+    rows.forEach((d, i) => {
+      const { data: dStr, hora: hStr } = formatarDataHoraCompacta(
+        d.criadoEm as { toDate?: () => Date } | undefined
+      );
+      const termo = String(d.termo ?? "");
+      const n = Number(d.resultados);
+      const nTxt = Number.isFinite(n) ? String(n) : "—";
+
+      const li = document.createElement("li");
+      li.className =
+        "rounded-2xl border border-gray-200/90 bg-white p-3.5 shadow-sm ring-1 ring-black/[0.03] transition-transform active:scale-[0.99]";
+      const pTermo = document.createElement("p");
+      pTermo.className =
+        "text-[15px] font-semibold leading-snug text-gray-900 break-words";
+      pTermo.textContent = termo;
+      const foot = document.createElement("div");
+      foot.className =
+        "mt-2.5 flex flex-wrap items-center justify-between gap-2 text-xs text-gray-500";
+      const meta = document.createElement("span");
+      meta.className = "font-mono tabular-nums";
+      meta.textContent = `${dStr} · ${hStr}`;
+      const badge = document.createElement("span");
+      badge.className =
+        "inline-flex min-w-[2rem] items-center justify-center rounded-lg bg-emerald-50 px-2 py-0.5 text-[11px] font-bold text-emerald-800 tabular-nums";
+      badge.textContent = nTxt;
+      foot.append(meta, badge);
+      li.append(pTermo, foot);
+      pesquisasCards.appendChild(li);
+
+      const tr = document.createElement("tr");
+      tr.className =
+        (i % 2 === 0 ? "bg-white" : "bg-slate-50/60") +
+        " transition-colors hover:bg-emerald-50/50";
+      const td0 = document.createElement("td");
+      td0.className =
+        "px-4 py-2.5 font-mono text-xs text-gray-600 whitespace-nowrap align-middle";
+      td0.textContent = dStr;
+      const td1 = document.createElement("td");
+      td1.className =
+        "px-4 py-2.5 font-mono text-xs text-gray-600 whitespace-nowrap align-middle";
+      td1.textContent = hStr;
+      const td2 = document.createElement("td");
+      td2.className =
+        "px-4 py-2.5 align-middle text-gray-800 max-w-[220px] lg:max-w-xl truncate";
+      td2.title = termo;
+      td2.textContent = termo;
+      const td3 = document.createElement("td");
+      td3.className =
+        "px-4 py-2.5 text-center text-sm font-semibold tabular-nums text-emerald-800 align-middle";
+      td3.textContent = nTxt;
+      tr.append(td0, td1, td2, td3);
+      pesquisasTbody.appendChild(tr);
+    });
+  }
+
+  function updatePesquisasPagerUI() {
+    if (pesqMode === "memory") {
+      const total = pesqMemoryAll.length;
+      const pages = Math.max(1, Math.ceil(total / PESQ_PAGE_SIZE));
+      const start = pesqMemoryPageIdx * PESQ_PAGE_SIZE + 1;
+      const end = Math.min((pesqMemoryPageIdx + 1) * PESQ_PAGE_SIZE, total);
+      btnPesquisasPrev.disabled = pesqMemoryPageIdx <= 0;
+      btnPesquisasNext.disabled = pesqMemoryPageIdx >= pages - 1;
+      const tailMem =
+        pesqMetaLinhaExtra ||
+        (!pesquisasTemFiltrosNosInputs() ? " · modo sem índice" : "");
+      pesquisasPageMeta.textContent =
+        total > 0
+          ? `Página ${pesqMemoryPageIdx + 1} / ${pages} · ${start}–${end} de ${total}${tailMem}`
+          : "";
+      return;
+    }
+
+    const nCached = pesqCachedPages.length;
+    const hasNext =
+      pesqPageIdx < nCached - 1 ||
+      (pesqPageIdx === nCached - 1 && pesqLastFetchedPageHasMore);
+    btnPesquisasPrev.disabled = pesqPageIdx <= 0;
+    btnPesquisasNext.disabled = !hasNext;
+    const mostrando = pesqCachedPages[pesqPageIdx]?.rows.length ?? 0;
+    pesquisasPageMeta.textContent =
+      nCached > 0
+        ? `Página ${pesqPageIdx + 1} · ${mostrando} registro(s) nesta página` +
+          (pesqLastFetchedPageHasMore && pesqPageIdx === nCached - 1
+            ? " · há mais em “Próxima”"
+            : "") +
+          pesqMetaLinhaExtra
+        : "";
+  }
+
+  function pesquisasRenderMemoryPage() {
+    const start = pesqMemoryPageIdx * PESQ_PAGE_SIZE;
+    const slice = pesqMemoryAll.slice(start, start + PESQ_PAGE_SIZE);
+    renderPesquisasResultados(slice);
+    updatePesquisasPagerUI();
+  }
+
+  async function pesquisasFetchNextFirestorePage(): Promise<boolean> {
+    const col = collection(db, "pesquisas_grupos");
+    const lastPage = pesqCachedPages[pesqCachedPages.length - 1];
+    const q = lastPage
+      ? query(
+          col,
+          orderBy("criadoEm", "desc"),
+          startAfter(lastPage.lastSnap),
+          limit(PESQ_PAGE_SIZE + 1)
+        )
+      : query(
+          col,
+          orderBy("criadoEm", "desc"),
+          limit(PESQ_PAGE_SIZE + 1)
+        );
+    const snap = await getDocs(q);
+    if (snap.empty) {
+      pesqLastFetchedPageHasMore = false;
+      return false;
+    }
+    const docs = snap.docs;
+    const hasMore = docs.length > PESQ_PAGE_SIZE;
+    const pageDocs = hasMore ? docs.slice(0, PESQ_PAGE_SIZE) : docs;
+    pesqLastFetchedPageHasMore = hasMore;
+    const lastSnap = pageDocs[pageDocs.length - 1];
+    pesqCachedPages.push({
+      rows: pageDocs.map((d) => d.data() as Record<string, unknown>),
+      lastSnap,
+    });
+    return true;
+  }
+
+  function normalizarOrdemDatas() {
+    const a = inputPesqDataDe.value;
+    const b = inputPesqDataAte.value;
+    if (!a || !b) return;
+    const da = parseDateLocalStart(a);
+    const db = parseDateLocalStart(b);
+    if (da && db && da > db) {
+      inputPesqDataDe.value = b;
+      inputPesqDataAte.value = a;
+    }
+  }
+
+  async function pesquisasCarregarFiltradoFallbackClient(
+    startD: Date | null,
+    endD: Date | null,
+    termo: string,
+    msgEl: HTMLElement
+  ): Promise<boolean> {
+    const snap = await getDocs(
+      query(collection(db, "pesquisas_grupos"), limit(2000))
+    );
+    let rows = snap.docs
+      .filter((docSnap) => docSnap.data().criadoEm)
+      .map((docSnap) => docSnap.data() as Record<string, unknown>)
+      .sort(
+        (a, b) =>
+          ((b.criadoEm as { toMillis?: () => number })?.toMillis?.() ?? 0) -
+          ((a.criadoEm as { toMillis?: () => number })?.toMillis?.() ?? 0)
+      );
+    const tMs = (x: Record<string, unknown>) =>
+      (x.criadoEm as { toMillis?: () => number })?.toMillis?.() ?? 0;
+    if (startD) {
+      const ms = Timestamp.fromDate(startD).toMillis();
+      rows = rows.filter((r) => tMs(r) >= ms);
+    }
+    if (endD) {
+      const ms = Timestamp.fromDate(endD).toMillis();
+      rows = rows.filter((r) => tMs(r) <= ms);
+    }
+    rows = filtrarLinhasPorTermo(rows, termo);
+    pesqMode = "memory";
+    pesqMemoryAll = rows;
+    pesqMemoryPageIdx = 0;
+    pesqMetaLinhaExtra = " · filtrado no aparelho (≤2000)";
+    pesquisasFiltroAviso.textContent =
+      "Sem índice no Firestore para este filtro: carregamos até 2000 registros e filtramos no dispositivo.";
+    pesquisasFiltroAviso.classList.remove("hidden");
+    if (rows.length === 0) {
+      msgEl.textContent = "Nenhum resultado para esses filtros.";
+      return false;
+    }
+    pesquisasRenderMemoryPage();
+    return true;
+  }
+
+  async function pesquisasCarregarFiltrado(msgEl: HTMLElement): Promise<void> {
+    normalizarOrdemDatas();
+    const dateDe = inputPesqDataDe.value;
+    const dateAte = inputPesqDataAte.value;
+    const termo = inputPesqTermo.value;
+    const startD = dateDe ? parseDateLocalStart(dateDe) : null;
+    const endD = dateAte ? parseDateLocalEnd(dateAte) : null;
+
+    const col = collection(db, "pesquisas_grupos");
+    const constraints = [];
+    if (startD) {
+      constraints.push(where("criadoEm", ">=", Timestamp.fromDate(startD)));
+    }
+    if (endD) {
+      constraints.push(where("criadoEm", "<=", Timestamp.fromDate(endD)));
+    }
+    constraints.push(orderBy("criadoEm", "desc"));
+    constraints.push(limit(PESQ_FILTER_MAX));
+
+    pesqMode = "memory";
+    pesqMetaLinhaExtra = "";
+
+    try {
+      const snap = await getDocs(query(col, ...constraints));
+      let rows = snap.docs.map((d) => d.data() as Record<string, unknown>);
+      rows = filtrarLinhasPorTermo(rows, termo);
+
+      const avisos: string[] = [];
+      if (!dateDe && !dateAte && termo.trim()) {
+        avisos.push(
+          "Sem datas: o termo é buscado só entre os 800 registros mais recentes."
+        );
+      }
+      if (snap.docs.length >= PESQ_FILTER_MAX) {
+        avisos.push(
+          `Limite de ${PESQ_FILTER_MAX} registros — aperte o período se precisar refinar.`
+        );
+        pesqMetaLinhaExtra = ` · até ${PESQ_FILTER_MAX} registros`;
+      }
+      if (avisos.length) {
+        pesquisasFiltroAviso.textContent = avisos.join(" ");
+        pesquisasFiltroAviso.classList.remove("hidden");
+      }
+
+      pesqMemoryAll = rows;
+      pesqMemoryPageIdx = 0;
+
+      if (rows.length === 0) {
+        msgEl.textContent = "Nenhum resultado para esses filtros.";
+        vazioPesquisas.classList.remove("hidden");
+        return;
+      }
+      pesquisasRenderMemoryPage();
+      listaPesquisas.classList.remove("hidden");
+    } catch (err: unknown) {
+      const c = firebaseErrCode(err);
+      console.warn("[pesquisas filtro]", c, err);
+      if (c === "failed-precondition" || c === "unimplemented") {
+        const ok = await pesquisasCarregarFiltradoFallbackClient(
+          startD,
+          endD,
+          termo,
+          msgEl
+        );
+        if (ok) listaPesquisas.classList.remove("hidden");
+        else vazioPesquisas.classList.remove("hidden");
+      } else {
+        throw err;
+      }
+    }
+  }
+
+  async function pesquisasCarregarLivre(msgEl: HTMLElement): Promise<void> {
+    pesqMode = "firestore";
+    try {
+      const ok = await pesquisasFetchNextFirestorePage();
+      const primeira = pesqCachedPages[0];
+      if (!ok || !primeira || primeira.rows.length === 0) {
+        msgEl.textContent = "Nenhuma pesquisa registrada ainda";
+        vazioPesquisas.classList.remove("hidden");
+      } else {
+        pesqPageIdx = 0;
+        renderPesquisasResultados(primeira.rows);
+        updatePesquisasPagerUI();
+        listaPesquisas.classList.remove("hidden");
+      }
+    } catch (firstErr: unknown) {
+      const c = firebaseErrCode(firstErr);
+      console.warn("[admin pesquisas] orderBy(criadoEm):", c, firstErr);
+      if (c === "failed-precondition" || c === "unimplemented") {
+        pesqMode = "memory";
+        const snap2 = await getDocs(
+          query(collection(db, "pesquisas_grupos"), limit(2000))
+        );
+        pesqMemoryAll = snap2.docs
+          .filter((docSnap) => docSnap.data().criadoEm)
+          .sort(
+            (a, b) =>
+              (b.data().criadoEm?.toMillis?.() ?? 0) -
+              (a.data().criadoEm?.toMillis?.() ?? 0)
+          )
+          .map((docSnap) => docSnap.data() as Record<string, unknown>);
+        pesqMemoryPageIdx = 0;
+        if (pesqMemoryAll.length === 0) {
+          msgEl.textContent = "Nenhuma pesquisa registrada ainda";
+          vazioPesquisas.classList.remove("hidden");
+        } else {
+          pesquisasRenderMemoryPage();
+          listaPesquisas.classList.remove("hidden");
+        }
+      } else {
+        throw firstErr;
+      }
+    }
+  }
+
+  function firebaseErrCode(e: unknown): string {
+    if (e !== null && typeof e === "object" && "code" in e) {
+      const c = (e as { code?: string }).code;
+      return typeof c === "string" ? c : "";
+    }
+    return "";
+  }
+
+  async function pesquisasNavegar(dir: "prev" | "next") {
+    if (pesqMode === "memory") {
+      if (dir === "prev" && pesqMemoryPageIdx > 0) {
+        pesqMemoryPageIdx--;
+        pesquisasRenderMemoryPage();
+      } else if (dir === "next") {
+        const pages = Math.max(
+          1,
+          Math.ceil(pesqMemoryAll.length / PESQ_PAGE_SIZE)
+        );
+        if (pesqMemoryPageIdx < pages - 1) {
+          pesqMemoryPageIdx++;
+          pesquisasRenderMemoryPage();
+        }
+      }
+      return;
+    }
+
+    if (dir === "prev") {
+      if (pesqPageIdx > 0) {
+        pesqPageIdx--;
+        renderPesquisasResultados(pesqCachedPages[pesqPageIdx].rows);
+        updatePesquisasPagerUI();
+      }
+      return;
+    }
+
+    const podeIr =
+      pesqPageIdx < pesqCachedPages.length - 1 ||
+      (pesqPageIdx === pesqCachedPages.length - 1 && pesqLastFetchedPageHasMore);
+    if (!podeIr) return;
+
+    if (pesqPageIdx < pesqCachedPages.length - 1) {
+      pesqPageIdx++;
+      renderPesquisasResultados(pesqCachedPages[pesqPageIdx].rows);
+      updatePesquisasPagerUI();
+      return;
+    }
+
+    const u = auth.currentUser;
+    if (!u) return;
+    loadingEl.classList.remove("hidden");
+    btnPesquisasNext.disabled = true;
+    try {
+      await u.getIdToken();
+      const antes = pesqCachedPages.length;
+      await pesquisasFetchNextFirestorePage();
+      if (pesqCachedPages.length > antes) {
+        pesqPageIdx = pesqCachedPages.length - 1;
+        renderPesquisasResultados(pesqCachedPages[pesqPageIdx].rows);
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      loadingEl.classList.add("hidden");
+      updatePesquisasPagerUI();
+    }
+  }
+
+  btnPesquisasPrev.addEventListener("click", () => {
+    void pesquisasNavegar("prev");
+  });
+  btnPesquisasNext.addEventListener("click", () => {
+    void pesquisasNavegar("next");
+  });
+
+  btnPesqFiltrar.addEventListener("click", () => {
+    void carregarPesquisas();
+  });
+  btnPesqLimpar.addEventListener("click", () => {
+    inputPesqDataDe.value = "";
+    inputPesqDataAte.value = "";
+    inputPesqTermo.value = "";
+    void carregarPesquisas();
+  });
+
+  inputPesqTermo.addEventListener("keydown", (e: KeyboardEvent) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      void carregarPesquisas();
+    }
+  });
 
   // Auth — monitora estado de login
   onAuthStateChanged(auth, async (user) => {
@@ -334,7 +1010,11 @@
       });
       btn.classList.add("border-yellow-300", "text-gray-800");
       btn.classList.remove("border-transparent", "text-gray-400");
-      carregarGrupos(abaAtual);
+      if (abaAtual === "pesquisas") {
+        carregarPesquisas();
+      } else {
+        carregarGrupos(abaAtual);
+      }
     });
   });
 
@@ -351,10 +1031,72 @@
     }
   }
 
+  async function carregarPesquisas() {
+    loadingEl.classList.remove("hidden");
+    listaEl.classList.add("hidden");
+    vazioEl.classList.add("hidden");
+    listaPesquisas.classList.add("hidden");
+    vazioPesquisas.classList.add("hidden");
+    pesquisasResetEstado();
+    btnPesquisasPrev.disabled = true;
+    btnPesquisasNext.disabled = true;
+    pesquisasPageMeta.textContent = "";
+
+    const msgEl = vazioPesquisas.querySelector(".msg")!;
+    const errDetail = vazioPesquisas.querySelector(
+      ".err-detail"
+    ) as HTMLElement;
+    const hint = vazioPesquisas.querySelector(".hint") as HTMLElement;
+    errDetail.classList.add("hidden");
+    errDetail.textContent = "";
+    hint.classList.remove("hidden");
+
+    const user = auth.currentUser;
+    if (!user) {
+      msgEl.textContent = "Faça login novamente para ver as pesquisas.";
+      vazioPesquisas.classList.remove("hidden");
+      loadingEl.classList.add("hidden");
+      return;
+    }
+
+    try {
+      await user.getIdToken();
+    } catch {
+      msgEl.textContent = "Não foi possível renovar a sessão.";
+      vazioPesquisas.classList.remove("hidden");
+      loadingEl.classList.add("hidden");
+      return;
+    }
+
+    try {
+      if (pesquisasTemFiltrosNosInputs()) {
+        await pesquisasCarregarFiltrado(msgEl);
+      } else {
+        await pesquisasCarregarLivre(msgEl);
+      }
+    } catch (e) {
+      console.error(e);
+      const code = firebaseErrCode(e);
+      msgEl.textContent = "Erro ao carregar pesquisas";
+      errDetail.textContent =
+        code === "permission-denied"
+          ? "permission-denied: usuário sem permissão de leitura em pesquisas_grupos. Publique o firestore.rules do projeto (allow list, get se auth != null). Se o App Check estiver obrigatório no Firestore, configure no app web."
+          : code === "failed-precondition"
+            ? "failed-precondition: índice do Firestore. O painel tentou modo alternativo; se persistir, crie o índice sugerido no link do console (F12 → aba Console)."
+            : `${code || "erro"}: ${e instanceof Error ? e.message : String(e)}`;
+      errDetail.classList.remove("hidden");
+      vazioPesquisas.classList.remove("hidden");
+    } finally {
+      loadingEl.classList.add("hidden");
+    }
+  }
+
   async function carregarGrupos(status: string) {
     loadingEl.classList.remove("hidden");
     listaEl.classList.add("hidden");
     vazioEl.classList.add("hidden");
+    listaPesquisas.classList.add("hidden");
+    vazioPesquisas.classList.add("hidden");
     listaEl.innerHTML = "";
 
     try {

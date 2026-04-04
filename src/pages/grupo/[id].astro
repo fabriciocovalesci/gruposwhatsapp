@@ -3,6 +3,7 @@ import Layout from "~/layouts/Layout.astro";
 import Section from "~/components/Section.astro";
 import Container from "~/components/Container.astro";
 import { getGrupoById, getLabelCategoria } from "~/lib/grupos";
+import { siteDomain } from "~/data/config";
 
 const { id } = Astro.params;
 
@@ -21,13 +22,42 @@ const avatarUrl =
         grupo.nome.slice(0, 2)
     )}&background=25D366&color=fff&size=256&bold=true&rounded=true`;
 
-const schema = {
+const origin = Astro.site?.origin ?? `https://${siteDomain}`;
+const grupoPageUrl = `${origin}/grupo/${id}`;
+const schemaGraph = {
     "@context": "https://schema.org",
-    "@type": "Group",
-    name: grupo.nome,
-    description: grupo.descricao,
-    image: avatarUrl,
-    url: `https://gruposwhatsapp.online/grupo/${id}`,
+    "@graph": [
+        {
+            "@type": "Group",
+            name: grupo.nome,
+            description: grupo.descricao,
+            image: avatarUrl,
+            url: grupoPageUrl,
+        },
+        {
+            "@type": "BreadcrumbList",
+            itemListElement: [
+                {
+                    "@type": "ListItem",
+                    position: 1,
+                    name: "Início",
+                    item: `${origin}/`,
+                },
+                {
+                    "@type": "ListItem",
+                    position: 2,
+                    name: categoriaLabel,
+                    item: `${origin}/categorias/${grupo.categoria}`,
+                },
+                {
+                    "@type": "ListItem",
+                    position: 3,
+                    name: grupo.nome,
+                    item: grupoPageUrl,
+                },
+            ],
+        },
+    ],
 };
 ---
 
@@ -35,7 +65,9 @@ const schema = {
     pageTitle={`${grupo.nome} - Entrar no Grupo de WhatsApp`}
     description={`Entre agora no grupo ${grupo.nome}. Categoria: ${categoriaLabel}. Veja as regras e participe da comunidade.`}
 >
-    <script type="application/ld+json" set:html={JSON.stringify(schema)}
+    <script
+        type="application/ld+json"
+        set:html={JSON.stringify(schemaGraph)}
     ></script>
 
     <Section class:list={"bg-gray-50 py-8 lg:py-16"}>

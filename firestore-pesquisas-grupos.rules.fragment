@@ -1,0 +1,2 @@
+// Obsoleto: use o arquivo completo `firestore.rules` na raiz do repositório.
+// Ele já inclui grupos, configs/ads, pesquisas_grupos e leads com a estrutura correta.

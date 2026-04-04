@@ -8,6 +8,8 @@ import { getDoc, doc } from "firebase/firestore";
 import { db } from "~/lib/firebase";
 
 const baseUrl = `${Astro.url.protocol}//${Astro.url.host}`;
+const canonicalOrigin = Astro.site ?? new URL(Astro.url.origin);
+const canonicalURL = new URL(Astro.url.pathname, canonicalOrigin).href;
 
 interface Props {
 	pageTitle?: string;
@@ -48,7 +50,7 @@ const {
 		<meta name="theme-color" content={themeColor} />
 		<meta name="description" content={description} />
 		<meta name="keywords" content={keywords} />
-		<link rel="canonical" href={Astro.url} />
+		<link rel="canonical" href={canonicalURL} />
 		<meta
 			name="robots"
 			content={noindex ? "noindex, nofollow" : "index, follow"}
@@ -61,7 +63,7 @@ const {
 		<link rel="apple-touch-icon" sizes="180x180" href="/favicon.png" />
 		<meta name="apple-mobile-web-app-title" content={siteName} />
 
-		<meta property="og:url" content={Astro.url} />
+		<meta property="og:url" content={canonicalURL} />
 		<meta property="og:type" content="website" />
 		<meta
 			property="og:title"
@@ -73,7 +75,7 @@ const {
 		<meta property="og:locale" content="pt_BR" />
 
 		<meta name="twitter:card" content="summary_large_image" />
-		<meta name="twitter:url" content={Astro.url} />
+		<meta name="twitter:url" content={canonicalURL} />
 		<meta
 			name="twitter:title"
 			content={pageTitle || `${title} | ${siteName}`}

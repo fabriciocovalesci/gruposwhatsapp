@@ -1,4 +1,5 @@
 # https://www.robotstxt.org/robotstxt.html
+# Motores de busca principais
 User-agent: Googlebot
 Allow: /
 
@@ -20,7 +21,35 @@ Allow: /
 User-agent: AhrefsBot
 Allow: /
 
-# Bloqueia bots de IA e outros que não sejam de indexação pura
+# Pré-visualização de links (redes sociais e mensageiros)
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Facebot
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /
+
+User-agent: Slackbot
+Allow: /
+
+User-agent: Discordbot
+Allow: /
+
+User-agent: TelegramBot
+Allow: /
+
+User-agent: WhatsApp
+Allow: /
+
+User-agent: Pinterestbot
+Allow: /
+
+# Bloqueio de bots de IA e crawlers agressivos de terceiros
 User-agent: GPTBot
 Disallow: /
 
@@ -45,9 +74,10 @@ Disallow: /
 User-agent: dotbot
 Disallow: /
 
-# Regra geral para o resto
+# Padrão: permitir o site público; bloquear admin e APIs (JSON)
 User-agent: *
-Disallow: /
+Allow: /
+Disallow: /admin
+Disallow: /api/
 
-Host: https://gruposwhatsapp.online
 Sitemap: https://gruposwhatsapp.online/sitemap.xml

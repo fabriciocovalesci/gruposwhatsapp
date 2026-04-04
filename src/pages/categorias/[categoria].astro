@@ -2,6 +2,7 @@
 import Layout from "~/layouts/Layout.astro";
 import Section from "~/components/Section.astro";
 import Container from "~/components/Container.astro";
+import { siteDomain } from "~/data/config";
 import {
     getGruposAprovados,
     todasCategorias,
@@ -25,12 +26,42 @@ const label = getLabelCategoria(categoria) || categoria;
 // Obter grupos
 const todosGrupos = await getGruposAprovados();
 const gruposDaCategoria = todosGrupos.filter((g) => g.categoria === categoria);
+
+const origin = Astro.site?.origin ?? `https://${siteDomain}`;
+const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+        {
+            "@type": "ListItem",
+            position: 1,
+            name: "Início",
+            item: `${origin}/`,
+        },
+        {
+            "@type": "ListItem",
+            position: 2,
+            name: "Categorias",
+            item: `${origin}/categorias`,
+        },
+        {
+            "@type": "ListItem",
+            position: 3,
+            name: `${label} WhatsApp`,
+            item: `${origin}/categorias/${categoria}`,
+        },
+    ],
+};
 ---
 
 <Layout
     pageTitle={`Grupos de ${label} WhatsApp 2026 | Link para Entrar`}
     description={`Procurando por Grupos de ${label} WhatsApp? Confira nossa lista com os melhores links de grupos de whatsapp ${label.toLowerCase()} atualizados para 2026. Entre agora mesmo!`}
 >
+    <script
+        type="application/ld+json"
+        set:html={JSON.stringify(breadcrumbSchema)}
+    />
     <Section class:list={"pt-6 pb-20 bg-white min-h-[70vh]"}>
         <Container>
             <div class="mb-10 text-center lg:text-left">

@@ -10,6 +10,64 @@ import {
 } from "~/lib/grupos";
 import GroupCard from "~/components/GroupCard.astro";
 
+const faqItems = [
+	{
+		question: `O que é o ${siteName}?`,
+		answer: `Nós somos a maior plataforma brasileira de links de grupos de WhatsApp. No ${siteDomain} você descobre comunidades reais para participar e também pode divulgar o seu próprio grupo gratuitamente. Nossa missão é conectar pessoas com interesses em comum de forma rápida, segura e sem limites de participação.`,
+	},
+	{
+		question: "Como encontrar um grupo de WhatsApp?",
+		answer: `Para encontrar grupos de whatsapp, navegue pelas categorias no topo do site ou use a busca. Temos mais de 40 temas como amizade, figurinhas, namoro e negócios. Acesse ${siteDomain} e explore as milhares de opções atualizadas diariamente.`,
+	},
+	{
+		question: "Como entrar em um grupo através do site?",
+		answer:
+			"Escolha o grupo desejado, clique no card e aperte o botão 'Participar do Grupo'. O seu WhatsApp abrirá automaticamente na tela de convite oficial. É o jeito mais fácil de entrar em grupos de whatsapp online.",
+	},
+	{
+		question: "Como criar o seu próprio grupo de WhatsApp?",
+		answer:
+			"No WhatsApp, clique em 'Novo grupo', selecione os contatos, escolha um nome legal e adicione uma foto. Para crescer rápido, pegue o link de convite e cadastre aqui no nosso portal para conseguir novos membros todo dia!",
+	},
+	{
+		question: "Como excluir um grupo definitivamente?",
+		answer:
+			"Como administrador, remova todos os membros. Depois, clique em 'Sair do grupo' e 'Excluir grupo'. Isso garante que o grupo não continue ativo com outra pessoa.",
+	},
+	{
+		question: "Como sair de um grupo que não quero mais?",
+		answer:
+			"Abra o grupo > clique no nome no topo > role até o final > 'Sair do grupo'. Simples assim para deixar de receber mensagens de qualquer comunidade.",
+	},
+	{
+		question: "Como adicionar pessoas ao meu grupo?",
+		answer: `Sendo administrador, use 'Adicionar participantes' ou gere um 'Link de convite' nas configurações do grupo. Divulgar esse link no ${siteName} é a melhor forma de atrair novas pessoas interessantes.`,
+	},
+	{
+		question: "Como fazer chamadas em grupo?",
+		answer:
+			"O WhatsApp permite ligar para até 32 pessoas de uma vez! No grupo, use o ícone de telefone com o sinal '+', selecione quem deseja e escolha entre áudio ou vídeo.",
+	},
+	{
+		question: "Quantas pessoas cabem em um grupo hoje?",
+		answer:
+			"Atualmente, o limite é de 1.024 pessoas por grupo. O WhatsApp expandiu esse limite para permitir comunidades maiores e mais organizadas.",
+	},
+];
+
+const faqSchema = {
+	"@context": "https://schema.org",
+	"@type": "FAQPage",
+	mainEntity: faqItems.map(({ question, answer }) => ({
+		"@type": "Question",
+		name: question,
+		acceptedAnswer: {
+			"@type": "Answer",
+			text: answer,
+		},
+	})),
+};
+
 // 1. Busca os fixados (destaque)
 const fixados = await getGruposDestaque(10);
 const idsFixados = new Set(fixados.map((g) => g.id));
@@ -31,6 +89,10 @@ const hasMore = normalBatch.length === 10;
 	pageTitle="gruposwhatsapp.online - Links de Grupos de WhatsApp"
 	description="Encontre os melhores links de grupos de WhatsApp, canais, namoro, amizade e muito mais. Mande seu grupo e consiga mais membros gratis!"
 >
+	<script
+		type="application/ld+json"
+		set:html={JSON.stringify(faqSchema)}
+	/>
 	{/* Hero Section - Matching Hyperdrive Soul */}
 	<Section
 		class:list={"bg-[#028b3a] pt-16 pb-28 lg:pt-24 lg:pb-40 relative overflow-hidden text-white"}
@@ -257,51 +319,7 @@ const hasMore = normalBatch.length === 10;
 			<div class="max-w-4xl mx-auto">
 				<div class="grid gap-6">
 					{
-						[
-							{
-								question: `O que é o ${siteName}?`,
-								answer: `Nós somos a maior plataforma brasileira de links de grupos de WhatsApp. No ${siteDomain} você descobre comunidades reais para participar e também pode divulgar o seu próprio grupo gratuitamente. Nossa missão é conectar pessoas com interesses em comum de forma rápida, segura e sem limites de participação.`,
-							},
-							{
-								question:
-									"Como encontrar um grupo de WhatsApp?",
-								answer: `Para encontrar grupos de whatsapp, navegue pelas categorias no topo do site ou use a busca. Temos mais de 40 temas como amizade, figurinhas, namoro e negócios. Acesse ${siteDomain} e explore as milhares de opções atualizadas diariamente.`,
-							},
-							{
-								question:
-									"Como entrar em um grupo através do site?",
-								answer: "Escolha o grupo desejado, clique no card e aperte o botão 'Participar do Grupo'. O seu WhatsApp abrirá automaticamente na tela de convite oficial. É o jeito mais fácil de entrar em grupos de whatsapp online.",
-							},
-							{
-								question:
-									"Como criar o seu próprio grupo de WhatsApp?",
-								answer: "No WhatsApp, clique em 'Novo grupo', selecione os contatos, escolha um nome legal e adicione uma foto. Para crescer rápido, pegue o link de convite e cadastre aqui no nosso portal para conseguir novos membros todo dia!",
-							},
-							{
-								question:
-									"Como excluir um grupo definitivamente?",
-								answer: "Como administrador, remova todos os membros. Depois, clique em 'Sair do grupo' e 'Excluir grupo'. Isso garante que o grupo não continue ativo com outra pessoa.",
-							},
-							{
-								question:
-									"Como sair de um grupo que não quero mais?",
-								answer: "Abra o grupo > clique no nome no topo > role até o final > 'Sair do grupo'. Simples assim para deixar de receber mensagens de qualquer comunidade.",
-							},
-							{
-								question:
-									"Como adicionar pessoas ao meu grupo?",
-								answer: `Sendo administrador, use 'Adicionar participantes' ou gere um 'Link de convite' nas configurações do grupo. Divulgar esse link no ${siteName} é a melhor forma de atrair novas pessoas interessantes.`,
-							},
-							{
-								question: "Como fazer chamadas em grupo?",
-								answer: "O WhatsApp permite ligar para até 32 pessoas de uma vez! No grupo, use o ícone de telefone com o sinal '+', selecione quem deseja e escolha entre áudio ou vídeo.",
-							},
-							{
-								question:
-									"Quantas pessoas cabem em um grupo hoje?",
-								answer: "Atualmente, o limite é de 1.024 pessoas por grupo. O WhatsApp expandiu esse limite para permitir comunidades maiores e mais organizadas.",
-							},
-						].map((item) => (
+						faqItems.map((item) => (
 							<details class="group bg-gray-50 rounded-3xl p-8 cursor-pointer border border-transparent hover:border-gray-200 transition-all">
 								<summary class="flex justify-between items-center list-none">
 									<h3 class="text-xl lg:text-2xl font-bold text-gray-900 group-open:text-[#25D366] transition-colors">
